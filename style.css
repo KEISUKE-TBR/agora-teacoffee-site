@@ -85,7 +85,12 @@ body {
   font-feature-settings: "palt";
 }
 
-img { max-width: 100%; display: block; }
+img {
+  max-width: 100%; display: block;
+  -webkit-user-select: none; user-select: none;
+  -webkit-user-drag: none; user-drag: none;
+  -webkit-touch-callout: none; /* iOS: suppress the long-press save/copy menu */
+}
 a { color: inherit; }
 
 .wf-loading body { opacity: 0.9; }
@@ -486,6 +491,19 @@ a { color: inherit; }
 .schedule__info { flex: 1; min-width: 0; }
 .schedule__event { margin: 0 0 4px; font-weight: 700; font-size: clamp(1rem, 2vw, 1.25rem); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
+.schedule__map {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 6px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--fs-note);
+  color: var(--sunset);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--sunset) 40%, transparent);
+  transition: opacity 0.2s ease;
+}
+.schedule__map:hover { opacity: 0.7; }
 .schedule__tag {
   flex: 0 0 auto;
   font-size: 0.7rem;

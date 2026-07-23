@@ -1,3 +1,13 @@
+// Deter casual image saving (right-click / drag). Not foolproof — a
+// determined visitor can still grab an image via devtools or a screenshot —
+// but this stops the common "right click > save image" / drag-out paths.
+document.addEventListener("contextmenu", (e) => {
+  if (e.target.tagName === "IMG") e.preventDefault();
+});
+document.addEventListener("dragstart", (e) => {
+  if (e.target.tagName === "IMG") e.preventDefault();
+});
+
 // Scroll reveal
 document.querySelectorAll(".reveal[data-delay]").forEach((el) => {
   el.style.setProperty("--delay", el.dataset.delay);
