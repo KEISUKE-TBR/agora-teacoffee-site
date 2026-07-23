@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://agora-teacoffee.com/sitemap.xml
