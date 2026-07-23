@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A.G.O.R.A. TEA&COFFEE ── 一杯を交わす、現代のアゴラ。</title>
+<meta name="description" content="アゴラは、古代ギリシャで人々が集い語らった広場。A.G.O.R.A. TEA&COFFEE は、一杯のコーヒーとお茶を囲んで人が出会う、現代の広場です。">
+
+<!-- Open Graph -->
+<meta property="og:title" content="A.G.O.R.A. TEA&COFFEE">
+<meta property="og:description" content="一杯を交わす、現代のアゴラ。">
+<meta property="og:type" content="website">
+
+<!-- Adobe Fonts (Typekit) -->
+<script>
+  (function(d) {
+    var config = {
+      kitId: 'ysy1ycw',
+      scriptTimeout: 3000,
+      async: true
+    },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+
+<!-- Style-guide typography: Shippori Mincho (headings), Inter (body/labels/figures), Caveat (accent) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ Header ============ -->
+<header class="header" id="top">
+  <a class="header__logo" href="#top" aria-label="A.G.O.R.A. TEA&COFFEE">
+    <img src="assets/img/logo-white.svg" alt="A.G.O.R.A. TEA&COFFEE">
+  </a>
+  <nav class="nav" aria-label="メインナビゲーション">
+    <a href="#story">STORY</a>
+    <a href="#menu">MENU</a>
+    <a href="#schedule">SCHEDULE</a>
+    <a href="meguri/">MEGURI</a>
+    <a href="#social">SNS</a>
+  </nav>
+  <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main>
+
+  <!-- ============ Hero ============ -->
+  <section class="hero" id="hero">
+    <div class="hero__inner">
+      <p class="hero__eyebrow reveal">TEA &amp; COFFEE</p>
+      <h1 class="hero__title reveal" data-delay="1">
+        <span class="hero__title-en">A place to gather.</span>
+        <span class="hero__title-jp">一杯を交わす、現代のアゴラ。</span>
+      </h1>
+      <p class="hero__lead reveal" data-delay="2">
+        アゴラは、古代ギリシャで人々が集い語らった広場。<br>
+        A.G.O.R.A. は、一杯のコーヒーとお茶を囲んで人が出会う、現代の広場です。
+      </p>
+    </div>
+    <div class="hero__scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- ============ Story ============ -->
+  <section class="section story" id="story">
+    <p class="section__eyebrow reveal">STORY</p>
+    <div class="story__grid">
+      <h2 class="story__title reveal">アゴラ、<br>という名前。</h2>
+      <div class="story__body reveal" data-delay="1">
+        <p>紀元前のギリシャ。人々は「アゴラ」と呼ばれる広場に集まり、売り買いをし、議論を交わし、日々の言葉を分かち合いました。それは市場であり、対話の場であり、街の心臓でした。</p>
+        <p>A.G.O.R.A. TEA&amp;COFFEE が目指すのも、そんな場所です。一杯のコーヒーやお茶が、人と人のあいだにささやかな対話を生む。忙しない毎日のなかに、立ち止まって語らう「広場」をつくること。それが私たちの願いです。</p>
+        <p class="story__sign">— A.G.O.R.A. TEA&amp;COFFEE</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Menu (Signature showcase) ============ -->
+  <section class="section menu" id="menu">
+    <div class="section__head">
+      <p class="section__eyebrow reveal">SIGNATURE</p>
+      <h2 class="section__title reveal">この夏の、一杯。</h2>
+      <p class="section__note reveal" data-delay="1">ソルベがゆっくり溶けていく、2つのティーソーダ。</p>
+    </div>
+    <div class="signature">
+      <button type="button" class="sig-card reveal" data-flavor="sunset" data-drink="sunset">
+        <span class="sig-card__photo"><img src="assets/img/drink-sunset.png" alt="サンセットティーソーダ" loading="lazy"></span>
+        <span class="sig-card__body">
+          <span class="sig-card__tag">SIGNATURE</span>
+          <span class="sig-card__name">サンセットティーソーダ</span>
+          <span class="sig-card__sub">with アップルマンゴーソルベ</span>
+          <span class="sig-card__meta"><span class="sig-card__price">¥800</span><span class="sig-card__more">詳細を見る →</span></span>
+        </span>
+      </button>
+      <button type="button" class="sig-card reveal" data-delay="1" data-flavor="herbal" data-drink="herbal">
+        <span class="sig-card__photo"><img src="assets/img/drink-herbal.png" alt="ハーバルティーソーダ" loading="lazy"></span>
+        <span class="sig-card__body">
+          <span class="sig-card__tag">SIGNATURE</span>
+          <span class="sig-card__name">ハーバルティーソーダ</span>
+          <span class="sig-card__sub">with ハニーレモンソルベ</span>
+          <span class="sig-card__meta"><span class="sig-card__price">¥800</span><span class="sig-card__more">詳細を見る →</span></span>
+        </span>
+      </button>
+    </div>
+    <div class="menu__more reveal" data-delay="1">
+      <a class="menu__more-link" href="menu/">MENU をすべて見る　→</a>
+    </div>
+  </section>
+
+  <!-- ============ Schedule ============ -->
+  <section class="section schedule" id="schedule">
+    <div class="section__head">
+      <p class="section__eyebrow reveal">SCHEDULE</p>
+      <h2 class="section__title reveal">出店スケジュール</h2>
+      <p class="section__note reveal" data-delay="1">※ 最新情報は Instagram / X をご覧ください。</p>
+    </div>
+    <ul class="schedule__list">
+      <li class="schedule__item reveal">
+        <div class="schedule__date"><span class="schedule__month">AUG</span><span class="schedule__day">15</span><span class="schedule__dow">SAT</span></div>
+        <div class="schedule__info">
+          <p class="schedule__event">稲毛海浜公園 記念館</p>
+          <p class="schedule__place">千葉市美浜区 ／ 稲毛海浜公園</p>
+        </div>
+        <span class="schedule__tag">キッチンカー</span>
+      </li>
+      <li class="schedule__item reveal" data-delay="1">
+        <div class="schedule__date"><span class="schedule__month">AUG</span><span class="schedule__day">16</span><span class="schedule__dow">SUN</span></div>
+        <div class="schedule__info">
+          <p class="schedule__event">親子三代夏祭り</p>
+          <p class="schedule__place">千葉県 ／ MEGURI 恩送りチケット 使用日</p>
+        </div>
+        <span class="schedule__tag">キッチンカー</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============ MEGURI（恩送りチケット）emotional CTA ============ -->
+  <section class="meguri-cta" id="meguri">
+    <div class="meguri-cta__media reveal">
+      <figure class="meguri-cta__photo">
+        <img src="assets/img/meguri-family.jpg" alt="夏祭りで、贈られた一杯を楽しむ親子の笑顔">
+      </figure>
+    </div>
+    <div class="meguri-cta__body reveal" data-delay="1">
+      <p class="meguri-cta__eyebrow"><span class="meguri-cta__kanji">巡</span>恩送りチケット MEGURI</p>
+      <h2 class="meguri-cta__title">会いに行けなくても、<br>想いは、その場所へ。</h2>
+      <p class="meguri-cta__lead">夏祭りの熱気のなか、あなたが贈った一杯を、見知らぬ親子が受け取る。<br>「ごちそうさま」の笑顔の写真が、後日あなたのもとへ届きます。</p>
+      <p class="meguri-cta__appeal">その場にいなくても、誰かの夏の一日を、そっと幸せにできる。<br><strong>現地にいる誰かに、あなたの想いを贈りませんか。</strong></p>
+      <a class="meguri-cta__button" href="meguri/">一杯を贈る　→</a>
+      <p class="meguri-cta__sub">イタリア発祥「カフェ・ソスペーゾ」の恩送り文化を、A.G.O.R.A. の一杯で。</p>
+    </div>
+  </section>
+
+  <!-- ============ Social / Footer ============ -->
+  <footer class="footer" id="social">
+    <img class="footer__logo" src="assets/img/logo-white.svg" alt="A.G.O.R.A. TEA&COFFEE">
+    <p class="footer__tagline">一杯を交わす、現代のアゴラ。</p>
+    <div class="footer__social">
+      <a href="https://www.instagram.com/a.g.o.r.a.tac" target="_blank" rel="noopener">
+        <span class="footer__social-label">Instagram</span>
+        <span class="footer__social-handle">@a.g.o.r.a.tac</span>
+      </a>
+      <a href="https://x.com/agora_teacoffee" target="_blank" rel="noopener">
+        <span class="footer__social-label">X</span>
+        <span class="footer__social-handle">@agora_teacoffee</span>
+      </a>
+    </div>
+    <p class="footer__copy">© 2026 A.G.O.R.A. TEA&amp;COFFEE</p>
+  </footer>
+
+</main>
+
+<!-- ============ Drink detail modal ============ -->
+<div class="drink-modal" id="drinkModal" aria-hidden="true">
+  <div class="drink-modal__overlay" data-close></div>
+  <div class="drink-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="dmName">
+    <button type="button" class="drink-modal__close" aria-label="閉じる" data-close>&times;</button>
+    <div class="drink-modal__media" id="dmMedia"></div>
+    <div class="drink-modal__content">
+      <p class="drink-modal__tag" id="dmTag"></p>
+      <h3 class="drink-modal__name" id="dmName"></h3>
+      <p class="drink-modal__sub" id="dmSub"></p>
+      <p class="drink-modal__desc" id="dmDesc"></p>
+      <div class="drink-modal__tags" id="dmTags"></div>
+      <p class="drink-modal__price" id="dmPrice"></p>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

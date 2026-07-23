@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MENU ── A.G.O.R.A. TEA&COFFEE</title>
+<meta name="description" content="A.G.O.R.A. TEA&COFFEE のドリンクメニュー。房総の素材を使ったティーソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。">
+
+<!-- Adobe Fonts (Typekit) -->
+<script>
+  (function(d) {
+    var config = { kitId: 'ysy1ycw', scriptTimeout: 3000, async: true },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<!-- ============ Header ============ -->
+<header class="header header--solid is-scrolled" id="top">
+  <a class="header__logo" href="../" aria-label="A.G.O.R.A. TEA&COFFEE">
+    <img src="../assets/img/logo-white.svg" alt="A.G.O.R.A. TEA&COFFEE">
+  </a>
+  <nav class="nav" aria-label="メインナビゲーション">
+    <a href="../#story">STORY</a>
+    <a href="./">MENU</a>
+    <a href="../#schedule">SCHEDULE</a>
+    <a href="../meguri/">MEGURI</a>
+    <a href="../#social">SNS</a>
+  </nav>
+  <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main>
+  <section class="section menu-page">
+    <div class="menu-page__head">
+      <p class="menu-page__en">MENU</p>
+      <p class="menu-page__jp">ティーソーダに、瀬戸内レモン。この夏の一杯。</p>
+    </div>
+
+    <!-- FOCUS -->
+    <section class="mcat" data-flavor="sunset">
+      <div class="mcat__head"><span class="mcat__label">FOCUS</span><span class="mcat__sub">イチオシ</span></div>
+      <div class="mrow" data-drink="sunset">
+        <div class="mrow__main"><span class="mrow__name">サンセットティーソーダ</span><span class="mrow__note">with アップルマンゴーソルベ</span></div>
+        <span class="mrow__price">¥800</span>
+      </div>
+      <div class="mrow" data-drink="herbal">
+        <div class="mrow__main"><span class="mrow__name">ハーバルティーソーダ</span><span class="mrow__note">with ハニーレモンソルベ</span></div>
+        <span class="mrow__price">¥800</span>
+      </div>
+      <div class="mrow" data-drink="earlgrey-peach">
+        <div class="mrow__main"><span class="mrow__name">アールグレイピーチソーダ</span><span class="mrow__note">サイドフォーカス</span></div>
+        <span class="mrow__price">¥700</span>
+      </div>
+    </section>
+
+    <!-- TEA SODA -->
+    <section class="mcat" data-flavor="rose">
+      <div class="mcat__head"><span class="mcat__label">TEA SODA</span></div>
+      <div class="mrow" data-drink="earlgrey-peach"><div class="mrow__main"><span class="mrow__name">アールグレイ ピーチ ソーダ</span></div><span class="mrow__price">¥700</span></div>
+      <div class="mrow" data-drink="earlgrey-orange"><div class="mrow__main"><span class="mrow__name">アールグレイ オレンジ ソーダ</span></div><span class="mrow__price">¥700</span></div>
+    </section>
+
+    <!-- STRAIGHT TEA -->
+    <section class="mcat" data-flavor="tea-brown">
+      <div class="mcat__head"><span class="mcat__label">STRAIGHT TEA</span></div>
+      <div class="mrow" data-drink="straight-earlgrey"><div class="mrow__main"><span class="mrow__name">アールグレイ オレンジペコ ICE</span></div><span class="mrow__price">¥600</span></div>
+      <div class="mrow" data-drink="chamomile"><div class="mrow__main"><span class="mrow__name">カモミール シトラスブレンド ICE<span class="mbadge mbadge--decaf">ノンカフェイン</span></span></div><span class="mrow__price">¥600</span></div>
+    </section>
+
+    <!-- SETOUCHI LEMON -->
+    <section class="mcat" data-flavor="lemon">
+      <div class="mcat__head"><span class="mcat__label">SETOUCHI LEMON</span><span class="mcat__sub">OFF LEMON 使用</span></div>
+      <div class="mrow" data-drink="lemon-squash"><div class="mrow__main"><span class="mrow__name">プレミアム瀬戸内レモンスカッシュ<span class="mbadge mbadge--gaba">GABA 140mg</span></span></div><span class="mrow__price">¥700</span></div>
+      <div class="mrow" data-drink="lemonade"><div class="mrow__main"><span class="mrow__name">瀬戸内レモネード<span class="mbadge mbadge--gaba">GABA 140mg</span></span></div><span class="mrow__price">¥700</span></div>
+    </section>
+
+    <!-- ALCOHOL -->
+    <section class="mcat" data-flavor="amber">
+      <div class="mcat__head"><span class="mcat__label">ALCOHOL</span></div>
+      <div class="mrow" data-drink="boso-highball"><div class="mrow__main"><span class="mrow__name">BOSOハイボール</span><span class="mrow__note">房総ウイスキー</span></div><span class="mrow__price">¥700</span></div>
+      <div class="mrow" data-drink="lemon-sour"><div class="mrow__main"><span class="mrow__name">プレミアムレモンサワー</span><span class="mrow__note">ウィルキンソンウォッカ × OFF LEMON</span></div><span class="mrow__price">¥700</span></div>
+      <div class="mrow"><div class="mrow__main"><span class="mrow__name">One More Drink</span><span class="mrow__note">2杯目以降がお得に</span></div><span class="mrow__price mrow__price--off">¥200 引き</span></div>
+    </section>
+
+    <!-- CUSTOMIZE -->
+    <div class="mnote">
+      <p class="mnote__title">CUSTOMIZE</p>
+      <ul class="mnote__list">
+        <li><span>炭酸 → 水 変更／トッピング・シロップ・ソルベ抜き・減量</span><span class="mrow__price">¥0</span></li>
+        <li><span>ソルベ追加</span><span class="mrow__price">＋¥200</span></li>
+        <li><span>シロップ追加・増量</span><span class="mrow__price">＋¥100</span></li>
+      </ul>
+    </div>
+
+    <p class="menu-back"><a href="../">← サイトトップへ戻る</a></p>
+  </section>
+</main>
+
+<!-- ============ Drink detail modal ============ -->
+<div class="drink-modal" id="drinkModal" aria-hidden="true" data-asset-base="../assets/img/">
+  <div class="drink-modal__overlay" data-close></div>
+  <div class="drink-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="dmName">
+    <button type="button" class="drink-modal__close" aria-label="閉じる" data-close>&times;</button>
+    <div class="drink-modal__media" id="dmMedia"></div>
+    <div class="drink-modal__content">
+      <p class="drink-modal__tag" id="dmTag"></p>
+      <h3 class="drink-modal__name" id="dmName"></h3>
+      <p class="drink-modal__sub" id="dmSub"></p>
+      <p class="drink-modal__desc" id="dmDesc"></p>
+      <div class="drink-modal__tags" id="dmTags"></div>
+      <p class="drink-modal__price" id="dmPrice"></p>
+    </div>
+  </div>
+</div>
+
+<script src="../script.js"></script>
+</body>
+</html>
