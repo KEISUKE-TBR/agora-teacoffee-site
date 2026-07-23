@@ -250,6 +250,21 @@ a { color: inherit; }
   letter-spacing: 0.02em;
   color: var(--sunset) !important;
 }
+.story__cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 4px;
+  padding: 13px 30px;
+  border-radius: 999px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--fs-note);
+  text-decoration: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.story__cta:hover { background: var(--ink); color: var(--paper); }
 
 /* ============ Menu ============ */
 .menu { background: var(--paper-2); }
@@ -281,6 +296,62 @@ a { color: inherit; }
 [data-flavor="lemon"]     { --flavor: var(--lemon); }
 [data-flavor="amber"]     { --flavor: var(--amber); }
 [data-flavor="rose"]      { --flavor: var(--rose); }
+
+/* ============ Full story page (/story) ============ */
+.story-hero {
+  padding-top: clamp(120px, 15vw, 168px);
+  padding-bottom: clamp(40px, 6vw, 64px);
+  background: var(--dark);
+  color: var(--dark-text);
+  text-align: center;
+}
+.story-hero__en {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 2.4rem + 1vw, 3rem);
+  letter-spacing: 0.06em;
+}
+.story-hero__jp {
+  margin: clamp(10px, 1.6vw, 16px) 0 0;
+  font-family: var(--font-mincho);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  letter-spacing: 0.08em;
+  color: var(--dark-muted);
+}
+
+.story-origin { max-width: 760px; margin: 0 auto clamp(64px, 8vw, 100px); text-align: center; }
+.story-origin .section__eyebrow { }
+.story-origin__body { display: flex; flex-direction: column; gap: 1.4em; margin-top: clamp(20px, 3vw, 28px); text-align: left; }
+.story-origin__body p { margin: 0; font-size: var(--fs-body); line-height: 1.9; color: var(--ink-soft); }
+
+.letters { list-style: none; margin: 0; padding: 0; max-width: 860px; margin-inline: auto; }
+.letter {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(20px, 4vw, 48px);
+  align-items: start;
+  padding: clamp(32px, 5vw, 52px) 0;
+  border-top: 1px solid var(--border);
+}
+.letter:last-child { border-bottom: 1px solid var(--border); }
+.letter__mark {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  line-height: 1;
+  color: var(--flavor, var(--sunset));
+}
+.letter__head {
+  margin: 0 0 clamp(14px, 2vw, 20px);
+  font-family: var(--font-mincho);
+  font-weight: 300;
+  font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  color: var(--ink);
+}
+.letter__body p { margin: 0; font-size: var(--fs-body); line-height: 2; color: var(--ink-soft); }
 
 /* SIGNATURE showcase (TOP page) — photo-led, editorial */
 .signature {
