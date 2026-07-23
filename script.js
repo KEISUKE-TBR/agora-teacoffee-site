@@ -88,6 +88,10 @@ if (modal) {
     $("dmPrice").textContent = d.price;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
+    // Compensate for the vanishing scrollbar so the page doesn't shift right
+    // (belt-and-braces alongside `scrollbar-gutter: stable` in CSS).
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
     document.body.style.overflow = "hidden";
     modal.querySelector(".drink-modal__close").focus();
   };
@@ -96,6 +100,7 @@ if (modal) {
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
     if (lastFocused && lastFocused.focus) lastFocused.focus();
   };
 
