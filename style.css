@@ -44,7 +44,36 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scrollbar-gutter: stable; }
+
+/* ---- Scrollbar styling ---- */
+html {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: color-mix(in srgb, var(--ink) 35%, transparent) transparent;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  border-radius: 999px;
+  border: 2px solid var(--paper);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background-color: color-mix(in srgb, var(--ink) 50%, transparent); }
+
+/* Modal dialog: slimmer bar, tuned to sit inside a dark-content-on-light card */
+.drink-modal__dialog {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--sunset) 55%, transparent) transparent;
+}
+.drink-modal__dialog::-webkit-scrollbar { width: 8px; }
+.drink-modal__dialog::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--sunset) 55%, transparent);
+  border-radius: 999px;
+  border: 2px solid var(--paper);
+  background-clip: padding-box;
+}
+.drink-modal__dialog::-webkit-scrollbar-thumb:hover { background-color: var(--sunset); }
 
 body {
   margin: 0;
@@ -700,9 +729,10 @@ a { color: inherit; }
 .drink-modal__overlay { position: absolute; inset: 0; background: rgba(15, 36, 31, 0.55); backdrop-filter: blur(3px); }
 .drink-modal__dialog {
   position: relative;
-  width: min(560px, 100%);
-  max-height: calc(100svh - clamp(32px, 8vw, 80px));
-  overflow: auto;
+  width: min(880px, 100%);
+  max-height: calc(100svh - clamp(24px, 6vw, 56px));
+  overflow: hidden;
+  display: flex;
   background: var(--paper);
   border-radius: 18px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
@@ -720,13 +750,24 @@ a { color: inherit; }
   transition: background 0.2s ease;
 }
 .drink-modal__close:hover { background: var(--paper); }
-.drink-modal__media { background: var(--paper-2); }
-.drink-modal__media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
-.drink-modal__content { padding: clamp(24px, 4vw, 36px); }
-.drink-modal__tag { margin: 0 0 10px; font-family: var(--font-sans); font-weight: 700; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--sunset); }
-.drink-modal__name { margin: 0; font-family: var(--font-mincho); font-weight: 300; font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.35; color: var(--ink); }
-.drink-modal__sub { margin: 8px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
-.drink-modal__desc { margin: clamp(16px, 2.4vw, 22px) 0 0; font-size: var(--fs-body); line-height: 1.9; color: var(--ink); }
-.drink-modal__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: clamp(18px, 2.4vw, 24px); }
-.drink-modal__chip { font-family: var(--font-sans); font-size: 0.72rem; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; }
-.drink-modal__price { margin: clamp(18px, 2.4vw, 24px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.5rem; color: var(--ink); }
+.drink-modal__media { flex: 0 0 42%; background: var(--paper-2); }
+.drink-modal__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.drink-modal__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: clamp(22px, 3vw, 34px);
+  overflow-y: auto;
+}
+.drink-modal__tag { margin: 0 0 8px; font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--sunset); }
+.drink-modal__name { margin: 0; font-family: var(--font-mincho); font-weight: 300; font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.35; color: var(--ink); }
+.drink-modal__sub { margin: 6px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
+.drink-modal__desc { margin: clamp(12px, 1.8vw, 16px) 0 0; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
+.drink-modal__tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: clamp(12px, 1.8vw, 16px); }
+.drink-modal__chip { font-family: var(--font-sans); font-size: 0.68rem; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
+.drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; color: var(--ink); }
+
+@media (max-width: 640px) {
+  .drink-modal__dialog { flex-direction: column; width: min(420px, 100%); }
+  .drink-modal__media { flex: 0 0 auto; }
+  .drink-modal__media img { aspect-ratio: 16 / 9; height: auto; }
+}

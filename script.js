@@ -42,9 +42,9 @@ document.querySelectorAll(".nav a").forEach((link) => {
 // ============ Drink detail modal ============
 // 出典: A.G.O.R.A. Promotion / Staff Training Guide（2026 Edition）の商品ページより。
 const DRINKS = {
-  "sunset":            { cat: "FOCUS ／ SIGNATURE", flavor: "sunset",    name: "サンセットティーソーダ", sub: "with アップルマンゴーソルベ", price: "¥800", img: "sunset tea soda.png",
+  "sunset":            { cat: "FOCUS ／ SIGNATURE", flavor: "sunset",    name: "サンセットティーソーダ", sub: "with アップルマンゴーソルベ", price: "¥800", img: "drink-sunset.png",
     desc: "カクテル「テキーラサンライズ」から着想した看板フロート。アールグレイ オレンジペコとオレンジのベースに、真夏の夕日に見立てた完熟アップルマンゴーのソルベを浮かべ、最後にグレナデンを沈めて夕陽のグラデーションを描きます。アールグレイの華やぎとオレンジの甘みが層をなし、後半はドライフルーツが溶け出してトロピカルな表情に変わります。", tags: ["アールグレイ", "完熟アップルマンゴー", "グレナデン", "夕方〜夜に"] },
-  "herbal":            { cat: "FOCUS ／ SIGNATURE", flavor: "herbal",    name: "ハーバルティーソーダ", sub: "with ハニーレモンソルベ", price: "¥800", img: "herbal tea soda.png",
+  "herbal":            { cat: "FOCUS ／ SIGNATURE", flavor: "herbal",    name: "ハーバルティーソーダ", sub: "with ハニーレモンソルベ", price: "¥800", img: "drink-herbal.png",
     desc: "機能性レモン「OFF LEMON」のスカッシュに、真夏の昼の太陽をイメージした福岡県産はちみつレモンのソルベを浮かべた昼の看板。仕上げにシトラスカモミールをそっと浮かせ、澄んだグラデーションを描きます。レモンの酸味にカモミールの華やかさが重なり、後半ははちみつ×シトラスの表情へ。ノンカフェインで、暑い日にごくごくひと息つきたい時に。", tags: ["福岡産はちみつレモン", "シトラスカモミール", "ノンカフェイン", "昼に"] },
   "earlgrey-peach":    { cat: "TEA SODA", flavor: "rose", name: "アールグレイ ピーチ ソーダ", sub: "", price: "¥700", img: "",
     desc: "アールグレイ オレンジペコの芳醇な香りに、ホワイトピーチのジューシーな甘みを重ねた分かりやすい人気者。香りとピーチの、迷いのない美味しさで「とりあえずの一杯」にも自信を持っておすすめできます。", tags: ["アールグレイ", "ホワイトピーチ", "終日"] },
@@ -88,6 +88,10 @@ if (modal) {
     $("dmPrice").textContent = d.price;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
+    // Compensate for the vanishing scrollbar so the page doesn't shift right
+    // (belt-and-braces alongside `scrollbar-gutter: stable` in CSS).
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
     document.body.style.overflow = "hidden";
     modal.querySelector(".drink-modal__close").focus();
   };
@@ -96,6 +100,7 @@ if (modal) {
     modal.classList.remove("is-open");
     modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    document.body.style.paddingRight = "";
     if (lastFocused && lastFocused.focus) lastFocused.focus();
   };
 
