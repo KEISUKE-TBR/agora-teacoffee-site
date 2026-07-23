@@ -379,6 +379,8 @@ h2 {
 .cta__button:hover { background: var(--apricot-deep); transform: translateY(-2px); }
 .cta__button:focus-visible { outline: 3px solid var(--sage); outline-offset: 3px; }
 
+.cta__note { margin: 0; font-size: var(--fs-caption); color: var(--sage); }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
   .split, .split--reverse { flex-direction: column; text-align: center; }
