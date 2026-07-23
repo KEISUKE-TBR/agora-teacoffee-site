@@ -1,0 +1,9 @@
+{
+  "name": "agora-teacoffee-site",
+  "compatibility_date": "2026-07-24",
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "none",
+    "html_handling": "auto-trailing-slash"
+  }
+}
