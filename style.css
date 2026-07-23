@@ -251,6 +251,73 @@ a { color: inherit; }
   color: var(--sunset) !important;
 }
 
+/* ============ Acronym: A.G.O.R.A. ============ */
+.acronym {
+  background: var(--dark);
+  color: var(--dark-text);
+  text-align: center;
+}
+.acronym .section__eyebrow { color: var(--dark-accent); }
+.acronym .section__title {
+  color: var(--dark-text);
+  margin-bottom: clamp(40px, 6vw, 64px);
+}
+.acronym__list {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(28px, 4vw, 12px);
+}
+.acronym__item {
+  flex: 1 1 140px;
+  max-width: 200px;
+  padding: 0 clamp(8px, 1.4vw, 18px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.acronym__item + .acronym__item::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 1px;
+  background: color-mix(in srgb, var(--dark-muted) 40%, transparent);
+}
+.acronym__letter {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 4.5vw, 3.75rem);
+  line-height: 1;
+  color: var(--dark-accent);
+}
+.acronym__word {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  color: var(--sunset);
+}
+.acronym__desc {
+  margin: 0;
+  font-family: var(--font-mincho);
+  font-weight: 300;
+  font-size: var(--fs-note);
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--dark-text) 85%, transparent);
+}
+
+@media (max-width: 620px) {
+  .acronym__list { gap: 32px 0; }
+  .acronym__item { flex: 1 1 40%; max-width: 45%; }
+  .acronym__item::before { display: none; }
+}
+
 /* ============ Menu ============ */
 .menu { background: var(--paper-2); }
 .menu__groups {
