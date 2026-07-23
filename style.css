@@ -762,8 +762,6 @@ a { color: inherit; }
 .drink-modal__name { margin: 0; font-family: var(--font-mincho); font-weight: 300; font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.35; color: var(--ink); }
 .drink-modal__sub { margin: 6px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .drink-modal__desc { margin: clamp(12px, 1.8vw, 16px) 0 0; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
-.drink-modal__tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: clamp(12px, 1.8vw, 16px); }
-.drink-modal__chip { font-family: var(--font-sans); font-size: 0.68rem; color: var(--ink-soft); background: var(--paper-2); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
 .drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; color: var(--ink); }
 
 @media (max-width: 640px) {
