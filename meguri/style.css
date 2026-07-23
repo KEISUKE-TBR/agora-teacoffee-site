@@ -56,7 +56,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-img { max-width: 100%; display: block; }
+img {
+  max-width: 100%; display: block;
+  -webkit-user-select: none; user-select: none;
+  -webkit-user-drag: none; user-drag: none;
+  -webkit-touch-callout: none;
+}
 
 /* ---------- Header ---------- */
 .site-header {

@@ -1,3 +1,11 @@
+// Deter casual image saving (right-click / drag).
+document.addEventListener("contextmenu", (e) => {
+  if (e.target.tagName === "IMG") e.preventDefault();
+});
+document.addEventListener("dragstart", (e) => {
+  if (e.target.tagName === "IMG") e.preventDefault();
+});
+
 document.querySelectorAll(".reveal[data-delay]").forEach((el) => {
   el.style.setProperty("--delay", el.dataset.delay);
 });
