@@ -61,17 +61,17 @@ const DRINKS = {
   "earlgrey-orange":   { cat: "TEA SODA", flavor: "rose", name: "アールグレイ オレンジ ソーダ", sub: "", price: "¥700", img: "",
     desc: "アールグレイ オレンジペコにオレンジシロップを重ねた、香り高い柑橘ソーダ。サンセットティーソーダのベースにも使う王道の一杯で、ベルガモットとオレンジが重層的に華やかに香ります。甘さはそこまでガツンときません。" },
   "straight-earlgrey": { cat: "STRAIGHT TEA", flavor: "tea-brown", name: "アールグレイ オレンジペコ ICE", sub: "", price: "¥600", img: "",
-    desc: "アールグレイ オレンジペコのティーコンクを水で割っただけの、香りをまっすぐ味わうアイスストレート。甘さは茶葉本来のもので、素材の実力がそのまま出る一杯です。" },
+    desc: "アールグレイ オレンジペコの香りをまっすぐ味わうストレートティー。甘さは茶葉本来のもので、素材の実力がそのまま出る一杯です。" },
   "chamomile":         { cat: "STRAIGHT TEA", flavor: "tea-brown", name: "カモミール シトラスブレンド ICE", sub: "", price: "¥600", img: "",
     desc: "クロアチア産カモミールを主役に、ローズヒップやレモングラスなど7種のハーブと果皮をブレンドしたノンカフェインのアイスハーブティー。ハーブのくせはありつつも、心が落ち着く穏やかな味わい。夜、リラックスしたい時に。" },
   "lemon-squash":      { cat: "SETOUCHI LEMON", flavor: "lemon", name: "プレミアム瀬戸内レモンスカッシュ", sub: "OFF LEMON 使用", price: "¥700", img: "",
-    desc: "機能性レモン「OFF LEMON」を濃いめに、しっかりめの炭酸で仕立てたスカッシュ。甘さ控えめで炭酸強め、キレのある爽快感が特徴です。GABA配合で、暑い日にごくごく効く一杯。" },
+    desc: "機能性レモン「OFF LEMON」を濃いめに、しっかりめの炭酸で仕立てたスカッシュ。甘さ控えめで炭酸強め、キレのある爽快感が特徴です。GABA配合で、暑い日にごくごく効く整う一杯。" },
   "lemonade":          { cat: "SETOUCHI LEMON", flavor: "lemon", name: "瀬戸内レモネード", sub: "OFF LEMON 使用", price: "¥700", img: "",
-    desc: "「OFF LEMON」のやさしい甘みを活かした、まろやかなレモネード。スカッシュより飲みやすく、甘めが好きな方にぴったりの定番です。" },
+    desc: "「OFF LEMON」のやさしい甘みを活かした、まろやかなレモネード。甘めが好きな方にぴったりの定番です。" },
   "boso-highball":     { cat: "ALCOHOL", flavor: "amber", name: "BOSOハイボール", sub: "房総ウイスキー", price: "¥700", img: "",
     desc: "千葉県初の地ウイスキー「房総ウイスキー」（須藤本家・君津）を、しっかりめの炭酸で。ほのかなスモーキーさとキレのある喉ごしが心地よい、地元・千葉を味わう大人の一杯です。" },
   "lemon-sour":        { cat: "ALCOHOL", flavor: "amber", name: "プレミアムレモンサワー", sub: "ウィルキンソンウォッカ × OFF LEMON", price: "¥700", img: "",
-    desc: "ウィルキンソンウォッカに機能性レモン「OFF LEMON」を合わせた、キレ抜群の本格レモンサワー。甘さ控えめで、さっぱり飲みたい夜にぴったりです。" }
+    desc: "ウィルキンソンウォッカに機能性レモン「OFF LEMON」を合わせた、キレ抜群の本格レモンサワー。甘さ控えめで、さっぱり飲みたい夜にぴったりです。炭酸抜けても美味しいのが特徴です。" }
 };
 
 const FLAVOR_HEX = { sunset: "#C55A3B", herbal: "#5F7A54", "tea-brown": "#8C6E54", lemon: "#8A9A3A", amber: "#9A6B3A", rose: "#C97B84" };
