@@ -523,10 +523,15 @@ a { color: inherit; }
 .schedule__info { flex: 1; min-width: 0; }
 .schedule__event { margin: 0 0 4px; font-weight: 700; font-size: clamp(1rem, 2vw, 1.25rem); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
-.schedule__map {
+.schedule__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-top: 8px;
+}
+.schedule__link {
   display: inline-flex;
   align-items: center;
-  margin-top: 6px;
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: var(--fs-note);
@@ -535,7 +540,11 @@ a { color: inherit; }
   border-bottom: 1px solid color-mix(in srgb, var(--sunset) 40%, transparent);
   transition: opacity 0.2s ease;
 }
-.schedule__map:hover { opacity: 0.7; }
+.schedule__link:hover { opacity: 0.7; }
+.schedule__link--site {
+  color: var(--ink-soft);
+  border-bottom-color: var(--border-strong);
+}
 .schedule__tag {
   flex: 0 0 auto;
   font-size: 0.7rem;
