@@ -133,6 +133,12 @@ a { color: inherit; }
   transition: opacity 0.25s ease;
 }
 .nav a:hover { opacity: 1; }
+/* Marks the page you're already on, so the nav doubles as a "you are here" */
+.nav a[aria-current="page"] {
+  opacity: 1;
+  border-bottom: 1px solid color-mix(in srgb, var(--dark-text) 60%, transparent);
+  padding-bottom: 3px;
+}
 
 .nav-toggle {
   display: none;
