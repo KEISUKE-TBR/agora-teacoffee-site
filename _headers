@@ -1,0 +1,16 @@
+/*
+  # Force HTTPS for a year, including subdomains
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  # Don't let the site be framed (clickjacking on the MEGURI purchase button)
+  X-Frame-Options: DENY
+  # Don't let browsers guess a file's type against its declared one
+  X-Content-Type-Options: nosniff
+  # Send only the origin when leaving the site (Square, Instagram, X, Maps)
+  Referrer-Policy: strict-origin-when-cross-origin
+  # No page here uses a camera, mic or location
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  # Restrict where assets may come from. 'unsafe-inline' is required because
+  # Adobe Fonts injects styles at runtime and its loader is an inline script.
+  # Report-only for now: violations show in the browser console without
+  # blocking anything, so we can confirm nothing breaks before enforcing.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://*.typekit.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.typekit.net; font-src 'self' data: https://fonts.gstatic.com https://*.typekit.net; img-src 'self' data: https://*.typekit.net; connect-src 'self' https://*.typekit.net; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
