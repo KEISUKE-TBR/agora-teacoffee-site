@@ -210,6 +210,19 @@ a { color: inherit; }
   font-size: var(--fs-body);
   color: color-mix(in srgb, var(--dark-text) 82%, transparent);
 }
+/* States the concrete situation (kitchen car now, cafe later) under the
+   brand-voice lead, so a first-time visitor isn't left guessing. */
+.hero__note {
+  display: inline-flex;
+  align-items: center;
+  margin: clamp(18px, 2.4vw, 24px) 0 0;
+  padding: 8px 16px;
+  border: 1px solid color-mix(in srgb, var(--dark-accent) 40%, transparent);
+  border-radius: 999px;
+  font-size: var(--fs-note);
+  letter-spacing: 0.02em;
+  color: var(--dark-accent);
+}
 
 .hero__scroll-cue {
   position: absolute;
