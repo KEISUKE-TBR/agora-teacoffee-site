@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MENU ── A.G.O.R.A. TEA&COFFEE</title>
-<meta name="description" content="A.G.O.R.A. TEA&COFFEE のドリンクメニュー。サンセット・ハーバルティーソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。">
+<title>ドリンクメニュー｜A.G.O.R.A. TEA&COFFEE（千葉のキッチンカー）</title>
+<meta name="description" content="千葉のキッチンカー A.G.O.R.A. TEA&COFFEE のドリンクメニューと価格。サンセット／ハーバルティーソーダ、アールグレイソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。原材料・カフェインの有無も掲載。">
 <link rel="canonical" href="https://agora-teacoffee.com/menu/">
 <meta name="theme-color" content="#16302a">
 
@@ -43,6 +43,61 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="../style.css">
+
+<!-- Structured data: the menu itself, so prices can surface in search -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Menu",
+  "name": "A.G.O.R.A. TEA&COFFEE ドリンクメニュー",
+  "url": "https://agora-teacoffee.com/menu/",
+  "inLanguage": "ja",
+  "provider": { "@type": "FoodEstablishment", "@id": "https://agora-teacoffee.com/#business", "name": "A.G.O.R.A. TEA&COFFEE" },
+  "hasMenuSection": [
+    {
+      "@type": "MenuSection",
+      "name": "期間限定ドリンク（SEASONAL）",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "サンセットティーソーダ", "description": "アールグレイとオレンジのベースに完熟アップルマンゴーのソルベを浮かべたフロート。", "image": "https://agora-teacoffee.com/assets/img/drink-sunset.png", "offers": { "@type": "Offer", "price": "800", "priceCurrency": "JPY" } },
+        { "@type": "MenuItem", "name": "ハーバルティーソーダ", "description": "瀬戸内レモンのスカッシュに福岡県産はちみつレモンのソルベを浮かべた、ノンカフェインの一杯。", "image": "https://agora-teacoffee.com/assets/img/drink-herbal.png", "offers": { "@type": "Offer", "price": "800", "priceCurrency": "JPY" } }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "TEA SODA",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "アールグレイ ピーチ ソーダ", "offers": { "@type": "Offer", "price": "700", "priceCurrency": "JPY" } },
+        { "@type": "MenuItem", "name": "アールグレイ オレンジ ソーダ", "offers": { "@type": "Offer", "price": "700", "priceCurrency": "JPY" } }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "STRAIGHT TEA",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "アールグレイ オレンジペコ ICE", "offers": { "@type": "Offer", "price": "600", "priceCurrency": "JPY" } },
+        { "@type": "MenuItem", "name": "カモミール シトラスブレンド ICE", "description": "ノンカフェイン。", "offers": { "@type": "Offer", "price": "600", "priceCurrency": "JPY" } }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "SETOUCHI LEMON",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "プレミアム瀬戸内レモンスカッシュ", "offers": { "@type": "Offer", "price": "700", "priceCurrency": "JPY" } },
+        { "@type": "MenuItem", "name": "瀬戸内レモネード", "offers": { "@type": "Offer", "price": "700", "priceCurrency": "JPY" } }
+      ]
+    },
+    {
+      "@type": "MenuSection",
+      "name": "ALCOHOL",
+      "hasMenuItem": [
+        { "@type": "MenuItem", "name": "BOSOハイボール", "description": "千葉県初の地ウイスキー「房総ウイスキー」を使用。20歳以上限定。", "offers": { "@type": "Offer", "price": "700", "priceCurrency": "JPY" } },
+        { "@type": "MenuItem", "name": "ハイボール（その他銘柄）", "description": "銘柄は日替わり。20歳以上限定。", "offers": { "@type": "Offer", "priceCurrency": "JPY", "lowPrice": "800", "highPrice": "1000" } },
+        { "@type": "MenuItem", "name": "プレミアムレモンサワー", "description": "20歳以上限定。", "offers": { "@type": "Offer", "price": "700", "priceCurrency": "JPY" } }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -64,7 +119,7 @@
 </header>
 
 <div class="board-title">
-  <p class="board-title__en">MENU</p>
+  <h1 class="board-title__en">MENU</h1>
   <p class="board-title__jp">お 品 書 き</p>
 </div>
 

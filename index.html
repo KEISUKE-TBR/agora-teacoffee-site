@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A.G.O.R.A. TEA&COFFEE ── 一杯を交わす、現代のアゴラ。</title>
-<meta name="description" content="アゴラは、古代ギリシャで人々が集い語らった広場。A.G.O.R.A. TEA&COFFEE は、一杯のコーヒーとお茶を囲んで人が出会う、現代の広場です。">
+<title>A.G.O.R.A. TEA&COFFEE｜千葉のキッチンカー ティー&コーヒースタンド</title>
+<meta name="description" content="千葉市を中心に出店するキッチンカーのティー＆コーヒースタンド。アールグレイのティーソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。出店スケジュールとメニューを掲載しています。">
 <link rel="canonical" href="https://agora-teacoffee.com/">
 <meta name="theme-color" content="#16302a">
 
@@ -49,6 +49,87 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
+
+<!-- ============ Structured data ============
+     Tells search engines what this business is and where it will be.
+     Only facts we can verify are declared here — no invented hours or address. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://agora-teacoffee.com/#organization",
+      "name": "A.G.O.R.A. TEA&COFFEE",
+      "alternateName": ["アゴラ ティーアンドコーヒー", "AGORA TEA&COFFEE"],
+      "url": "https://agora-teacoffee.com/",
+      "logo": "https://agora-teacoffee.com/assets/img/favicon-512.png",
+      "image": "https://agora-teacoffee.com/assets/img/og-brand.png",
+      "description": "千葉市を中心に出店する、キッチンカーのティー＆コーヒースタンド。",
+      "areaServed": { "@type": "AdministrativeArea", "name": "千葉県千葉市" },
+      "sameAs": [
+        "https://www.instagram.com/a.g.o.r.a.tac",
+        "https://x.com/agora_teacoffee"
+      ]
+    },
+    {
+      "@type": "FoodEstablishment",
+      "@id": "https://agora-teacoffee.com/#business",
+      "name": "A.G.O.R.A. TEA&COFFEE",
+      "url": "https://agora-teacoffee.com/",
+      "image": "https://agora-teacoffee.com/assets/img/og-brand.png",
+      "description": "アールグレイのティーソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなどを提供するキッチンカー。",
+      "servesCuisine": ["ティー", "コーヒー", "ソフトドリンク"],
+      "priceRange": "¥600〜¥1,000",
+      "areaServed": { "@type": "AdministrativeArea", "name": "千葉県千葉市" },
+      "hasMenu": "https://agora-teacoffee.com/menu/",
+      "parentOrganization": { "@id": "https://agora-teacoffee.com/#organization" }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://agora-teacoffee.com/#website",
+      "url": "https://agora-teacoffee.com/",
+      "name": "A.G.O.R.A. TEA&COFFEE",
+      "inLanguage": "ja",
+      "publisher": { "@id": "https://agora-teacoffee.com/#organization" }
+    },
+    {
+      "@type": "Event",
+      "name": "A.G.O.R.A. TEA&COFFEE 出店（稲毛海浜公園）",
+      "startDate": "2026-08-15",
+      "endDate": "2026-08-15",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "image": "https://agora-teacoffee.com/assets/img/og-brand.png",
+      "description": "稲毛海浜公園 記念館周辺にキッチンカーで出店します。",
+      "location": {
+        "@type": "Place",
+        "name": "稲毛海浜公園 記念館周辺",
+        "address": { "@type": "PostalAddress", "addressLocality": "千葉市美浜区", "addressRegion": "千葉県", "addressCountry": "JP" },
+        "geo": { "@type": "GeoCoordinates", "latitude": 35.62036740191453, "longitude": 140.06093307558982 }
+      },
+      "organizer": { "@id": "https://agora-teacoffee.com/#organization" }
+    },
+    {
+      "@type": "Event",
+      "name": "A.G.O.R.A. TEA&COFFEE 出店（千葉の親子三代夏祭り）",
+      "startDate": "2026-08-16",
+      "endDate": "2026-08-16",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "image": "https://agora-teacoffee.com/assets/img/og-brand.png",
+      "description": "千葉中央公園で開催される「千葉の親子三代夏祭り」にキッチンカーで出店します。",
+      "location": {
+        "@type": "Place",
+        "name": "千葉中央公園",
+        "address": { "@type": "PostalAddress", "addressLocality": "千葉市中央区", "addressRegion": "千葉県", "addressCountry": "JP" },
+        "geo": { "@type": "GeoCoordinates", "latitude": 35.60993955574958, "longitude": 140.12106651182592 }
+      },
+      "organizer": { "@id": "https://agora-teacoffee.com/#organization" }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
