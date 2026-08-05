@@ -63,86 +63,141 @@
   </button>
 </header>
 
-<main>
-  <section class="section menu-page">
-    <div class="menu-page__head">
-      <p class="menu-page__en">MENU</p>
-      <p class="menu-page__jp">ティーソーダに、瀬戸内レモン。この夏の一杯。</p>
+<div class="board-title">
+  <p class="board-title__en">MENU</p>
+  <p class="board-title__jp">お 品 書 き</p>
+</div>
+
+<nav class="catnav" aria-label="カテゴリ">
+  <a href="#focus">SEASONAL</a>
+  <a href="#soda">TEA SODA</a>
+  <a href="#straight">STRAIGHT TEA</a>
+  <a href="#lemon">SETOUCHI LEMON</a>
+  <a href="#alcohol">ALCOHOL</a>
+</nav>
+
+<main class="menu-page">
+
+  <section class="mcat" id="focus">
+    <div class="mcat__head"><span class="mcat__num">01</span><h2 class="mcat__title">期間限定ドリンク</h2></div>
+    <p class="mcat__sub">SEASONAL ／ 今シーズンのイチオシ</p>
+    <div class="mcat__rule"></div>
+    <div class="focus-grid">
+      <button type="button" class="focus-card" data-drink="sunset">
+        <span class="focus-card__photo"><img src="../assets/img/drink-sunset.png" alt="サンセットティーソーダ" loading="lazy"></span>
+        <span class="focus-card__name">サンセットティーソーダ</span>
+        <span class="focus-card__note">with アップルマンゴーソルベ</span>
+        <span class="focus-card__price">¥800</span>
+      </button>
+      <button type="button" class="focus-card" data-drink="herbal">
+        <span class="focus-card__photo"><img src="../assets/img/drink-herbal.png" alt="ハーバルティーソーダ" loading="lazy"></span>
+        <span class="focus-card__name">ハーバルティーソーダ</span>
+        <span class="focus-card__note">with ハニーレモンソルベ</span>
+        <span class="focus-card__price">¥800</span>
+      </button>
     </div>
-
-    <!-- FOCUS -->
-    <section class="mcat" data-flavor="sunset">
-      <div class="mcat__head"><span class="mcat__label">FOCUS</span><span class="mcat__sub">イチオシ</span></div>
-      <div class="mrow" data-drink="sunset">
-        <div class="mrow__main"><span class="mrow__name">サンセットティーソーダ</span><span class="mrow__note">with アップルマンゴーソルベ</span></div>
-        <span class="mrow__price">¥800</span>
-      </div>
-      <div class="mrow" data-drink="herbal">
-        <div class="mrow__main"><span class="mrow__name">ハーバルティーソーダ</span><span class="mrow__note">with ハニーレモンソルベ</span></div>
-        <span class="mrow__price">¥800</span>
-      </div>
-      <div class="mrow" data-drink="earlgrey-peach">
-        <div class="mrow__main"><span class="mrow__name">アールグレイピーチソーダ</span><span class="mrow__note">サイドフォーカス</span></div>
-        <span class="mrow__price">¥700</span>
-      </div>
-    </section>
-
-    <!-- TEA SODA -->
-    <section class="mcat" data-flavor="rose">
-      <div class="mcat__head"><span class="mcat__label">TEA SODA</span></div>
-      <div class="mrow" data-drink="earlgrey-peach"><div class="mrow__main"><span class="mrow__name">アールグレイ ピーチ ソーダ</span></div><span class="mrow__price">¥700</span></div>
-      <div class="mrow" data-drink="earlgrey-orange"><div class="mrow__main"><span class="mrow__name">アールグレイ オレンジ ソーダ</span></div><span class="mrow__price">¥700</span></div>
-    </section>
-
-    <!-- STRAIGHT TEA -->
-    <section class="mcat" data-flavor="tea-brown">
-      <div class="mcat__head"><span class="mcat__label">STRAIGHT TEA</span></div>
-      <div class="mrow" data-drink="straight-earlgrey"><div class="mrow__main"><span class="mrow__name">アールグレイ オレンジペコ ICE</span></div><span class="mrow__price">¥600</span></div>
-      <div class="mrow" data-drink="chamomile"><div class="mrow__main"><span class="mrow__name">カモミール シトラスブレンド ICE<span class="mbadge mbadge--decaf">ノンカフェイン</span></span></div><span class="mrow__price">¥600</span></div>
-    </section>
-
-    <!-- SETOUCHI LEMON -->
-    <section class="mcat" data-flavor="lemon">
-      <div class="mcat__head"><span class="mcat__label">SETOUCHI LEMON</span><span class="mcat__sub">OFF LEMON 使用</span></div>
-      <div class="mrow" data-drink="lemon-squash"><div class="mrow__main"><span class="mrow__name">プレミアム瀬戸内レモンスカッシュ<span class="mbadge mbadge--gaba">GABA 140mg</span></span></div><span class="mrow__price">¥700</span></div>
-      <div class="mrow" data-drink="lemonade"><div class="mrow__main"><span class="mrow__name">瀬戸内レモネード<span class="mbadge mbadge--gaba">GABA 140mg</span></span></div><span class="mrow__price">¥700</span></div>
-    </section>
-
-    <!-- ALCOHOL -->
-    <section class="mcat" data-flavor="amber">
-      <div class="mcat__head"><span class="mcat__label">ALCOHOL</span></div>
-      <div class="mrow" data-drink="boso-highball"><div class="mrow__main"><span class="mrow__name">BOSOハイボール</span><span class="mrow__note">房総ウイスキー</span></div><span class="mrow__price">¥700</span></div>
-      <div class="mrow" data-drink="lemon-sour"><div class="mrow__main"><span class="mrow__name">プレミアムレモンサワー</span><span class="mrow__note">ウィルキンソンウォッカ × OFF LEMON</span></div><span class="mrow__price">¥700</span></div>
-      <div class="mrow"><div class="mrow__main"><span class="mrow__name">One More Drink</span><span class="mrow__note">2杯目以降がお得に</span></div><span class="mrow__price mrow__price--off">¥200 引き</span></div>
-    </section>
-
-    <!-- CUSTOMIZE -->
-    <div class="mnote">
-      <p class="mnote__title">CUSTOMIZE</p>
-      <ul class="mnote__list">
-        <li><span>炭酸 → 水 変更／トッピング・シロップ・ソルベ抜き・減量</span><span class="mrow__price">¥0</span></li>
-        <li><span>ソルベ追加</span><span class="mrow__price">＋¥200</span></li>
-        <li><span>シロップ追加・増量</span><span class="mrow__price">＋¥100</span></li>
-      </ul>
-    </div>
-
-    <p class="menu-back"><a href="../">← サイトトップへ戻る</a></p>
   </section>
+
+  <section class="mcat" id="soda">
+    <div class="mcat__head"><span class="mcat__num">02</span><h2 class="mcat__title">TEA SODA</h2></div>
+    <div class="mcat__rule"></div>
+    <button type="button" class="mrow" data-drink="earlgrey-peach">
+      <span class="mrow__name">アールグレイ ピーチ ソーダ</span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥700</span>
+    </button>
+    <button type="button" class="mrow" data-drink="earlgrey-orange">
+      <span class="mrow__name">アールグレイ オレンジ ソーダ</span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥700</span>
+    </button>
+  </section>
+
+  <section class="mcat" id="straight">
+    <div class="mcat__head"><span class="mcat__num">03</span><h2 class="mcat__title">STRAIGHT TEA</h2></div>
+    <div class="mcat__rule"></div>
+    <button type="button" class="mrow" data-drink="straight-earlgrey">
+      <span class="mrow__name">アールグレイ オレンジペコ ICE</span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥600</span>
+    </button>
+    <button type="button" class="mrow" data-drink="chamomile">
+      <span class="mrow__name">カモミール シトラスブレンド ICE</span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥600</span>
+    </button>
+  </section>
+
+  <section class="mcat" id="lemon">
+    <div class="mcat__head"><span class="mcat__num">04</span><h2 class="mcat__title">SETOUCHI LEMON</h2></div>
+    <p class="mcat__sub">OFF LEMON 使用</p>
+    <div class="mcat__rule"></div>
+    <button type="button" class="mrow" data-drink="lemon-squash">
+      <span class="mrow__name">プレミアム瀬戸内レモンスカッシュ<span class="mbadge">GABA 140mg</span></span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥700</span>
+    </button>
+    <button type="button" class="mrow" data-drink="lemonade">
+      <span class="mrow__name">瀬戸内レモネード<span class="mbadge">GABA 140mg</span></span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥700</span>
+    </button>
+  </section>
+
+  <section class="mcat" id="alcohol">
+    <div class="mcat__head"><span class="mcat__num">05</span><h2 class="mcat__title">ALCOHOL</h2></div>
+    <div class="mcat__rule"></div>
+    <button type="button" class="mrow" data-drink="boso-highball">
+      <span class="mrow__name">BOSOハイボール<span class="mbadge">おすすめ</span><span class="mrow__note">房総ウイスキー</span></span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥700</span>
+    </button>
+    <button type="button" class="mrow" data-drink="highball-other">
+      <span class="mrow__name">ハイボール<span class="mrow__note">他の銘柄からお選びいただけます・当日スタッフにお問い合わせください</span></span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥800〜¥1,000</span>
+    </button>
+    <button type="button" class="mrow" data-drink="lemon-sour">
+      <span class="mrow__name">プレミアムレモンサワー<span class="mrow__note">ウィルキンソンウォッカ × OFF LEMON</span></span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price">¥700</span>
+    </button>
+    <div class="mrow mrow--static">
+      <span class="mrow__name">One More Drink<span class="mrow__note">2杯目以降がお得に</span></span>
+      <span class="mrow__leader"></span>
+      <span class="mrow__price mrow__price--off">¥200 引き</span>
+    </div>
+  </section>
+
+  <div class="mnote">
+    <p class="mnote__title">CUSTOMIZE</p>
+    <ul class="mnote__list">
+      <li><span>炭酸 → 水 変更／トッピング・シロップ・ソルベ抜き・減量</span><span>¥0</span></li>
+      <li><span>ソルベ追加</span><span>＋¥200</span></li>
+      <li><span>シロップ追加・増量</span><span>＋¥100</span></li>
+    </ul>
+  </div>
+
+  <p class="menu-back"><a href="../">← サイトトップへ戻る</a></p>
 </main>
 
-<!-- ============ Drink detail modal ============ -->
-<div class="drink-modal" id="drinkModal" aria-hidden="true" data-asset-base="../assets/img/">
+<!-- ============ Drink detail sheet ============ -->
+<div class="drink-modal drink-modal--sheet" id="drinkModal" aria-hidden="true" data-asset-base="../assets/img/">
   <div class="drink-modal__overlay" data-close></div>
   <div class="drink-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="dmName">
     <button type="button" class="drink-modal__close" aria-label="閉じる" data-close>&times;</button>
+    <span class="drink-modal__grabber" aria-hidden="true"></span>
     <div class="drink-modal__media" id="dmMedia"></div>
     <div class="drink-modal__content">
       <p class="drink-modal__tag" id="dmTag"></p>
       <h3 class="drink-modal__name" id="dmName"></h3>
       <p class="drink-modal__sub" id="dmSub"></p>
-      <p class="drink-modal__desc" id="dmDesc"></p>
-      <div class="drink-modal__tags" id="dmTags"></div>
       <p class="drink-modal__price" id="dmPrice"></p>
+      <p class="drink-modal__ingredients" id="dmIngredients"></p>
+      <p class="drink-modal__note" id="dmNote"></p>
+      <p class="drink-modal__desc" id="dmDesc"></p>
+      <div class="drink-modal__facts" id="dmFacts"></div>
+      <div class="taste" id="dmTaste"></div>
     </div>
   </div>
 </div>

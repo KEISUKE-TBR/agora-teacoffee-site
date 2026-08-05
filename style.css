@@ -462,38 +462,114 @@ a { color: inherit; }
 }
 .menu__more-link:hover { background: var(--ink); color: var(--paper); }
 
-/* ============ Full menu page (/menu) ============ */
-.menu-page { padding-top: clamp(104px, 13vw, 148px); }
-.menu-page__head { text-align: center; margin-bottom: clamp(40px, 6vw, 72px); }
-.menu-page__en { margin: 0; font-family: var(--font-serif); font-weight: 500; font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.75rem); letter-spacing: 0.08em; color: var(--ink); }
-.menu-page__jp { margin: 8px 0 0; font-family: var(--font-mincho); font-weight: 300; font-size: var(--fs-body-lg); letter-spacing: 0.1em; color: var(--ink-soft); }
+/* ============ Full menu page (/menu) ============
+   Built to be read standing in front of the kitchen car: a menu-board title,
+   a sticky category rail, and rows you can tap for detail. */
+.board-title {
+  padding: clamp(78px, 14vw, 104px) 20px clamp(24px, 4vw, 34px);
+  background: var(--dark); color: var(--dark-text); text-align: center;
+}
+.board-title__en {
+  margin: 0; font-family: var(--font-serif); font-weight: 600;
+  font-size: clamp(2.6rem, 14vw, 3.6rem); letter-spacing: 0.04em; line-height: 1;
+}
+.board-title__jp {
+  margin: 12px 0 0; font-family: var(--font-mincho); font-weight: 300;
+  font-size: var(--fs-note); letter-spacing: 0.32em; color: var(--dark-muted);
+}
 
-.mcat { margin: 0 0 clamp(40px, 5vw, 64px); }
-.mcat__head { display: flex; align-items: baseline; gap: 14px; padding-bottom: 12px; margin-bottom: clamp(14px, 2vw, 22px); border-bottom: 2px solid var(--flavor, var(--ink)); }
-.mcat__label { font-family: var(--font-sans); font-weight: 700; font-size: clamp(0.95rem, 1.6vw, 1.15rem); letter-spacing: 0.2em; color: var(--flavor, var(--ink)); }
-.mcat__sub { font-size: var(--fs-note); color: var(--taupe); }
+.catnav {
+  /* sits just below the fixed site header rather than under it */
+  position: sticky; top: var(--header-h, 52px); z-index: 30;
+  display: flex; gap: 8px; padding: 10px 14px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
+}
+.catnav::-webkit-scrollbar { display: none; }
+.catnav a {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border-strong);
+  font-family: var(--font-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.08em;
+  color: var(--ink-soft); text-decoration: none; white-space: nowrap;
+}
+.catnav a::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--dot, var(--sunset)); }
+.catnav a[href="#focus"]    { --dot: var(--sunset); }
+.catnav a[href="#soda"]     { --dot: var(--rose); }
+.catnav a[href="#straight"] { --dot: var(--tea-brown); }
+.catnav a[href="#lemon"]    { --dot: var(--lemon); }
+.catnav a[href="#alcohol"]  { --dot: var(--amber); }
 
-.mrow { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: clamp(13px, 1.8vw, 18px) 0; border-bottom: 1px solid var(--border); }
-.mrow:last-child { border-bottom: 0; }
-.mrow[data-drink] { cursor: pointer; padding-inline: clamp(10px, 1.6vw, 16px); margin-inline: calc(-1 * clamp(10px, 1.6vw, 16px)); border-radius: 10px; transition: background 0.2s ease; }
-.mrow[data-drink]:hover { background: color-mix(in srgb, var(--flavor, var(--ink)) 8%, transparent); }
-.mrow[data-drink]:focus-visible { outline: 2px solid var(--flavor, var(--sunset)); outline-offset: 2px; }
-.mrow[data-drink] .mrow__name::after { content: " ›"; color: var(--flavor, var(--sunset)); font-weight: 600; }
-.mrow__main { min-width: 0; }
-.mrow__name { font-size: var(--fs-body-lg); color: var(--ink); }
-.mrow__note { display: block; margin-top: 4px; font-size: var(--fs-note); color: var(--ink-soft); }
-.mrow__price { flex: 0 0 auto; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body-lg); color: var(--ink); white-space: nowrap; }
-.mrow__price--off { color: var(--sunset); }
+.menu-page {
+  max-width: 640px; margin: 0 auto;
+  padding: 8px clamp(18px, 5vw, 24px) clamp(48px, 8vw, 72px);
+}
 
-.mbadge { display: inline-block; margin-left: 8px; padding: 2px 9px; border-radius: 999px; font-family: var(--font-sans); font-weight: 600; font-size: 0.62rem; letter-spacing: 0.04em; vertical-align: 1px; }
-.mbadge--gaba  { background: color-mix(in srgb, var(--lemon) 16%, var(--paper)); color: #6f7d24; }
-.mbadge--decaf { background: color-mix(in srgb, var(--herbal) 16%, var(--paper)); color: var(--herbal); }
+.mcat { padding-top: clamp(30px, 5vw, 42px); scroll-margin-top: calc(var(--header-h, 52px) + 52px); }
+#focus    { --accent: var(--sunset); }
+#soda     { --accent: var(--rose); }
+#straight { --accent: var(--tea-brown); }
+#lemon    { --accent: var(--lemon); }
+#alcohol  { --accent: var(--amber); }
+.mcat__head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+.mcat__num {
+  font-family: var(--font-num); font-weight: 700; font-size: 0.85rem;
+  font-variant-numeric: tabular-nums; color: var(--accent);
+}
+/* Category headings carry their own accent — that separation, more than size
+   alone, is what keeps a section header from reading as another drink name. */
+.mcat__title {
+  margin: 0; font-family: var(--font-serif); font-weight: 700;
+  font-size: clamp(1.6rem, 6vw, 2rem); letter-spacing: 0.02em; color: var(--accent);
+}
+.mcat__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe); }
+.mcat__rule { height: 2px; width: 34px; margin: 6px 0 18px; border-radius: 2px; background: var(--accent); }
 
-.mnote { margin: clamp(28px, 4vw, 44px) 0 0; padding: clamp(20px, 3vw, 28px); background: var(--paper-2); border-radius: 12px; }
-.mnote__title { margin: 0 0 12px; font-family: var(--font-sans); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.16em; color: var(--ink); }
+/* SEASONAL: photo-led grid */
+.focus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; }
+.focus-card {
+  display: flex; flex-direction: column; gap: 3px;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.focus-card__photo {
+  display: block; aspect-ratio: 1 / 1; margin-bottom: 8px;
+  border-radius: 14px; overflow: hidden; background: var(--paper-2);
+}
+.focus-card__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+.focus-card:hover .focus-card__photo img { transform: scale(1.04); }
+.focus-card:focus-visible .focus-card__photo { outline: 2px solid var(--accent); outline-offset: 3px; }
+.focus-card__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); line-height: 1.35; color: var(--ink); }
+.focus-card__note { font-size: var(--fs-note); color: var(--ink-soft); }
+.focus-card__price { margin-top: 4px; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body); color: var(--ink-soft); }
+
+/* Standard rows */
+.mrow {
+  display: flex; align-items: baseline; gap: 10px; width: 100%;
+  padding: 11px 0; background: none; border: 0;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.mrow--static { cursor: default; }
+.mrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.mrow__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); color: var(--ink); line-height: 1.4; }
+.mrow__note { display: block; margin-top: 2px; font-weight: 400; font-size: var(--fs-note); color: var(--ink-soft); }
+.mrow__leader { flex: 1; min-width: 16px; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
+.mrow__price { flex: 0 0 auto; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body); color: var(--ink-soft); white-space: nowrap; }
+.mrow__price--off { color: var(--sunset); font-weight: 700; }
+
+.mbadge {
+  display: inline-block; margin-left: 7px; padding: 1px 8px; border-radius: 999px;
+  font-family: var(--font-sans); font-weight: 600; font-size: 0.6rem; letter-spacing: 0.04em; vertical-align: 1px;
+  background: color-mix(in srgb, var(--accent) 15%, var(--paper)); color: var(--accent);
+}
+
+.mnote { margin: clamp(28px, 4vw, 40px) 0 0; padding: clamp(18px, 3vw, 24px); background: var(--paper-2); border-radius: 12px; }
+.mnote__title { margin: 0 0 10px; font-family: var(--font-sans); font-weight: 700; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--ink-soft); }
 .mnote__list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .mnote__list li { display: flex; justify-content: space-between; gap: 16px; font-size: var(--fs-note); color: var(--ink-soft); }
-.mnote__list .mrow__price { font-size: var(--fs-note); }
+.mnote__list li span:last-child { font-family: var(--font-num); font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ink); }
 
 .menu-back { margin-top: clamp(36px, 5vw, 56px); text-align: center; }
 .menu-back a { color: var(--ink-soft); font-size: var(--fs-body); text-decoration: none; border-bottom: 1px solid var(--border-strong); padding-bottom: 2px; }
@@ -817,8 +893,8 @@ a { color: inherit; }
   padding: clamp(22px, 3vw, 34px);
   overflow-y: auto;
 }
-.drink-modal__tag { margin: 0 0 8px; font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--sunset); }
-.drink-modal__name { margin: 0; font-family: var(--font-mincho); font-weight: 300; font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.35; color: var(--ink); }
+.drink-modal__tag { margin: 0 0 8px; font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--accent, var(--sunset)); }
+.drink-modal__name { margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.35; color: var(--ink); }
 .drink-modal__sub { margin: 6px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .drink-modal__desc { margin: clamp(12px, 1.8vw, 16px) 0 0; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
 .drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; color: var(--ink); }
@@ -828,3 +904,51 @@ a { color: inherit; }
   .drink-modal__media { flex: 0 0 auto; }
   .drink-modal__media img { aspect-ratio: 4 / 3; height: auto; }
 }
+
+/* ---- Sheet variant (/menu): rises from the bottom, stacked, with the
+   ingredient line and taste meters the menu page shows. ---- */
+.drink-modal--sheet { align-items: flex-end; padding: 0; }
+.drink-modal--sheet .drink-modal__dialog {
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: 88svh;
+  border-radius: 20px 20px 0 0;
+  transform: translateY(100%);
+  transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+.drink-modal--sheet.is-open .drink-modal__dialog { transform: none; }
+.drink-modal__grabber {
+  width: 36px; height: 4px; border-radius: 999px;
+  background: var(--border-strong); margin: 12px auto 2px; flex: 0 0 auto;
+}
+.drink-modal--sheet .drink-modal__media {
+  flex: 0 0 auto; aspect-ratio: 4 / 3; margin: 10px 18px 0;
+  border-radius: 14px; overflow: hidden;
+}
+.drink-modal--sheet .drink-modal__media img { aspect-ratio: auto; height: 100%; }
+.drink-modal--sheet .drink-modal__content { overflow: visible; padding: 16px 20px 28px; }
+.drink-modal--sheet .drink-modal__price { margin-top: 6px; font-size: 1.05rem; }
+.drink-modal--sheet .drink-modal__desc { margin-top: 14px; font-size: var(--fs-body); }
+
+.drink-modal__ingredients { margin: 8px 0 0; font-size: 0.72rem; line-height: 1.7; color: var(--taupe); }
+.drink-modal__ingredients:empty { display: none; }
+.drink-modal__note { margin: 5px 0 0; font-size: 0.7rem; line-height: 1.7; color: var(--taupe); }
+.drink-modal__note:empty { display: none; }
+
+.drink-modal__facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.fact {
+  padding: 6px 12px; border-radius: 999px; background: var(--paper-2);
+  font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600;
+}
+.fact--caffeine-yes { color: var(--tea-brown); }
+.fact--caffeine-no  { color: var(--herbal); }
+.fact--age { color: var(--amber); background: color-mix(in srgb, var(--amber) 14%, var(--paper-2)); }
+
+.taste { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
+.taste:empty { display: none; }
+.taste__row { display: grid; grid-template-columns: 56px 1fr; align-items: center; gap: 10px; }
+.taste__label { font-size: 0.72rem; color: var(--ink-soft); }
+.taste__dots { display: flex; gap: 5px; }
+.taste__dot { width: 9px; height: 9px; border-radius: 999px; background: var(--border-strong); }
+.taste__dot.filled { background: var(--accent, var(--sunset)); }
