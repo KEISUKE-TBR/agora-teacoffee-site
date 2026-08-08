@@ -618,6 +618,14 @@ a { color: inherit; }
 .schedule__info { flex: 1; min-width: 0; }
 .schedule__event { margin: 0 0 4px; font-weight: 700; font-size: clamp(1rem, 2vw, 1.25rem); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
+.schedule__time {
+  margin: 3px 0 0;
+  font-family: var(--font-num);
+  font-weight: 600;
+  font-size: var(--fs-note);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
 .schedule__links {
   display: flex;
   flex-wrap: wrap;
