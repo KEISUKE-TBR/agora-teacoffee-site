@@ -16,6 +16,18 @@ const MEGURI_DEADLINE = new Date("2026-08-14T00:00:00+09:00");
   document.documentElement.classList.toggle("meguri-closed", closed);
 })();
 
+// Once the listed appearances are over, swap the schedule list for a
+// "next dates to be announced" note rather than leaving stale dates up.
+// Update the listed dates (and this constant) when new ones are confirmed.
+const EVENTS_END = new Date("2026-08-17T00:00:00+09:00");
+
+(function applyScheduleState() {
+  const past = new Date() >= EVENTS_END;
+  document.querySelectorAll("[data-events]").forEach((el) => {
+    el.hidden = (el.dataset.events === "past") !== past;
+  });
+})();
+
 // Deter casual image saving (right-click / drag). Not foolproof — a
 // determined visitor can still grab an image via devtools or a screenshot —
 // but this stops the common "right click > save image" / drag-out paths.

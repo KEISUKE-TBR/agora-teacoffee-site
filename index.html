@@ -224,7 +224,7 @@
       <h2 class="section__title reveal">出店スケジュール</h2>
       <p class="section__note reveal" data-delay="1">※ 最新情報は Instagram / X をご覧ください。</p>
     </div>
-    <ul class="schedule__list">
+    <ul class="schedule__list" data-events="upcoming">
       <li class="schedule__item reveal">
         <div class="schedule__date"><span class="schedule__month">AUG</span><span class="schedule__day">15</span><span class="schedule__dow">SAT</span></div>
         <div class="schedule__info">
@@ -252,6 +252,13 @@
         <span class="schedule__tag">キッチンカー</span>
       </li>
     </ul>
+    <!-- Shown once the listed dates are past; see EVENTS_END in script.js -->
+    <div class="schedule__next" data-events="past" hidden>
+      <p class="schedule__next-title">次回の出店</p>
+      <p class="schedule__next-body">
+        次回の出店情報は、決まり次第このページと Instagram / X でお知らせします。
+      </p>
+    </div>
   </section>
 
   <!-- ============ MEGURI（恩送りチケット）emotional CTA ============ -->
@@ -264,7 +271,7 @@
     <div class="meguri-cta__body reveal" data-delay="1">
       <p class="meguri-cta__eyebrow"><span class="meguri-cta__kanji">巡</span>恩送りチケット MEGURI</p>
       <h2 class="meguri-cta__title">会いに行けなくても、<br>想いは、その場所へ。</h2>
-      <p class="meguri-cta__lead">夏祭りの熱気のなか、あなたが贈った一杯を、見知らぬ親子が受け取る。<br>「ごちそうさま」の笑顔の写真が、後日あなたのもとへ届きます。</p>
+      <p class="meguri-cta__lead">夏祭りの熱気のなか、あなたが贈った一杯を、見知らぬ親子が受け取る。<br>「ごちそうさま」の笑顔が、写真になって返ってくることもあります。</p>
       <p class="meguri-cta__appeal" data-sale="open">その場にいなくても、誰かの夏の一日を、そっと幸せにできる。<br><strong>現地にいる誰かに、あなたの想いを贈りませんか。</strong></p>
       <p class="meguri-cta__appeal" data-sale="closed" hidden>その場にいなくても、誰かの夏の一日を、そっと幸せにできる。<br><strong>チケットの受付は終了しました。ありがとうございました。</strong></p>
       <a class="meguri-cta__button" data-sale="open" href="meguri/">一杯を贈る　→</a>

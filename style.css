@@ -800,7 +800,20 @@ a { color: inherit; }
   color: var(--dark-text);
 }
 .meguri-cta__button--quiet:hover { background: color-mix(in srgb, var(--dark-text) 12%, transparent); box-shadow: none; }
-[data-sale][hidden] { display: none !important; }
+[data-sale][hidden], [data-events][hidden] { display: none !important; }
+
+.schedule__next {
+  padding: clamp(24px, 4vw, 36px);
+  background: var(--paper-2);
+  border-radius: 14px;
+  text-align: center;
+}
+.schedule__next-title {
+  margin: 0 0 10px;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+}
+.schedule__next-body { margin: 0; font-size: var(--fs-body); line-height: 1.8; color: var(--ink-soft); }
 .meguri-cta__sub {
   margin: clamp(18px, 2.4vw, 26px) 0 0;
   font-size: var(--fs-note);
