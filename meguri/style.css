@@ -225,6 +225,8 @@ h2 {
 .body-copy--emphasis { font-weight: 500; }
 .body-copy--on-green p { color: var(--sage); }
 .body-copy--on-green .body-copy--strong { color: var(--cream); font-weight: 700; }
+/* Quiet caveat — present and readable, but never competing with the pitch */
+.body-copy--fine { font-size: var(--fs-caption) !important; line-height: 1.7; opacity: 0.75; }
 
 .illustration--give { width: min(260px, 50vw); }
 .illustration--receive { width: min(400px, 60vw); }

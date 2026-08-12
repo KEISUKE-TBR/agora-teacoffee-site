@@ -1,33 +1,3 @@
-// ============ MEGURI ticket sales window ============
-// Sales close at the end of 2026-08-13 JST. Elements marked data-sale="open"
-// show until then; data-sale="closed" ones take over afterwards.
-//
-// This only controls what the page SHOWS. The authoritative stop is the Square
-// checkout link itself — deactivate it in Square at the same time, so a visitor
-// with a wrong device clock (or JS disabled) still cannot buy.
-const MEGURI_DEADLINE = new Date("2026-08-14T00:00:00+09:00");
-
-(function applySaleState() {
-  const closed = new Date() >= MEGURI_DEADLINE;
-  document.querySelectorAll("[data-sale]").forEach((el) => {
-    const showWhenClosed = el.dataset.sale === "closed";
-    el.hidden = showWhenClosed !== closed;
-  });
-  document.documentElement.classList.toggle("meguri-closed", closed);
-})();
-
-// Once the listed appearances are over, swap the schedule list for a
-// "next dates to be announced" note rather than leaving stale dates up.
-// Update the listed dates (and this constant) when new ones are confirmed.
-const EVENTS_END = new Date("2026-08-17T00:00:00+09:00");
-
-(function applyScheduleState() {
-  const past = new Date() >= EVENTS_END;
-  document.querySelectorAll("[data-events]").forEach((el) => {
-    el.hidden = (el.dataset.events === "past") !== past;
-  });
-})();
-
 // Deter casual image saving (right-click / drag). Not foolproof — a
 // determined visitor can still grab an image via devtools or a screenshot —
 // but this stops the common "right click > save image" / drag-out paths.
