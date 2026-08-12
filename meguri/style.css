@@ -402,6 +402,24 @@ h2 {
 
 .cta__note { margin: 0; font-size: var(--fs-caption); color: var(--sage); }
 
+/* ---------- Sales-closed state ---------- */
+.cta [data-sale] { display: flex; flex-direction: column; align-items: center; gap: clamp(20px, 3vw, 36px); }
+.cta [data-sale][hidden] { display: none; }
+.cta__closed-lead {
+  margin: 0; max-width: 40ch; text-align: center;
+  font-size: var(--fs-body); line-height: 1.9; color: var(--cream);
+}
+.cta__closed-note {
+  margin: 0; max-width: 40ch; text-align: center;
+  font-size: var(--fs-small); line-height: 1.8; color: var(--sage);
+}
+.site-header__closed {
+  padding: 9px 22px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--sage) 45%, transparent);
+  font-size: 0.8125rem; font-weight: 600; color: var(--sage);
+}
+.site-header__closed[hidden] { display: none; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
   .split, .split--reverse { flex-direction: column; text-align: center; }

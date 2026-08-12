@@ -792,6 +792,15 @@ a { color: inherit; }
   box-shadow: 0 10px 30px rgba(197, 90, 59, 0.28);
 }
 .meguri-cta__button:hover { background: #a9482f; transform: translateY(-2px); box-shadow: 0 14px 36px rgba(197, 90, 59, 0.36); }
+/* After the sale closes the link still leads to MEGURI, but as an explanation
+   rather than a purchase — so it stops shouting. */
+.meguri-cta__button--quiet {
+  background: none; box-shadow: none;
+  border: 1px solid color-mix(in srgb, var(--dark-text) 45%, transparent);
+  color: var(--dark-text);
+}
+.meguri-cta__button--quiet:hover { background: color-mix(in srgb, var(--dark-text) 12%, transparent); box-shadow: none; }
+[data-sale][hidden] { display: none !important; }
 .meguri-cta__sub {
   margin: clamp(18px, 2.4vw, 26px) 0 0;
   font-size: var(--fs-note);

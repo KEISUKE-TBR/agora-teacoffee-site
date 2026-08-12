@@ -51,7 +51,8 @@
   </a>
   <nav class="site-header__nav" aria-label="MEGURIナビゲーション">
     <a href="../">← サイトトップ</a>
-    <a class="site-header__cta" href="https://square.link/u/Sw8IEBeE" target="_blank" rel="noopener">購入する</a>
+    <a class="site-header__cta" data-sale="open" href="https://square.link/u/Sw8IEBeE" target="_blank" rel="noopener">購入する</a>
+    <span class="site-header__closed" data-sale="closed" hidden>受付終了</span>
   </nav>
 </header>
 
@@ -179,21 +180,37 @@
 
   <!-- 07 CTA -->
   <section class="section cta" id="cta">
-    <h2 class="reveal">あなたの一杯を、<br>今日、贈りませんか。</h2>
-    <div class="cta__stats reveal" data-delay="1">
-      <div class="cta__stat">
-        <p class="cta__stat-label">受付期間</p>
-        <p class="cta__stat-value">〜 8月13日（木）</p>
+    <!-- Two states. JS swaps them once the deadline passes; see MEGURI_DEADLINE
+         in script.js. Sale state ships visible so the page is correct without JS. -->
+    <div data-sale="open">
+      <h2 class="reveal">あなたの一杯を、<br>今日、贈りませんか。</h2>
+      <div class="cta__stats reveal" data-delay="1">
+        <div class="cta__stat">
+          <p class="cta__stat-label">受付期間</p>
+          <p class="cta__stat-value">〜 8月13日（木）</p>
+        </div>
+        <span class="cta__divider" aria-hidden="true"></span>
+        <div class="cta__stat">
+          <p class="cta__stat-label">価格</p>
+          <p class="cta__stat-value">1杯　800円</p>
+        </div>
       </div>
-      <span class="cta__divider" aria-hidden="true"></span>
-      <div class="cta__stat">
-        <p class="cta__stat-label">価格</p>
-        <p class="cta__stat-value">1杯　800円</p>
-      </div>
+      <img class="cta__qr reveal" data-delay="2" src="assets/img/imgCheckoutLinkQrCode1.png" alt="購入ページのQRコード">
+      <!-- Square決済リンク（確定済み） -->
+      <a class="cta__button reveal" data-delay="3" href="https://square.link/u/Sw8IEBeE" target="_blank" rel="noopener">購入する →</a>
     </div>
-    <img class="cta__qr reveal" data-delay="2" src="assets/img/imgCheckoutLinkQrCode1.png" alt="購入ページのQRコード">
-    <!-- Square決済リンク（確定済み） -->
-    <a class="cta__button reveal" data-delay="3" href="https://square.link/u/Sw8IEBeE" target="_blank" rel="noopener">購入する →</a>
+
+    <div data-sale="closed" hidden>
+      <h2 class="reveal">チケットの受付は<br>終了しました。</h2>
+      <p class="cta__closed-lead reveal" data-delay="1">
+        たくさんのご参加をありがとうございました。<br>
+        贈られた一杯は、8月16日の出店で現地の方へ手渡されます。
+      </p>
+      <p class="cta__closed-note reveal" data-delay="2">
+        ご購入いただいた方には、後日その場で撮った写真とお礼のメッセージをお届けします。
+      </p>
+    </div>
+
     <p class="cta__note reveal" data-delay="4">※ MEGURI はキッチンカー出店時限定の企画です。</p>
   </section>
 
