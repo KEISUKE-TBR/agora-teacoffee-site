@@ -1062,3 +1062,53 @@ a { color: inherit; }
   transition: opacity 0.2s;
 }
 .shop-note__link:hover { opacity: 0.7; }
+
+/* ============ Online store（トップ：出店がないあいだの受け皿） ============ */
+.store { background: var(--paper-2); }
+.store__item {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 5vw, 56px);
+  max-width: 780px;
+  margin: 0 auto;
+  padding: clamp(24px, 4vw, 40px);
+  background: var(--paper);
+  border-radius: 16px;
+}
+.store__media { flex: 0 0 clamp(150px, 32%, 260px); margin: 0; }
+.store__media img {
+  width: 100%; height: auto; display: block;
+  mix-blend-mode: multiply;   /* 商品写真の白背景を、下の紙色になじませる */
+}
+.store__body { flex: 1; min-width: 0; }
+.store__label {
+  margin: 0 0 10px;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: 0.68rem; letter-spacing: 0.16em; color: var(--sunset);
+}
+.store__name {
+  margin: 0 0 2px;
+  font-size: clamp(1.05rem, 2vw, 1.3rem); font-weight: 700; color: var(--ink);
+}
+.store__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe); }
+.store__text { margin: 0 0 18px; font-size: var(--fs-body); line-height: 1.85; color: var(--ink-soft); }
+.store__link {
+  display: inline-block;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: var(--fs-note); letter-spacing: 0.04em;
+  color: var(--sunset);
+  border-bottom: 1px solid color-mix(in srgb, var(--sunset) 45%, transparent);
+  padding-bottom: 2px;
+  transition: opacity 0.2s;
+}
+.store__link:hover { opacity: 0.7; }
+.store__coming {
+  max-width: 780px;
+  margin: clamp(20px, 3vw, 28px) auto 0;
+  text-align: center;
+  font-size: var(--fs-note); line-height: 1.9; color: var(--ink-soft);
+}
+@media (max-width: 560px) {
+  .store__item { flex-direction: column; text-align: center; }
+  .store__media { flex: none; width: min(200px, 62%); }
+}
