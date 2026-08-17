@@ -1001,3 +1001,51 @@ a { color: inherit; }
 .taste__dots { display: flex; gap: 5px; }
 .taste__dot { width: 9px; height: 9px; border-radius: 999px; background: var(--border-strong); }
 .taste__dot.filled { background: var(--accent, var(--sunset)); }
+
+/* ============ Schedule page (/schedule/) ============ */
+/* 出店予定と、これまでの出店の記録をまとめたページ。
+   一覧そのものはトップと同じ .schedule__* を使い、ここでは差分だけを足す。 */
+.schedule-page { background: var(--paper); }
+.section__head--sub { margin-top: clamp(48px, 7vw, 80px); }
+
+/* 過去の出店。予定と同じ見た目だと今の情報に見えるので、少し落ち着かせる */
+.schedule__list--past .schedule__day { color: var(--ink-soft); }
+.schedule__list--past .schedule__month { color: var(--taupe); }
+
+/* 会場変更の経緯など、その日の補足 */
+.schedule__note {
+  margin: 10px 0 0;
+  font-size: var(--fs-note);
+  line-height: 1.9;
+  color: var(--ink-soft);
+  padding-left: 12px;
+  border-left: 2px solid var(--border-strong);
+}
+
+/* 出店がないあいだの受け皿（オンラインストアへの案内） */
+.shop-note {
+  margin-top: clamp(16px, 2.4vw, 24px);
+  padding: clamp(24px, 4vw, 36px);
+  background: var(--paper-2);
+  border-radius: 14px;
+  text-align: center;
+}
+.shop-note__title {
+  margin: 0 0 10px;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+}
+.shop-note__body {
+  margin: 0 0 16px;
+  font-size: var(--fs-body); line-height: 1.8; color: var(--ink-soft);
+}
+.shop-note__link {
+  display: inline-block;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: var(--fs-note); letter-spacing: 0.04em;
+  color: var(--sunset);
+  border-bottom: 1px solid color-mix(in srgb, var(--sunset) 45%, transparent);
+  padding-bottom: 2px;
+  transition: opacity 0.2s;
+}
+.shop-note__link:hover { opacity: 0.7; }

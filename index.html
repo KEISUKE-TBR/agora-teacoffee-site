@@ -141,7 +141,7 @@
   <nav class="nav" aria-label="メインナビゲーション">
     <a href="story/">STORY</a>
     <a href="menu/">MENU</a>
-    <a href="#schedule">SCHEDULE</a>
+    <a href="schedule/">SCHEDULE</a>
     <a href="meguri/">MEGURI</a>
     <a href="#social">SNS</a>
   </nav>
@@ -252,13 +252,36 @@
         <span class="schedule__tag">キッチンカー</span>
       </li>
     </ul>
-    <!-- Shown once the listed dates are past; see EVENTS_END in script.js -->
-    <div class="schedule__next" data-events="past" hidden>
-      <p class="schedule__next-title">次回の出店</p>
-      <p class="schedule__next-body">
-        次回の出店情報は、決まり次第このページと Instagram / X でお知らせします。
-      </p>
+    <!-- Shown once the listed dates are past; see EVENTS_END in sale-state.js -->
+    <div data-events="past" hidden>
+      <div class="schedule__next">
+        <p class="schedule__next-title">次回の出店</p>
+        <p class="schedule__next-body">
+          次回の出店は未定です。決まり次第、このページと Instagram / X でお知らせします。
+        </p>
+      </div>
+      <ul class="schedule__list schedule__list--past">
+        <li class="schedule__item reveal">
+          <div class="schedule__date"><span class="schedule__month">AUG</span><span class="schedule__day">16</span><span class="schedule__dow">SUN</span></div>
+          <div class="schedule__info">
+            <p class="schedule__event">MAKUHARI NEIGHBORHOOD DOCK 横</p>
+            <p class="schedule__place">千葉市美浜区 ／ 幕張ベイパーク</p>
+          </div>
+          <span class="schedule__tag">出店済み</span>
+        </li>
+        <li class="schedule__item reveal" data-delay="1">
+          <div class="schedule__date"><span class="schedule__month">AUG</span><span class="schedule__day">15</span><span class="schedule__dow">SAT</span></div>
+          <div class="schedule__info">
+            <p class="schedule__event">稲毛海浜公園 記念館周辺</p>
+            <p class="schedule__place">千葉市美浜区 ／ 稲毛海浜公園</p>
+          </div>
+          <span class="schedule__tag">出店済み</span>
+        </li>
+      </ul>
     </div>
+    <p class="menu__more reveal">
+      <a class="menu__more-link" href="schedule/">出店の記録をすべて見る　→</a>
+    </p>
   </section>
 
   <!-- ============ MEGURI（恩送りチケット）emotional CTA ============ -->
