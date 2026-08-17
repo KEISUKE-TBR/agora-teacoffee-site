@@ -1028,7 +1028,20 @@ a { color: inherit; }
   padding: clamp(24px, 4vw, 36px);
   background: var(--paper-2);
   border-radius: 14px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 4vw, 40px);
+}
+.shop-note__media { flex: 0 0 clamp(140px, 26%, 220px); margin: 0; }
+.shop-note__media img {
+  width: 100%; height: auto; display: block;
+  mix-blend-mode: multiply;   /* 商品写真の白背景を、下の紙色になじませる */
+}
+.shop-note__body-col { flex: 1; min-width: 0; }
+/* 写真が横に並ぶぶん、文章は左揃えのほうが読みやすい */
+@media (max-width: 560px) {
+  .shop-note { flex-direction: column; text-align: center; }
+  .shop-note__media { flex: none; width: min(200px, 60%); }
 }
 .shop-note__title {
   margin: 0 0 10px;
