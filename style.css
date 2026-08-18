@@ -14,6 +14,7 @@
   --dark-text: #EDEBE2;
   --dark-muted: #9aa19b;
   --dark-accent: #C9CF9E;
+  --apricot: #E8A87C;      /* 暗面のアクセント（応援セットのサムネイル等） */
   /* Signature accents */
   --sunset: #C55A3B;       /* primary signature */
   --herbal: #5F7A54;
@@ -1112,3 +1113,69 @@ a { color: inherit; }
   .store__item { flex-direction: column; text-align: center; }
   .store__media { flex: none; width: min(200px, 62%); }
 }
+
+/* ============ 応援セット ============ */
+.support { background: var(--paper); }
+.support__lead {
+  max-width: 60ch;
+  margin: 0 auto clamp(36px, 6vw, 56px);
+  text-align: center;
+}
+.support__lead p { margin: 0 0 12px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
+.support__lead p:last-child { margin-bottom: 0; }
+
+.support__grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(20px, 2.4vw, 28px);
+}
+.support__card {
+  display: flex; flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* サムネイル。画像自体が深緑の背景を持つので、枠の色は読み込み前の下地として置いている */
+.support__thumb {
+  margin: 0;
+  aspect-ratio: 1 / 1;
+  background: var(--dark);
+}
+.support__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.support__body { flex: 1; display: flex; flex-direction: column; padding: clamp(18px, 2vw, 24px); }
+.support__name { margin: 0 0 6px; font-size: 1.05rem; font-weight: 700; color: var(--ink); }
+.support__price {
+  margin: 0 0 14px;
+  font-family: var(--font-num); font-weight: 600;
+  font-size: 1.35rem; color: var(--ink);
+}
+.support__items { margin: 0 0 10px; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
+.support__copy { margin: 0 0 14px; font-size: var(--fs-note); line-height: 1.85; color: var(--ink-soft); }
+/* 中身と金額の対応。カードの高さがそろうよう、CTAの直前で余白を吸わせる */
+.support__value {
+  margin: 0 0 16px auto; padding-top: 12px;
+  border-top: 1px solid var(--border);
+  width: 100%;
+  font-size: 0.7rem; letter-spacing: 0.02em; color: var(--taupe);
+}
+.support__cta {
+  display: block; text-align: center; text-decoration: none;
+  padding: 14px 16px; border-radius: 8px;
+  background: var(--sunset); color: #fff;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: 0.95rem; letter-spacing: 0.06em;
+  transition: opacity 0.2s;
+}
+.support__cta:hover { opacity: 0.88; }
+.support__cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.support__stock {
+  margin: 10px 0 0; text-align: center;
+  font-size: 0.68rem; letter-spacing: 0.04em; color: var(--taupe);
+}
+
+@media (max-width: 960px) { .support__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .support__grid { grid-template-columns: 1fr; } }
