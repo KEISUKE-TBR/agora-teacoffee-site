@@ -167,20 +167,21 @@
       <p class="hero__note reveal" data-delay="3">
         いつかまちに根ざしたカフェを開くために、いまは一台のキッチンカーから。
       </p>
-      <p class="hero__cta-row reveal" data-delay="4">
-        <a class="hero__cta" href="#support">A.G.O.R.A. 応援セット、販売中　→</a>
+      <p class="hero__cta-row reveal" data-delay="4" data-support="open">
+        <a class="hero__cta" href="#support">A.G.O.R.A. 応援セット、8月31日まで　→</a>
       </p>
     </div>
     <div class="hero__scroll-cue" aria-hidden="true"><span></span></div>
   </section>
 
   <!-- ============ 応援セット ============ -->
-  <!-- サムネイルは支給待ち。.support__thumb に <img> を入れれば、
-       同じ枠のままプレースホルダーと差し替わる。 -->
+  <!-- 受付は 8/31 まで。期限は sale-state.js の SUPPORT_DEADLINE で管理していて、
+       9/1 以降はカードが消え、終了の案内に切り替わる。 -->
   <section class="section support" id="support">
     <div class="section__head">
       <p class="section__eyebrow reveal">SUPPORT SET</p>
       <h2 class="section__title reveal">A.G.O.R.A. 応援セット</h2>
+      <p class="section__note reveal" data-delay="1" data-support="open">8月31日まで／数量限定</p>
     </div>
 
     <div class="support__lead reveal" data-delay="1">
@@ -188,7 +189,11 @@
       <p>売上は、次回の出店費用とキッチンカー購入の資金にあてさせていただきます。</p>
     </div>
 
-    <ul class="support__grid">
+    <div class="support__closed" data-support="closed" hidden>
+      <p>応援セットの受付は終了しました。<br>お求めいただいた皆さま、ありがとうございました。</p>
+    </div>
+
+    <ul class="support__grid" data-support="open">
       <li class="support__card reveal">
         <figure class="support__thumb"><img src="assets/img/s.png" alt="A.G.O.R.A. 応援セット【S】" loading="lazy" width="1080" height="1080"></figure>
         <div class="support__body">
@@ -198,7 +203,7 @@
           <p class="support__copy">秋の夜長に。香るほうじ茶と、ごはんが進む肉味噌。</p>
           <p class="support__value">商品合計 2,105円分 + 応援分 895円</p>
           <a class="support__cta" href="https://square.link/u/6Z8B94MR" target="_blank" rel="noopener">購入する</a>
-          <p class="support__stock">数量限定・なくなり次第終了</p>
+          <p class="support__stock">8月31日まで・なくなり次第終了</p>
         </div>
       </li>
       <li class="support__card reveal" data-delay="1">
@@ -210,7 +215,7 @@
           <p class="support__copy">秋のホットティーのために選んだ保温マグを添えて。</p>
           <p class="support__value">商品合計 4,998円分</p>
           <a class="support__cta" href="https://square.link/u/16dJZuxV" target="_blank" rel="noopener">購入する</a>
-          <p class="support__stock">数量限定・なくなり次第終了</p>
+          <p class="support__stock">8月31日まで・なくなり次第終了</p>
         </div>
       </li>
       <li class="support__card reveal" data-delay="2">
@@ -222,7 +227,7 @@
           <p class="support__copy">どちらも瀬戸内のレモンから。8月に最も反応が良かった一杯を、ご自宅でも。</p>
           <p class="support__value">商品合計 8,440円分</p>
           <a class="support__cta" href="https://square.link/u/dxqc7FA2" target="_blank" rel="noopener">購入する</a>
-          <p class="support__stock">数量限定・なくなり次第終了</p>
+          <p class="support__stock">8月31日まで・なくなり次第終了</p>
         </div>
       </li>
       <li class="support__card reveal" data-delay="3">
@@ -234,7 +239,7 @@
           <p class="support__copy">いま一番おすすめできるものを、すべて詰め合わせました。</p>
           <p class="support__value">商品合計 17,659円分</p>
           <a class="support__cta" href="https://square.link/u/m9jKxUeQ" target="_blank" rel="noopener">購入する</a>
-          <p class="support__stock">数量限定・なくなり次第終了</p>
+          <p class="support__stock">8月31日まで・なくなり次第終了</p>
         </div>
       </li>
     </ul>

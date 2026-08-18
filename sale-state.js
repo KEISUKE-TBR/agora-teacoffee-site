@@ -10,6 +10,8 @@
 var MEGURI_DEADLINE = new Date("2026-08-14T00:00:00+09:00");
 // The listed appearances (8/15, 8/16) are over after this.
 var EVENTS_END = new Date("2026-08-17T00:00:00+09:00");
+// Support sets are offered through the end of 2026-08-31 JST.
+var SUPPORT_DEADLINE = new Date("2026-09-01T00:00:00+09:00");
 
 // Preview helper: ?now=2026-08-14 renders the page as if it were that date, so
 // the later states can be checked before they go live. Display only.
@@ -34,5 +36,12 @@ function siteNow() {
   var past = now >= EVENTS_END;
   document.querySelectorAll("[data-events]").forEach(function (el) {
     el.hidden = (el.dataset.events === "past") !== past;
+  });
+
+  // Past the deadline the cards come down entirely, rather than leaving buy
+  // buttons that would still take payment through Square.
+  var supportOver = now >= SUPPORT_DEADLINE;
+  document.querySelectorAll("[data-support]").forEach(function (el) {
+    el.hidden = (el.dataset.support === "closed") !== supportOver;
   });
 })();

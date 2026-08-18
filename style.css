@@ -1192,3 +1192,10 @@ a { color: inherit; }
 }
 .hero__cta:hover { opacity: 0.88; }
 .hero__cta:focus-visible { outline: 2px solid var(--dark-text); outline-offset: 3px; }
+/* 受付終了後に出す案内（sale-state.js が data-support で切り替える） */
+.support__closed {
+  max-width: 60ch; margin: 0 auto;
+  padding: clamp(28px, 4vw, 40px);
+  background: var(--paper-2); border-radius: 14px; text-align: center;
+}
+.support__closed p { margin: 0; font-size: var(--fs-body); line-height: 1.9; color: var(--ink-soft); }
