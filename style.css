@@ -1199,3 +1199,13 @@ a { color: inherit; }
   background: var(--paper-2); border-radius: 14px; text-align: center;
 }
 .support__closed p { margin: 0; font-size: var(--fs-body); line-height: 1.9; color: var(--ink-soft); }
+/* 発送時期の注記。買う前に必ず目に入るよう、リード文の末尾に置いている */
+.support__shipping {
+  margin-top: 16px !important;
+  padding: 12px 18px;
+  display: inline-block;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: var(--fs-note) !important;
+  color: var(--ink) !important;
+}
