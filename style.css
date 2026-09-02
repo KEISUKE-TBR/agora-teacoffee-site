@@ -1025,95 +1025,98 @@ a { color: inherit; }
   border-left: 2px solid var(--border-strong);
 }
 
-/* 出店がないあいだの受け皿（オンラインストアへの案内） */
+/* 出店がないあいだの受け皿（オンラインストアへの案内）。
+   角丸の囲みはやめ、上に細い罫線を引くだけにして、ページ全体の編集的なリズムにそろえる。 */
 .shop-note {
-  margin-top: clamp(16px, 2.4vw, 24px);
-  padding: clamp(24px, 4vw, 36px);
-  background: var(--paper-2);
-  border-radius: 14px;
+  margin-top: clamp(44px, 7vw, 68px);
+  padding-top: clamp(28px, 4vw, 40px);
+  border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: clamp(20px, 4vw, 40px);
+  gap: clamp(24px, 5vw, 52px);
 }
-.shop-note__media { flex: 0 0 clamp(140px, 26%, 220px); margin: 0; }
+.shop-note__media { flex: 0 0 clamp(130px, 25%, 190px); margin: 0; }
 .shop-note__media img {
   width: 100%; height: auto; display: block;
   mix-blend-mode: multiply;   /* 商品写真の白背景を、下の紙色になじませる */
 }
 .shop-note__body-col { flex: 1; min-width: 0; }
-/* 写真が横に並ぶぶん、文章は左揃えのほうが読みやすい */
-@media (max-width: 560px) {
-  .shop-note { flex-direction: column; text-align: center; }
-  .shop-note__media { flex: none; width: min(200px, 60%); }
-}
 .shop-note__title {
-  margin: 0 0 10px;
-  font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+  margin: 0 0 12px;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.22em; color: var(--sunset);
 }
 .shop-note__body {
   margin: 0 0 16px;
-  font-size: var(--fs-body); line-height: 1.8; color: var(--ink-soft);
+  font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft);
 }
 .shop-note__link {
-  display: inline-block;
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
   color: var(--sunset);
-  border-bottom: 1px solid color-mix(in srgb, var(--sunset) 45%, transparent);
-  padding-bottom: 2px;
+  text-decoration: none;
   transition: opacity 0.2s;
 }
 .shop-note__link:hover { opacity: 0.7; }
+@media (max-width: 560px) {
+  .shop-note { flex-direction: column; }
+  .shop-note__media { flex: none; width: min(190px, 58%); }
+  .shop-note__body-col { width: 100%; }
+}
 
-/* ============ Online store（トップ：出店がないあいだの受け皿） ============ */
+/* ============ Online store（トップ：出店がないあいだの受け皿） ============
+   白い角丸カードに収める案は既存の世界観（罫線と余白で区切る編集的なレイアウト）から
+   浮いていたため撤回。商品写真は紙の上に直接置き、見出しは他セクションと同じ明朝にそろえる。 */
 .store { background: var(--paper-2); }
 .store__item {
   display: flex;
   align-items: center;
-  gap: clamp(24px, 5vw, 56px);
-  max-width: 780px;
+  gap: clamp(28px, 6vw, 72px);
+  max-width: 820px;
   margin: 0 auto;
-  padding: clamp(24px, 4vw, 40px);
-  background: var(--paper);
-  border-radius: 16px;
 }
-.store__media { flex: 0 0 clamp(150px, 32%, 260px); margin: 0; }
+.store__media { flex: 0 0 clamp(160px, 34%, 280px); margin: 0; }
 .store__media img {
   width: 100%; height: auto; display: block;
   mix-blend-mode: multiply;   /* 商品写真の白背景を、下の紙色になじませる */
 }
 .store__body { flex: 1; min-width: 0; }
 .store__label {
-  margin: 0 0 10px;
-  font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.68rem; letter-spacing: 0.16em; color: var(--sunset);
+  margin: 0 0 14px;
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.22em;
+  color: var(--sunset);
 }
 .store__name {
-  margin: 0 0 2px;
-  font-size: clamp(1.05rem, 2vw, 1.3rem); font-weight: 700; color: var(--ink);
+  margin: 0 0 4px;
+  font-family: var(--font-mincho);
+  font-weight: 300; /* Ryumin Pr6N は 300 のみ配信 */
+  font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+  letter-spacing: 0.04em;
+  color: var(--ink);
 }
-.store__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe); }
-.store__text { margin: 0 0 18px; font-size: var(--fs-body); line-height: 1.85; color: var(--ink-soft); }
+.store__sub { margin: 0 0 16px; font-size: var(--fs-note); color: var(--taupe); }
+.store__text { margin: 0 0 20px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
+/* リンクはスケジュール欄と同じ「太字＋矢印」の言語にそろえる（下線・囲みは使わない） */
 .store__link {
-  display: inline-block;
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
   color: var(--sunset);
-  border-bottom: 1px solid color-mix(in srgb, var(--sunset) 45%, transparent);
-  padding-bottom: 2px;
+  text-decoration: none;
   transition: opacity 0.2s;
 }
 .store__link:hover { opacity: 0.7; }
 .store__coming {
-  max-width: 780px;
-  margin: clamp(20px, 3vw, 28px) auto 0;
-  text-align: center;
-  font-size: var(--fs-note); line-height: 1.9; color: var(--ink-soft);
+  max-width: 820px;
+  margin: clamp(40px, 6vw, 64px) auto 0;
+  padding-top: clamp(20px, 3vw, 28px);
+  border-top: 1px solid var(--border-strong);
+  font-size: var(--fs-note); line-height: 2; color: var(--ink-soft);
 }
 @media (max-width: 560px) {
-  .store__item { flex-direction: column; text-align: center; }
-  .store__media { flex: none; width: min(200px, 62%); }
+  .store__item { flex-direction: column; }
+  .store__media { flex: none; width: min(210px, 62%); }
+  .store__body { width: 100%; }
 }
 
 
