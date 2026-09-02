@@ -801,7 +801,9 @@ a { color: inherit; }
   color: var(--dark-text);
 }
 .meguri-cta__button--quiet:hover { background: color-mix(in srgb, var(--dark-text) 12%, transparent); box-shadow: none; }
-[data-sale][hidden], [data-events][hidden] { display: none !important; }
+/* hidden属性は、display 指定を持つ要素でも必ず勝たせる。
+   （.support__grid の display:grid が hidden を上書きし、販売終了後もカードが見え続けた事故の再発防止） */
+[hidden] { display: none !important; }
 
 .schedule__next {
   padding: clamp(24px, 4vw, 36px);
@@ -1114,94 +1116,4 @@ a { color: inherit; }
   .store__media { flex: none; width: min(200px, 62%); }
 }
 
-/* ============ 応援セット ============ */
-.support { background: var(--paper); }
-.support__lead {
-  max-width: 60ch;
-  margin: 0 auto clamp(36px, 6vw, 56px);
-  text-align: center;
-}
-.support__lead p { margin: 0 0 12px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
-.support__lead p:last-child { margin-bottom: 0; }
 
-.support__grid {
-  list-style: none; margin: 0; padding: 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: clamp(20px, 2.4vw, 28px);
-}
-.support__card {
-  display: flex; flex-direction: column;
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-/* サムネイル。画像自体が深緑の背景を持つので、枠の色は読み込み前の下地として置いている */
-.support__thumb {
-  margin: 0;
-  aspect-ratio: 1 / 1;
-  background: var(--dark);
-}
-.support__thumb img { width: 100%; height: 100%; object-fit: cover; }
-
-.support__body { flex: 1; display: flex; flex-direction: column; padding: clamp(18px, 2vw, 24px); }
-.support__name { margin: 0 0 6px; font-size: 1.05rem; font-weight: 700; color: var(--ink); }
-.support__price {
-  margin: 0 0 14px;
-  font-family: var(--font-num); font-weight: 600;
-  font-size: 1.35rem; color: var(--ink);
-}
-.support__items { margin: 0 0 10px; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
-.support__copy { margin: 0 0 14px; font-size: var(--fs-note); line-height: 1.85; color: var(--ink-soft); }
-/* 中身と金額の対応。カードの高さがそろうよう、CTAの直前で余白を吸わせる */
-.support__value {
-  margin: 0 0 16px auto; padding-top: 12px;
-  border-top: 1px solid var(--border);
-  width: 100%;
-  font-size: 0.7rem; letter-spacing: 0.02em; color: var(--taupe);
-}
-.support__cta {
-  display: block; text-align: center; text-decoration: none;
-  padding: 14px 16px; border-radius: 8px;
-  background: var(--sunset); color: #fff;
-  font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.95rem; letter-spacing: 0.06em;
-  transition: opacity 0.2s;
-}
-.support__cta:hover { opacity: 0.88; }
-.support__cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.support__stock {
-  margin: 10px 0 0; text-align: center;
-  font-size: 0.68rem; letter-spacing: 0.04em; color: var(--taupe);
-}
-
-@media (max-width: 960px) { .support__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 520px) { .support__grid { grid-template-columns: 1fr; } }
-
-/* ヒーローから応援セットへの導線。ポップアップの代わりに、最初の画面から1タップで届かせる */
-.hero__cta-row { margin: clamp(22px, 3vw, 30px) 0 0; }
-.hero__cta {
-  display: inline-flex; align-items: center;
-  padding: 14px 26px; border-radius: 999px;
-  background: var(--sunset); color: #fff; text-decoration: none;
-  font-family: var(--font-sans); font-weight: 700;
-  font-size: var(--fs-note); letter-spacing: 0.06em;
-  transition: opacity 0.2s;
-}
-.hero__cta:hover { opacity: 0.88; }
-.hero__cta:focus-visible { outline: 2px solid var(--dark-text); outline-offset: 3px; }
-/* 受付終了後に出す案内（sale-state.js が data-support で切り替える） */
-.support__closed {
-  max-width: 60ch; margin: 0 auto;
-  padding: clamp(28px, 4vw, 40px);
-  background: var(--paper-2); border-radius: 14px; text-align: center;
-}
-.support__closed p { margin: 0; font-size: var(--fs-body); line-height: 1.9; color: var(--ink-soft); }
-
-/* 入荷待ちの品を含むセットにだけ出す発送時期の注記（補足テキストと同じ扱い） */
-.support__ship {
-  margin: 6px 0 0; text-align: center;
-  font-size: 0.68rem; line-height: 1.7; color: var(--taupe);
-}
