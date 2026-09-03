@@ -1120,3 +1120,18 @@ a { color: inherit; }
 }
 
 
+
+/* 商品ページとストア全体、2本のリンクを横に並べる（スケジュール欄の2リンクと同じ形） */
+.store__links, .shop-note__links {
+  display: flex; flex-wrap: wrap;
+  gap: 8px clamp(18px, 3vw, 28px);
+}
+
+/* フッターの運営元表記。SNSより一段控えめに、でも辿れるように */
+.footer__op { margin: clamp(16px, 2.4vw, 28px) 0 0; font-size: var(--fs-note); }
+.footer__op a {
+  color: var(--dark-muted);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+.footer__op a:hover { color: var(--dark-text); }
