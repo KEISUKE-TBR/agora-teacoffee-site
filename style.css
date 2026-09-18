@@ -1135,3 +1135,90 @@ a { color: inherit; }
   transition: color 0.25s ease;
 }
 .footer__op a:hover { color: var(--dark-text); }
+
+/* ============ お茶とドーナツBOX（数量限定・期限なし） ============
+   ストア欄と同じく白い箱のカードにはせず、写真・明朝の品名・罫線で区切る編集的な並べ方にする。
+   商品写真そのものが色面を持つので、写真は角丸で切り出すだけにとどめる。 */
+.autumn { background: var(--paper); }
+.autumn__grid {
+  list-style: none; margin: 0 auto; padding: 0;
+  max-width: 880px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(36px, 6vw, 64px);
+}
+.autumn__item { display: flex; flex-direction: column; min-width: 0; }
+.autumn__media { position: relative; margin: 0 0 clamp(18px, 2.4vw, 24px); }
+.autumn__media img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 1 / 1; object-fit: cover;
+  border-radius: 14px;
+}
+/* 6種BOXだけにつく数量の目印。写真の左上に小さく */
+.autumn__badge {
+  position: absolute; top: 12px; left: 12px;
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--sunset); color: #fff;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.08em;
+}
+.autumn__name {
+  margin: 0 0 6px;
+  font-family: var(--font-mincho);
+  font-weight: 300; /* Ryumin Pr6N は 300 のみ配信 */
+  font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+.autumn__name span {
+  display: block; margin-top: 4px;
+  font-family: var(--font-sans); font-weight: 500;
+  font-size: var(--fs-note); letter-spacing: 0.06em;
+  color: var(--taupe);
+}
+.autumn__price {
+  margin: 0 0 12px;
+  font-family: var(--font-num); font-weight: 600;
+  font-size: 1.3rem; color: var(--ink);
+}
+.autumn__items {
+  margin: 0 0 20px; padding-top: 12px;
+  border-top: 1px solid var(--border-strong);
+  font-size: var(--fs-note); line-height: 1.9; color: var(--ink-soft);
+}
+/* 購入先へのボタン。カードの高さがそろうよう、下に寄せる */
+.autumn__cta {
+  margin-top: auto;
+  display: block; text-align: center; text-decoration: none;
+  padding: 14px 16px; min-height: 48px; border-radius: 999px;
+  background: var(--sunset); color: #fff;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: 0.9rem; letter-spacing: 0.06em;
+  transition: opacity 0.2s;
+}
+.autumn__cta:hover { opacity: 0.88; }
+.autumn__cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.autumn__foot {
+  max-width: 880px;
+  margin: clamp(40px, 6vw, 60px) auto 0;
+  padding-top: clamp(20px, 3vw, 28px);
+  border-top: 1px solid var(--border-strong);
+}
+.autumn__foot p { margin: 0; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
+.autumn__foot .autumn__fine { margin-top: 10px; font-size: 0.72rem; line-height: 1.9; color: var(--taupe); }
+@media (max-width: 600px) {
+  .autumn__grid { grid-template-columns: 1fr; }
+}
+
+/* ヒーローからBOXへの導線。最初の画面から1タップで届かせる */
+.hero__cta-row { margin: clamp(22px, 3vw, 30px) 0 0; }
+.hero__cta {
+  display: inline-flex; align-items: center;
+  min-height: 44px; padding: 12px 26px; border-radius: 999px;
+  background: var(--sunset); color: #fff; text-decoration: none;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: var(--fs-note); letter-spacing: 0.06em;
+  transition: opacity 0.2s;
+}
+.hero__cta:hover { opacity: 0.88; }
+.hero__cta:focus-visible { outline: 2px solid var(--dark-text); outline-offset: 3px; }
