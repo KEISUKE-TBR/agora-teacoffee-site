@@ -1198,14 +1198,30 @@ a { color: inherit; }
 }
 .autumn__cta:hover { opacity: 0.88; }
 .autumn__cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.autumn__foot {
+/* つくり手の紹介。ドーナツは UPBEET!Tokyo のものなので、名前とサイトへの導線をはっきり置く */
+.autumn__maker {
   max-width: 880px;
-  margin: clamp(40px, 6vw, 60px) auto 0;
-  padding-top: clamp(20px, 3vw, 28px);
+  margin: clamp(48px, 7vw, 72px) auto 0;
+  padding: clamp(24px, 4vw, 36px) 0 0;
   border-top: 1px solid var(--border-strong);
 }
-.autumn__foot p { margin: 0; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
-.autumn__foot .autumn__fine { margin-top: 10px; font-size: 0.72rem; line-height: 1.9; color: var(--taupe); }
+.autumn__maker-label {
+  margin: 0 0 10px;
+  font-size: var(--fs-eyebrow); letter-spacing: 0.22em;
+  color: var(--sunset);
+}
+.autumn__maker-name {
+  margin: 0 0 12px;
+  font-family: var(--font-num); font-weight: 600;
+  font-size: clamp(1.2rem, 2vw, 1.4rem); letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.autumn__maker-text { margin: 0 0 16px; max-width: 60ch; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
+.autumn__fine {
+  max-width: 880px;
+  margin: clamp(28px, 4vw, 40px) auto 0;
+  font-size: 0.72rem; line-height: 1.9; color: var(--taupe);
+}
 @media (max-width: 600px) {
   .autumn__grid { grid-template-columns: 1fr; }
 }
