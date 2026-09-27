@@ -1238,3 +1238,19 @@ a { color: inherit; }
 }
 .hero__cta:hover { opacity: 0.88; }
 .hero__cta:focus-visible { outline: 2px solid var(--dark-text); outline-offset: 3px; }
+
+/* 発送遅延など、期間限定の運営からのお知らせ。「次回の出店」欄と同じ佇まいにそろえる */
+.site-notice {
+  max-width: 640px;
+  margin: 0 auto clamp(36px, 6vw, 56px);
+  padding: clamp(20px, 3.4vw, 30px);
+  background: var(--paper-2);
+  border-radius: 14px;
+  text-align: center;
+}
+.site-notice__title {
+  margin: 0 0 10px;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+}
+.site-notice__body { margin: 0; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
