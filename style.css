@@ -377,12 +377,15 @@ a { color: inherit; }
 }
 .story__body { display: flex; flex-direction: column; gap: 1.4em; }
 .story__body p { margin: 0; font-size: var(--fs-body); color: var(--ink-soft); }
-.story__sign {
+/* 詳細度を .story__body p（0,1,1）より上の 0,2,0 に揃える。以前は .story__sign 単体（0,1,0）で負けており、
+   font-size: 1.5rem が丸ごと捨てられて 16px で描かれていた。color に付いていた強制指定（important）は
+   その負けを color だけ無理に通していた跡で、詳細度を直したので不要。強制指定は足し直さないこと */
+.story__body .story__sign {
   font-family: var(--font-hand);
   font-size: 1.5rem;
-  line-height: var(--lh-heading);   /* 手書き署名。継承の 2.2 だと上下に余る（実効サイズは 16px：.story__body p のほうが詳細度が高く、下の font-size: 1.5rem は負けている） */
+  line-height: var(--lh-heading);   /* 手書き署名。継承の 2.2 だと上下に余る */
   letter-spacing: 0.02em;
-  color: var(--sunset-ink) !important;
+  color: var(--sunset-ink);
 }
 .story__cta {
   align-self: flex-start;
