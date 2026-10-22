@@ -51,7 +51,10 @@
   /* --- 影 ---
      純黒を使わない。黒い影は青みが出て面から浮く。インク色 #2b2b26 の rgba にする。
      none から生やすと補間されず反応が鈍く見えるので、平常時も薄く置く。
-     ホバーは alpha を1段だけ動かし、ぼかしと距離は据え置く */
+     ホバーは alpha を1段だけ動かし、ぼかしと距離は据え置く。
+     例外：深緑 --dark の面（にオーバーレイで暗くした面）の上に落とす影は、インクではなく --dark-deep #0f241f の rgba にする。
+     インク #2b2b26 は深緑と明るさが近く、暗い面に落とすと影が 65〜85% 弱くなって消える
+     （SPナビの下を実測：純黒 Δ(-7,-11,-9) → インク Δ(+2,-2,-1)。R は逆に明るくなる）。--dark-deep は深緑より暗いので影として働く。 */
   --shadow-rest:  0 10px 30px rgba(43, 43, 38, 0.10);
   --shadow-hover: 0 14px 36px rgba(43, 43, 38, 0.18);
 
@@ -582,16 +585,20 @@ a { color: inherit; }
   aspect-ratio: 1 / 1; /* matches the source photos so object-fit: cover crops nothing */
   background: var(--paper);
 }
-.sig-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+/* 写真の拡大は hover と focus-visible の両方で起きる。focus-visible はキーボード操作なので hover のゲートには入れない
+   （hover: none のタブレットに外付けキーボードをつなぐと、ここだけがゲートの外で効く）。
+   transition もこちらに置く：ゲートの中だと hover: none では宣言ごと無くなり、フォーカスで一瞬で切り替わる。
+   :hover の規則は下のゲートに残るので、タッチ端末でホバー状態が張り付くことは無い。
+   動きを止めるのは reduced-motion の --dur: 0s（下の @media (prefers-reduced-motion) ）が受け持つ */
+.sig-card__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur) var(--ease); }
 .sig-card:focus-visible .sig-card__photo img { transform: scale(1.05); }
 /* ホバーは「持ち上げる」方向に統一する：影を alpha 0.10 → 0.18 に濃くし、枠を alpha 0.4 まで出す。
    写真は枠（overflow: hidden）を固定して中身だけ拡大するので、レイアウトは動かない。
-   transition 宣言もゲートの中に置く（タッチ端末ではホバー状態が張り付かない）。
+   transition 宣言もゲートの中に置く（タッチ端末ではホバー状態が張り付かない）。写真の transition だけは上でゲートの外に出した。
    「詳しく」の文字は opacity で薄めず色を変える：opacity .7 だと白の上で 2.9〜3.0 まで落ちて 4.5 を割る
    （フッターの color-mix(…, transparent) と同じ失敗）。--ink（白の上で 14.23）に切り替える */
 @media (hover: hover) {
   .sig-card::after { transition: box-shadow var(--dur) var(--ease), border-color var(--dur-color) var(--ease); }
-  .sig-card__photo img { transition: transform var(--dur) var(--ease); }
   .sig-card__more { transition: color var(--dur-color) var(--ease); }
   .sig-card:hover::after {
     box-shadow: var(--shadow-hover);
@@ -601,7 +608,9 @@ a { color: inherit; }
   .sig-card:hover .sig-card__more { color: var(--ink); }
 }
 .sig-card:focus-visible { outline: none; }
-.sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor, var(--sunset)); outline-offset: 3px; }
+/* リングは面の色ではなく -ink。--flavor だと紙の上で lemon 2.95 / rose 3.00 になり、非テキストの 3:1（WCAG 1.4.11）を割る。
+   -ink は6色とも白の上で 5.21〜5.27 */
+.sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor-ink, var(--sunset-ink)); outline-offset: 3px; }
 .sig-card__body { display: flex; flex-direction: column; gap: 6px; }
 .sig-card__tag { font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--flavor-ink, var(--sunset-ink)); }
 .sig-card__name { font-family: var(--font-sans); font-weight: 700; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: var(--lh-display); color: var(--ink); }
@@ -644,7 +653,10 @@ a { color: inherit; }
   position: sticky; top: var(--header-h, 52px); z-index: 30;
   display: flex; gap: 8px; padding: 10px 14px;
   overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  /* 半透明で sticky なので、文字のコントラストは下をスクロールしてくる内容で変わる。
+     92% だと --ink-soft は 真っ黒の上で 4.19 / --dark の上で 4.32 と 4.5 を割った（mid-grey 4.60 / 白 5.03）。
+     97% なら最悪（真っ黒）でも 4.69、--dark の上で 4.75。ぼかし（blur）は据え置く */
+  background: color-mix(in srgb, var(--paper) 97%, transparent);
   backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
 }
 .catnav::-webkit-scrollbar { display: none; }
@@ -706,7 +718,7 @@ a { color: inherit; }
   .focus-card__photo img { transition: transform var(--dur) var(--ease); }
   .focus-card:hover .focus-card__photo img { transform: scale(1.05); }
 }
-.focus-card:focus-visible .focus-card__photo { outline: 2px solid var(--accent); outline-offset: 3px; }
+.focus-card:focus-visible .focus-card__photo { outline: 2px solid var(--accent-ink); outline-offset: 3px; }   /* 面の --accent は lemon 2.95 / rose 3.00 で 3:1 を割る */
 .focus-card__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); line-height: var(--lh-heading); color: var(--ink); }
 .focus-card__note { font-size: var(--fs-note); color: var(--ink-soft); }
 .focus-card__price { margin-top: 4px; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body); color: var(--ink-soft); }
@@ -719,7 +731,7 @@ a { color: inherit; }
   -webkit-tap-highlight-color: transparent;
 }
 .mrow--static { cursor: default; }
-.mrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.mrow:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; border-radius: 6px; }   /* 面の --accent は lemon 2.95 / rose 3.00 で 3:1 を割る */
 .mrow__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); color: var(--ink); line-height: var(--lh-heading); }
 .mrow__note { display: block; margin-top: 2px; font-weight: 400; font-size: var(--fs-note); color: var(--ink-soft); }
 .mrow__leader { flex: 1; min-width: 16px; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
@@ -768,7 +780,11 @@ a { color: inherit; }
 .schedule__month { font-family: var(--font-num); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.18em; color: var(--sunset-ink); }
 .schedule__day { font-family: var(--font-num); font-weight: 600; font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1; color: var(--ink); }
 .schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe-ink); margin-top: 2px; }
-.schedule__info { flex: 1; min-width: 0; }
+/* flex: 1 だけだと basis が 0 になり、info 列は「縮められるだけ縮む」ので折り返しが一度も発生しない
+   （下の 640px の flex-wrap: wrap は空振りしていた）。375px で info が 167px まで潰れ、
+   日付 64px と 2026 のタグを横に並べたまま、イベント名が3〜4行に割れていた。
+   basis に 12rem（192px）を持たせ、足りなければタグを下の行に落として、イベント名の行長を守る */
+.schedule__info { flex: 1 1 12rem; min-width: 0; }
 .schedule__event { margin: 0 0 4px; font-weight: 700; font-size: var(--fs-sub); line-height: var(--lh-heading); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .schedule__time {
@@ -860,10 +876,10 @@ a { color: inherit; }
   /* Soft, uneven feathered edge — several overlapping soft-edged blobs unioned
      together read as a bleeding/watercolor border rather than a hard crop. */
   /* mask-image が読むのは alpha だけ。下の不透明な色の RGB は描画に一切効かない。
-     それでも純黒（#000）にしないのは、「mask は例外」という覚えておくべき例外を作らないため
+     それでも純黒にしないのは、「mask は例外」という覚えておくべき例外を作らないため
      （verify-css の検査4は mask の中も数える）。alpha の並び（不透明 → transparent）と各ストップの位置は
-     #000 のときと同一なので、見た目は変わらない。luminance モードに切り替えても、白なら見えたまま。
-     ★ #000 に戻さないこと。見た目は同じでも検査4が落ちる。 */
+     黒を使ったときと同一なので、見た目は変わらない。luminance モードに切り替えても、白なら見えたまま。
+     ★ 黒に戻さないこと。見た目は同じでも検査4が落ちる。 */
   --m:
     radial-gradient(58% 62% at 30% 26%, #fff 60%, transparent 78%),
     radial-gradient(55% 58% at 76% 22%, #fff 58%, transparent 76%),
@@ -1037,7 +1053,9 @@ a { color: inherit; }
     padding: 24px var(--pad-x) 32px;
     background: rgba(15, 36, 31, 0.98);
     backdrop-filter: blur(10px);
-    box-shadow: 0 12px 24px rgba(43, 43, 38, 0.28);   /* 影はインク色（--ink #2b2b26）。純黒は使わない */
+    /* 深緑のヒーローの上に落ちる影。インク色 #2b2b26 だと深緑より明るく、影が消える（Δ(+2,-2,-1)）ので --dark-deep にする。
+       紙の上に重なっても同じ影で働く。alpha は 0.28 → 0.40：深緑の上で Δ(-5,-5,-4)（旧・純黒 0.28 は Δ(-7,-11,-9)）。純黒は使わない */
+    box-shadow: 0 12px 24px rgba(15, 36, 31, 0.40);
   }
   .header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
@@ -1076,7 +1094,6 @@ a { color: inherit; }
   :root { --dur: 0s; --dur-color: 0s; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .hero__scroll-cue span { animation: none; }
-  .sig-card__photo img { transition: none; }
 }
 
 /* ============ Drink detail modal ============ */
@@ -1097,7 +1114,9 @@ a { color: inherit; }
   display: flex;
   background: var(--paper);
   border-radius: 18px;
-  box-shadow: 0 30px 80px rgba(43, 43, 38, 0.3);   /* 影はインク色（--ink #2b2b26）。純黒は使わない */
+  /* 影が落ちる先は rgba(15, 36, 31, 0.55) のオーバーレイで暗くなった面。インクだと暗い面で逆に明るくなる（R +5）ので --dark-deep にする。
+     alpha は 0.3 → 0.4。純黒は使わない */
+  box-shadow: 0 30px 80px rgba(15, 36, 31, 0.4);
   transform: translateY(16px) scale(0.98);
   transition: transform var(--dur) var(--ease);
 }
