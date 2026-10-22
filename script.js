@@ -56,6 +56,16 @@ document.querySelectorAll(".nav a").forEach((link) => {
     toggle.setAttribute("aria-expanded", "false");
   });
 });
+// Escape で開いたドロワーを閉じる。ドロワーの中のリンクにフォーカスがあれば、閉じるとそのリンクごと消える（display: none）ので、
+// フォーカスはトグルに戻す。ドリンクのモーダルが開いているときは、前面にあるモーダルを先に閉じる（下のハンドラ）のでここでは何もしない。
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape" || !header.classList.contains("nav-open")) return;
+  if (document.querySelector(".drink-modal.is-open")) return;
+  const inDrawer = document.activeElement !== toggle && header.contains(document.activeElement);
+  header.classList.remove("nav-open");
+  toggle.setAttribute("aria-expanded", "false");
+  if (inDrawer) toggle.focus();
+});
 
 // ============ Drink detail modal ============
 // 出典: A.G.O.R.A. Promotion / Staff Training Guide（2026 Edition）の商品ページより。
