@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- JS が動く環境でだけ登場演出をかける（style.css の .js .reveal）。同期実行：最初の描画より前に .js を立てないと、一瞬見えてから消える -->
+<script>document.documentElement.classList.add('js')</script>
 <title>ドリンクメニュー｜A.G.O.R.A. TEA&COFFEE（千葉のキッチンカー）</title>
 <meta name="description" content="千葉のキッチンカー A.G.O.R.A. TEA&COFFEE のドリンクメニューと価格。サンセット／ハーバルティーソーダ、アールグレイソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。原材料・カフェインの有無も掲載。">
 <link rel="canonical" href="https://agora-teacoffee.com/menu/">
@@ -40,7 +42,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="../style.css">
 
@@ -106,6 +108,10 @@
   <a class="header__logo" href="../" aria-label="A.G.O.R.A. TEA&COFFEE">
     <img src="../assets/img/logo-white.svg" alt="A.G.O.R.A. TEA&COFFEE">
   </a>
+  <!-- ボタンは nav より前に置く：開いたドロワーのリンクが、Tab で ボタン → リンク の順に届くように（モバイルでは nav は下に開く） -->
+  <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
   <nav class="nav" aria-label="メインナビゲーション">
     <a href="../story/">STORY</a>
     <a href="./" aria-current="page">MENU</a>
@@ -113,9 +119,6 @@
     <a href="../meguri/">MEGURI</a>
     <a href="../#social">SNS</a>
   </nav>
-  <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
 </header>
 
 <div class="board-title">
@@ -240,8 +243,7 @@
 <div class="drink-modal drink-modal--sheet" id="drinkModal" aria-hidden="true" data-asset-base="../assets/img/">
   <div class="drink-modal__overlay" data-close></div>
   <div class="drink-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="dmName">
-    <button type="button" class="drink-modal__close" aria-label="閉じる" data-close>&times;</button>
-    <span class="drink-modal__grabber" aria-hidden="true"></span>
+    <button type="button" class="drink-modal__close" aria-label="閉じる" data-close>閉じる<span class="drink-modal__close-x" aria-hidden="true"></span></button>
     <div class="drink-modal__media" id="dmMedia"></div>
     <div class="drink-modal__content">
       <p class="drink-modal__tag" id="dmTag"></p>

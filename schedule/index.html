@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- JS が動く環境でだけ登場演出をかける（style.css の .js .reveal）。同期実行：最初の描画より前に .js を立てないと、一瞬見えてから消える -->
+<script>document.documentElement.classList.add('js')</script>
 <title>出店スケジュール・これまでの出店｜A.G.O.R.A. TEA&COFFEE（千葉のキッチンカー）</title>
 <meta name="description" content="A.G.O.R.A. TEA&COFFEE の出店予定と、これまでの出店の記録。千葉を中心にキッチンカーでお茶とコーヒーをお届けしています。">
 <link rel="canonical" href="https://agora-teacoffee.com/schedule/">
@@ -40,7 +42,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -51,6 +53,10 @@
   <a class="header__logo" href="../" aria-label="A.G.O.R.A. TEA&COFFEE">
     <img src="../assets/img/logo-white.svg" alt="A.G.O.R.A. TEA&COFFEE">
   </a>
+  <!-- ボタンは nav より前に置く：開いたドロワーのリンクが、Tab で ボタン → リンク の順に届くように（モバイルでは nav は下に開く） -->
+  <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
   <nav class="nav" aria-label="メインナビゲーション">
     <a href="../story/">STORY</a>
     <a href="../menu/">MENU</a>
@@ -58,16 +64,13 @@
     <a href="../meguri/">MEGURI</a>
     <a href="../#social">SNS</a>
   </nav>
-  <button class="nav-toggle" aria-label="メニューを開く" aria-expanded="false">
-    <span></span><span></span><span></span>
-  </button>
 </header>
 
 <main>
   <section class="section schedule-page">
     <div class="section__head">
-      <p class="section__eyebrow reveal">SCHEDULE</p>
       <h2 class="section__title reveal">出店スケジュール</h2>
+      <p class="section__eyebrow" aria-hidden="true">SCHEDULE</p>
       <p class="section__note reveal" data-delay="1">※ 最新情報は Instagram / X でもお知らせしています。</p>
     </div>
 
@@ -99,8 +102,8 @@
 
     <!-- ---- これまでの出店 ---- -->
     <div class="section__head section__head--sub">
-      <p class="section__eyebrow reveal">ARCHIVE</p>
       <h2 class="section__title reveal">これまでの出店</h2>
+      <p class="section__eyebrow" aria-hidden="true">ARCHIVE</p>
     </div>
 
     <ul class="schedule__list schedule__list--past">

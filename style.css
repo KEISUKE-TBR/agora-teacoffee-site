@@ -4,8 +4,8 @@
   --paper: #FBF9F3;        /* background */
   --paper-2: #F3EEE3;      /* alt surface */
   --ink: #2b2b26;          /* text */
-  --ink-soft: #6a706f;     /* muted text */
-  --taupe: #8a8570;        /* captions / tertiary */
+  /* --ink-soft（補助テキスト色）は、下の「文字用の派生値」ブロックで定義 */
+  /* --taupe は削除した（理由は下の --taupe-ink の注） */
   --border: #e4dfd0;
   --border-strong: #ddd8c8;
   /* Dark surface (hero / banner / footer / board menu) — MEGURI deep green */
@@ -23,24 +23,107 @@
   --amber: #9A6B3A;
   --rose: #C97B84;
 
+  /* --- 文字用の派生値 ---
+     1色で面も文字も賄わない。面・線用（上の値）と文字用（ここ）を分ける。
+     紙 #FBF9F3 と薄面 #F3EEE3 の両方で 4.5 を満たす最小限の暗さに落としてある。
+     薄面を外して紙だけで計算すると全部 4.11〜4.16 で基準割れする
+     （.menu .store .schedule__next .fact が薄面に乗っているため） */
+  --sunset-ink:    #af5035;  /* 紙 4.96 / 薄面 4.51（元 #C55A3B は 4.07 / 3.70） */
+  --rose-ink:      #975c63;  /* 紙 4.95 / 薄面 4.51（元 #C97B84 は 3.00 / 2.73） */
+  --lemon-ink:     #66722b;  /* 紙 4.98 / 薄面 4.53（元 #8A9A3A は 2.95 / 2.68） */
+  --amber-ink:     #8e6336;  /* 紙 5.00 / 薄面 4.55 */
+  --tea-brown-ink: #83674f;  /* 紙 4.96 / 薄面 4.52 */
+  --herbal-ink:    #5a734f;  /* 紙 4.99 / 薄面 4.54（元 #5F7A54 は薄面で 4.13） */
+  --taupe-ink:     #706c5b;  /* 紙 5.01 / 薄面 4.55（元 #8a8570 は 3.52 / 3.20） */
+  /* taupe は文字にしか使っていなかった（9回すべて文字色）ので、面・線用の値は持たない。
+     元の --taupe #8a8570 は、参照が全部 --taupe-ink に移って0件になったので削除した。
+     残しておくと「captions / tertiary」のコメントが、紙の上で 3.52 しかない値を文字に使い直す誘いになる。
+     tools/verify-css.mjs の「面用の色を文字に使っていない」検査は taupe も見ているので、color: var(--taupe) と書けば落ちる */
+
+  /* 既存の補助テキスト色も薄面で基準割れしている。
+     --ink-soft #6a706f は紙 4.79 だが薄面 #F3EEE3 では 4.36。
+     明度98%まで落とすだけで両方満たす（見分けはつかない） */
+  --ink-soft:      #676d6c;  /* 紙 5.01 / 薄面 4.56（元 #6a706f は 4.79 / 4.36） */
+
+  /* カテゴリ色の間接参照用。面は --accent、文字は --accent-ink を参照する。
+     #soda が --accent: var(--rose) を入れており、.mcat__title が紙の上で 3.00 しかない。
+     これは公開中のサイトに実在する不備で、今回あわせて直す */
+  /* 深緑 --dark の面の上では -ink を使わないこと。
+     -ink は深緑の上で 2.67〜2.70 と、元の色（--sunset 3.29）より悪化する。
+     深緑の上は --dark-accent(8.66) / --dark-text(11.80) / --apricot(6.93) を使う */
+
+  /* --- 影 ---
+     純黒を使わない。黒い影は青みが出て面から浮く。インク色 #2b2b26 の rgba にする。
+     none から生やすと補間されず反応が鈍く見えるので、平常時も薄く置く。
+     ホバーは alpha を1段だけ動かし、ぼかしと距離は据え置く。
+     例外：深緑 --dark の面（にオーバーレイで暗くした面）の上に落とす影は、インクではなく --dark-deep #0f241f の rgba にする。
+     インク #2b2b26 は深緑と明るさが近く、暗い面に落とすと影が 65〜85% 弱くなって消える
+     （SPナビの下を実測：純黒 Δ(-7,-11,-9) → インク Δ(+2,-2,-1)。R は逆に明るくなる）。--dark-deep は深緑より暗いので影として働く。 */
+  --shadow-rest:  0 10px 30px rgba(43, 43, 38, 0.10);
+  --shadow-hover: 0 14px 36px rgba(43, 43, 38, 0.18);
+
+  /* --- モーション ---
+     デュレーションとイージングは各1本。用途で使い分けない。
+     この曲線は元から2箇所で使われていた値で、他所から輸入したものではない */
+  --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+  --dur:       0.3s;
+  --dur-color: 0.15s;  /* 色だけ倍速。位置が動かない変化は目が追えるので速くてよい */
+
+  /* --- 登場演出の持ち上げ量 ---
+     SPのほうを大きくする。小さい画面では動きを控えるのが定石だが逆で、
+     SPは1画面の要素数が少なく縦スクロール量が大きいため20pxでは気づかれない */
+  --rise: 20px;
+
+  /* --- 固定ヘッダーの高さ ---
+     .catnav の sticky 位置（top）、.mcat のアンカー位置、フォーカスの scroll-margin が読む。
+     以前は --header-h がどこにも定義されておらず、全員が 52px の予備値で動いていた。ヘッダーはデスクトップで 56.6〜64.6px なので、
+     /menu の .catnav がヘッダーの下に最大 12.6px もぐり、チップの上辺とフォーカスリングの上辺が切れていた。
+     高さ = 上下の padding + 中身。
+       padding：.header.is-scrolled / .header--solid の padding-block と同じ値（--header-pad）。
+       中身：デスクトップは nav リンクの1行（13px × 行送り 2.2 = 28.6px）+ 現在ページの下線（padding-bottom 3px + border 1px）= 32.6px。
+             760px 以下はハンバーガーボタンの 28px（下の @media (max-width: 760px) で差し替え）。
+     /menu はヘッダーが常に --solid で、現在ページ（MENU）の下線も常にあるので、この式がそのまま実高になる（56.6 / 61.3 / 64.6 / 52px を実測と照合済み）。
+     ヘッダーの padding・nav リンクの文字サイズ・現在ページの下線のどれかを変えたら、ここも直すこと。 */
+  --header-pad:     clamp(12px, 1.4vw, 16px);
+  --header-content: calc(0.8125rem * 2.2 + 4px);
+  --header-h:       calc(var(--header-pad) * 2 + var(--header-content));
+
   /* Typography — brand fonts via Adobe Fonts (kit ysy1ycw), with graceful fallbacks:
-     Scandia (Latin sans) + Hiragino Kaku Gothic (JP body) + Ryumin (JP mincho display) */
-  --font-sans: "scandia-web", "hiragino-kaku-gothic-pron", "Inter", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;  /* body / labels */
-  --font-serif: "scandia-web", "Inter", -apple-system, sans-serif;      /* Latin display */
-  --font-mincho: "a-otf-ryumin-pr6n", "Shippori Mincho", serif;         /* JP display (headings) */
-  --font-ryumin: "a-otf-ryumin-pr6n", "A-OTF Ryumin Pr6N", "Shippori Mincho", serif;
+     Scandia (Latin sans) + Hiragino Kaku Gothic (JP body and headings).
+     和文は --font-sans 一本。見出しは 700、補助テキストは 500（本文の継承値） */
+  --font-sans: "scandia-web", "hiragino-kaku-gothic-pron", "Inter", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;  /* body / headings / labels */
+  --font-serif: "scandia-web", "Inter", -apple-system, sans-serif;      /* 欧文ディスプレイ専用。名前は serif だが中身はサンセリフ。和文を入れないこと */
   --font-hand: "Caveat", cursive;                                       /* handwritten accent */
-  --font-num: "scandia-web", "Inter", sans-serif;                       /* figures — never monospace */
+  --font-num: "scandia-web", "Inter", "hiragino-kaku-gothic-pron", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;  /* figures — never monospace。数字・¥ は先頭の欧文で出し、〜 引き ＋ のような和文が混ざったときだけ後ろの和文フォントに落ちる */
 
   --content-max: 1120px;
   --pad-x: clamp(20px, 5vw, 80px);
   --pad-y: clamp(72px, 11vw, 160px);
 
-  --fs-eyebrow: clamp(0.6875rem, 0.66rem + 0.14vw, 0.75rem);
-  --fs-note: clamp(0.75rem, 0.72rem + 0.14vw, 0.8125rem);
-  --fs-body: clamp(0.9375rem, 0.89rem + 0.24vw, 1.0625rem);
-  --fs-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
-  --fs-display: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem);
+  /* タイプスケール：2px刻みの偶数px。比率（×1.25等）は使わない。
+     和文は字面が正方形なのでキリのいい偶数のほうが揃う */
+  --fs-section: clamp(1.5rem,  1.1rem + 1.7vw, 2rem);      /* 24 → 32px */
+  --fs-sub:     clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem); /* 18 → 20px。※下の Step で実際に当てる */
+  --fs-body-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);   /* 16 → 18px。リード文・大きめのボタン */
+  --fs-body:    1rem;                                       /* 16px 固定 */
+  --fs-note:    clamp(0.75rem, 0.72rem + 0.14vw, 0.875rem);/* 12 → 14px */
+  /* ラテンのヒーロー見出し専用。和文のスケールとは別系統。
+     "A place to gather." はブランドのタグラインで、装飾ラベルではない */
+  --fs-hero-en: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem);   /* 40 → 72px */
+  --fs-eyebrow: 0.75rem;                                    /* 12px。.hero__eyebrow 等、和文を含む小ラベル用。装飾の英字 .section__eyebrow は見出しの半分（下の .section__eyebrow） */
+
+  /* 見出しの行送り。役割で2段に分ける（px の境界は引かない）。
+     参照サイトの実測は大きい表示文字 108px→130% / 100px→120% / 74px→130% / 64px→128% で、
+     スマホの見出しは逆に 1.7→1.6 と緩い。
+     当初は「28px 以上 / 未満」と書いていたが、display の割り当て先は全部 clamp() で、
+     .story-hero__en（欧文、常に 28px 以上）を除く9つがモバイルで 28px を下回る
+     （.sig-card__name .store__name .letter__head は 1024px 以下の全幅で下回る）。
+     px の境界は成立しなかったので、役割で書き直した（割り当ての一覧は設計書 §3.4）。
+     流体サイズなので2段は小さい幅で交差しうる。375px では .autumn__name（20px、heading）が 30.0px の行、
+     より大きい .store__name（21.6px、display）が 28.1px の行になる。これは許容する。
+     単行の欧文ラベルと数字だけは line-height: 1 を個別に書く。本文は body の 2.2 */
+  --lh-display: 1.3;   /* 題：ページ・セクションの見出し、ヒーロー、単独で立つブロックの名前 */
+  --lh-heading: 1.5;   /* 題の下にぶら下がるもの：項目名・小見出し・ラベル・署名 */
 }
 
 * { box-sizing: border-box; }
@@ -79,13 +162,15 @@ html {
 body {
   margin: 0;
   font-family: var(--font-sans);
+  font-weight: 500;              /* 400ではない。和文ゴシックのRegularは画面で細すぎる */
+  font-size: var(--fs-body);
+  line-height: 2.2;              /* 和文の行送り。欧文の1.5とは別物 */
+  letter-spacing: 0.04em;        /* 正のまま。和文でも詰めない */
   color: var(--ink);
   background: var(--paper);
-  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "palt";
 }
-
 img {
   max-width: 100%; display: block;
   -webkit-user-select: none; user-select: none;
@@ -93,6 +178,10 @@ img {
   -webkit-touch-callout: none; /* iOS: suppress the long-press save/copy menu */
 }
 a { color: inherit; }
+/* <button> は UA スタイルシートが letter-spacing: normal を当てるので、body の字送り（0.04em）を継承しない。
+   メニューの行・看板カード・注目カード・モーダルの閉じるボタンの中身だけが字送り 0 のまま、
+   すぐ隣の .mcat__sub などは 0.64px 開く不揃いになっていた。 */
+button { letter-spacing: inherit; }
 
 .wf-loading body { opacity: 0.9; }
 
@@ -106,13 +195,13 @@ a { color: inherit; }
   justify-content: space-between;
   gap: 24px;
   padding: clamp(16px, 2vw, 26px) var(--pad-x);
-  transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+  transition: background-color var(--dur-color) var(--ease), padding var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .header.is-scrolled,
 .header--solid {
   background: rgba(22, 48, 42, 0.94);
   backdrop-filter: blur(10px);
-  padding-block: clamp(12px, 1.4vw, 16px);
+  padding-block: var(--header-pad);   /* :root の --header-h と同じ値を使う */
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
@@ -126,14 +215,24 @@ a { color: inherit; }
   gap: clamp(20px, 2.6vw, 40px);
 }
 .nav a {
+  position: relative;
   font-size: 0.8125rem;
   letter-spacing: 0.14em;
   color: var(--dark-text);
   text-decoration: none;
   opacity: 0.85;
-  transition: opacity 0.25s ease;
 }
-.nav a:hover { opacity: 1; }
+/* タップ領域は見た目を動かさず、疑似要素で縦 48px 前後まで広げる（ハンバーガーを開いた縦並びで効く。
+   リンク自体は約 26〜32px の高さしかなく、間の 22px の隙間は押しても反応しない） */
+.nav a::after { content: ""; position: absolute; inset: -11px -4px; }
+/* ホバーは hover:hover でゲートする。any-hover は「どれか1つでもホバーできる入力がある」で真になるので、
+   タッチ対応ノートPCやスタイラス付きAndroidでも発火して誤り。
+   transition もゲートの中に置く：タッチ端末では transition プロパティ自体が存在しないので、
+   タップ後にホバー状態が張り付いてゆっくり戻る事故が構造的に起きない。（以下、全ホバー共通） */
+@media (hover: hover) {
+  .nav a { transition: opacity var(--dur) var(--ease); }
+  .nav a:hover { opacity: 1; }
+}
 /* Marks the page you're already on, so the nav doubles as a "you are here" */
 .nav a[aria-current="page"] {
   opacity: 1;
@@ -149,13 +248,17 @@ a { color: inherit; }
   border: 0;
   cursor: pointer;
   padding: 6px;
+  position: relative;
 }
+/* タップ領域。ボタン本体（36×28）もヘッダーの高さも動かさず、疑似要素で 48×48 に広げる。
+   モバイルのヘッダーの高さは --header-h（:root）の「中身 28px」＝このボタンの高さで決まるので、本体を大きくすると /menu の .catnav と食い違う */
+.nav-toggle::after { content: ""; position: absolute; inset: -10px -6px; }
 .nav-toggle span {
   display: block;
   width: 24px;
   height: 2px;
   background: var(--dark-text);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 
 /* ============ Hero ============ */
@@ -190,24 +293,28 @@ a { color: inherit; }
   margin: 0 0 clamp(20px, 3vw, 34px);
   font-size: var(--fs-eyebrow);
   letter-spacing: 0.34em;
-  color: var(--sunset);
+  color: var(--dark-accent);
 }
 
 .hero__title { margin: 0; }
+/* ヒーローはラテンが主役のまま。.section__eyebrow に当てた反転（和文が主、英字は opacity .2 の装飾）はここには当てない。
+   反転が成り立つのは、英字が隣の和文の言い換えにすぎないとき（事業内容 / Services）だけ。
+   "A place to gather." と「一杯を交わす、現代のアゴラ。」は別々の文で、ラベルと訳の関係ではないので、どちらも装飾ではない。 */
 .hero__title-en {
   display: block;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: var(--fs-display);
+  font-size: var(--fs-hero-en);
   line-height: 1.05;
   letter-spacing: 0.01em;
 }
 .hero__title-jp {
   display: block;
   margin-top: clamp(12px, 1.6vw, 20px);
-  font-family: var(--font-mincho);
-  font-weight: 300; /* Ryumin Pr6N is served only at weight 300 (L) */
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2rem);
+  line-height: var(--lh-display);
   letter-spacing: 0.06em;
 }
 
@@ -219,17 +326,20 @@ a { color: inherit; }
 }
 /* States the concrete situation (kitchen car now, cafe later) under the
    brand-voice lead, so a first-time visitor isn't left guessing. */
+/* 説明の一行であって、操作できる部品ではない。以前は 1px の罫線 + 角丸 999px + padding 8px 16px の「ピル」で、
+   これは参照サイト（イロコト）のボタンの型そのもの（白地・1px の罫線・border-radius 200px）。すぐ下の橙のピル CTA と並ぶと
+   ボタンが2つに見え、上のほうを押しても何も起きなかった。箱は外して字だけにする。
+   リードとの区別は箱ではなく、字の大きさ（12〜14px 対 16px）・色相（--dark-accent の緑みと --dark-text のクリーム）・間の広さで付ける。
+   左の縦罫や引用符は足さない（参照サイトは補足の文を平らな面と横の余白で分け、棒や引用符を使わない）。
+   箱が無くなると折り返しの位置が丸見えになる。375px では文節の途中（キッ|チンカー）で切れるので、
+   2つの文節を inline-block にして、折れるのは文節の間だけにする（span の間に空白を入れないこと。入れると字間に半角の空きが出る）。 */
 .hero__note {
-  display: inline-flex;
-  align-items: center;
-  margin: clamp(18px, 2.4vw, 24px) 0 0;
-  padding: 8px 16px;
-  border: 1px solid color-mix(in srgb, var(--dark-accent) 40%, transparent);
-  border-radius: 999px;
+  margin: clamp(24px, 3.2vw, 36px) 0 0;
   font-size: var(--fs-note);
   letter-spacing: 0.02em;
   color: var(--dark-accent);
 }
+.hero__note span { display: inline-block; }
 
 .hero__scroll-cue {
   position: absolute;
@@ -257,52 +367,72 @@ a { color: inherit; }
   padding-inline: max(var(--pad-x), calc((100% - var(--content-max)) / 2));
 }
 
+/* 英字ラベルは装飾。見出しの「下」に、見出しの半分のサイズ・opacity .2 で置く（HTML は aria-hidden）。
+   opacity は静的に置く。参照サイトは初期値 0 から JS で立てているため、JS が落ちるとラベルごと消える。
+   .reveal も付けない：.reveal.is-visible { opacity: 1 } が .2 を上書きし、.reveal { opacity: 0 } は
+   JS 無しでは消えたままになる。
+   対象は .section__eyebrow だけ。.hero__eyebrow と .meguri-cta__eyebrow は業態・企画名を伝える日本語
+   （英字と重複していない）ので降格しない。 */
 .section__eyebrow {
-  margin: 0 0 clamp(14px, 1.8vw, 20px);
+  margin: 12px 0 0;               /* 見出しの下に来るので上マージン */
   font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 0.72rem;
-  letter-spacing: 0.26em;
-  color: var(--sunset);
+  font-weight: 500;
+  font-size: calc(var(--fs-section) / 2);   /* 見出しとの比で持つ。常に 1:2 */
+  line-height: 1;
+  letter-spacing: 0.08em;         /* 欧文も字間は正 */
+  opacity: 0.2;
+  color: var(--ink);              /* 薄くするので色は乗せない */
 }
 
 .section__head { margin-bottom: clamp(36px, 5vw, 60px); }
 .section__title {
   margin: 0;
-  font-family: var(--font-mincho);
-  font-weight: 300;
-  font-size: var(--fs-h2);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-section);
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
+  color: var(--ink);
+  text-align: left;               /* 中央揃えにしない。左の垂直基準線を通す */
 }
 .section__note {
   margin: clamp(12px, 1.6vw, 18px) 0 0;
   font-size: var(--fs-note);
-  color: var(--taupe);
+  color: var(--taupe-ink);
 }
 
 /* ============ Story ============ */
 .story { background: var(--paper); }
 .story__grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: clamp(28px, 5vw, 72px);
+  /* 左は見出しだけ（最大でも「という名前。」の約200px）なので、固定幅にして右の本文だけを可変にする。
+     0.8fr / 1.2fr のままだと両方が伸び縮みして、本文の1行の長さが画面幅につられて動く。
+     290px なのは、この段組みが 761px（下の 760px で1列になる直前）まで続くため：そこでも本文が
+     約360px（22字）残る。380px にすると 761px で本文が約270px まで潰れる。
+     gap は2値で書き、使わない行方向に 0 を明示する（1行しか無いので行間は要らない） */
+  grid-template-columns: 290px 1fr;
+  gap: 0 clamp(28px, 5vw, 72px);
   align-items: start;
 }
 .story__title {
   margin: 0;
-  font-family: var(--font-mincho);
-  font-weight: 300;
-  font-size: var(--fs-h2);
-  line-height: 1.5;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-section);
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
 }
 .story__body { display: flex; flex-direction: column; gap: 1.4em; }
 .story__body p { margin: 0; font-size: var(--fs-body); color: var(--ink-soft); }
-.story__sign {
+/* 詳細度を .story__body p（0,1,1）より上の 0,2,0 に揃える。以前は .story__sign 単体（0,1,0）で負けており、
+   font-size: 1.5rem が丸ごと捨てられて 16px で描かれていた。color に付いていた強制指定（important）は
+   その負けを color だけ無理に通していた跡で、詳細度を直したので不要。強制指定は足し直さないこと */
+.story__body .story__sign {
   font-family: var(--font-hand);
   font-size: 1.5rem;
+  line-height: var(--lh-heading);   /* 手書き署名。継承の 2.2 だと上下に余る */
   letter-spacing: 0.02em;
-  color: var(--sunset) !important;
+  color: var(--sunset-ink);
 }
 .story__cta {
   align-self: flex-start;
@@ -316,9 +446,12 @@ a { color: inherit; }
   font-weight: 600;
   font-size: var(--fs-note);
   text-decoration: none;
-  transition: background 0.25s ease, color 0.25s ease;
 }
-.story__cta:hover { background: var(--ink); color: var(--paper); }
+/* 色だけの変化は倍速（--dur-color）。位置が動かない変化は目が追えるので、同じ速さだとモッサリする */
+@media (hover: hover) {
+  .story__cta { transition: background-color var(--dur-color) var(--ease), color var(--dur-color) var(--ease); }
+  .story__cta:hover { background: var(--ink); color: var(--paper); }
+}
 
 /* ============ Menu ============ */
 .menu { background: var(--paper-2); }
@@ -327,29 +460,20 @@ a { color: inherit; }
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: clamp(36px, 6vw, 88px);
 }
-.menu__group-title {
-  margin: 0 0 clamp(16px, 2vw, 24px);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.22em;
-  color: var(--ink);
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-strong);
-}
 .menu__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(12px, 1.6vw, 18px); }
 .menu__item { display: flex; align-items: baseline; gap: 10px; font-size: var(--fs-body); }
 .menu__name { color: var(--ink-soft); white-space: nowrap; }
 .menu__dots { flex: 1; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
 .menu__price { font-family: var(--font-num); font-weight: 500; color: var(--ink); white-space: nowrap; }
 
-/* Flavour accent mapping (A.G.O.R.A. signature palette) */
-[data-flavor="sunset"]    { --flavor: var(--sunset); }
-[data-flavor="herbal"]    { --flavor: var(--herbal); }
-[data-flavor="tea-brown"] { --flavor: var(--tea-brown); }
-[data-flavor="lemon"]     { --flavor: var(--lemon); }
-[data-flavor="amber"]     { --flavor: var(--amber); }
-[data-flavor="rose"]      { --flavor: var(--rose); }
+/* Flavour accent mapping (A.G.O.R.A. signature palette)
+   面・線・outline は --flavor、文字は --flavor-ink を読む。二つを必ず対で持つ */
+[data-flavor="sunset"]    { --flavor: var(--sunset);    --flavor-ink: var(--sunset-ink); }
+[data-flavor="herbal"]    { --flavor: var(--herbal);    --flavor-ink: var(--herbal-ink); }
+[data-flavor="tea-brown"] { --flavor: var(--tea-brown); --flavor-ink: var(--tea-brown-ink); }
+[data-flavor="lemon"]     { --flavor: var(--lemon);     --flavor-ink: var(--lemon-ink); }
+[data-flavor="amber"]     { --flavor: var(--amber);     --flavor-ink: var(--amber-ink); }
+[data-flavor="rose"]      { --flavor: var(--rose);      --flavor-ink: var(--rose-ink); }
 
 /* ============ Full story page (/story) ============ */
 .story-hero {
@@ -363,21 +487,24 @@ a { color: inherit; }
   margin: 0;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(1.75rem, 2.4rem + 1vw, 3rem);
+  /* 「TEA&COFFEE」は改行できない1語で、幅は字面の約 7.3em。2.4rem + 1vw のままだと 320px で
+     41.6px → 約 302px となり、内側の幅 280px（スクロールバー付きなら 270px）をはみ出して横スクロールが出ていた。
+     408px 未満だけ 10.4vw に切り替えて収める（408px 以上は従来の式のまま。320px で約 33px、語の幅は約 242px） */
+  font-size: clamp(1.75rem, min(2.4rem + 1vw, 10.4vw), 3rem);
+  line-height: var(--lh-display);
   letter-spacing: 0.06em;
 }
 .story-hero__jp {
   margin: clamp(10px, 1.6vw, 16px) 0 0;
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 500;
   font-size: var(--fs-body);
   letter-spacing: 0.08em;
   color: var(--dark-muted);
 }
 
-.story-origin { max-width: 760px; margin: 0 auto clamp(64px, 8vw, 100px); text-align: center; }
-.story-origin .section__eyebrow { }
-.story-origin__body { display: flex; flex-direction: column; gap: 1.4em; margin-top: clamp(20px, 3vw, 28px); text-align: left; }
+.story-origin { max-width: 760px; margin: 0 auto clamp(64px, 8vw, 100px); }
+.story-origin__body { display: flex; flex-direction: column; gap: 1.4em; margin-top: clamp(20px, 3vw, 28px); }
 .story-origin__body p { margin: 0; font-size: var(--fs-body); line-height: 1.9; color: var(--ink-soft); }
 
 .letters { list-style: none; margin: 0; padding: 0; max-width: 860px; margin-inline: auto; }
@@ -396,13 +523,14 @@ a { color: inherit; }
   font-weight: 600;
   font-size: clamp(3rem, 6vw, 4.5rem);
   line-height: 1;
-  color: var(--flavor, var(--sunset));
+  color: var(--flavor-ink, var(--sunset-ink));
 }
 .letter__head {
   margin: 0 0 clamp(14px, 2vw, 20px);
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  line-height: var(--lh-display);
   color: var(--ink);
 }
 .letter__body p { margin: 0; font-size: var(--fs-body); line-height: 2; color: var(--ink-soft); }
@@ -415,14 +543,20 @@ a { color: inherit; }
   color: var(--dark-text);
   border-radius: 20px;
   text-align: center;
+  --fs-vision: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);   /* 24 → 36px。装飾の英字はこの半分 */
 }
-.story-vision .section__eyebrow { color: var(--dark-accent); }
+/* 暗面：インク色の代わりに --dark-text。見出しの下に来るので、本文までの間隔はこちらが持つ */
+.story-vision .section__eyebrow {
+  margin-bottom: clamp(20px, 3vw, 30px);
+  font-size: calc(var(--fs-vision) / 2);
+  color: var(--dark-text);
+}
 .story-vision__title {
-  margin: 0 0 clamp(20px, 3vw, 30px);
-  font-family: var(--font-mincho);
-  font-weight: 300;
-  font-size: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
-  line-height: 1.45;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-vision);
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
 }
 .story-vision__body { display: flex; flex-direction: column; gap: 1.3em; }
@@ -432,45 +566,92 @@ a { color: inherit; }
   line-height: 2;
   color: color-mix(in srgb, var(--dark-text) 84%, transparent);
 }
-.story-vision__lead {
-  margin-top: clamp(6px, 1vw, 10px) !important;
-  font-family: var(--font-mincho);
-  font-size: var(--fs-body-lg) !important;
-  color: var(--dark-text) !important;
+/* 詳細度を .story-vision__body p（0,1,1）より上の 0,2,0 に揃える。以前は .story-vision__lead 単体（0,1,0）で
+   負けており、margin-top / font-size / color の3つを強制指定（important）で無理に通していた
+   （.story__sign と同じ負け方）。詳細度を直したので強制指定は不要。足し直さないこと */
+.story-vision__body .story-vision__lead {
+  margin-top: clamp(6px, 1vw, 10px);
+  font-family: var(--font-sans);
+  font-weight: 700; /* kit の Hiragino は 300 / 600 のみ。400・500 は W3 に落ちて上の段落と同じになるので、W6 で差をつける */
+  font-size: var(--fs-body-lg);
+  color: var(--dark-text);
 }
 
 /* SIGNATURE showcase (TOP page) — photo-led, editorial */
+/* 2枚のカードは同格（サンセットとハーバル。どちらが主でも従でもない）なので、等分の 1fr 1fr のまま。
+   左を固定幅にすると、片方のカードだけが細くなって序列があるように見える。
+   固定幅が効くのは「ラベルと本文」のように役割が違う組（.story__grid）。
+   gap は2値で書く（行が1本なので行間は 0。1列に落ちたときだけ下の 640px で行間を持たせる） */
 .signature {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(20px, 3.5vw, 48px);
+  gap: 0 clamp(20px, 3.5vw, 48px);
 }
+/* カード。地の .menu を --paper-2 に沈め、その上に白いカードを立てる。
+   border は付けない。参照7サイトでカードに border を付けた例は0件で、分離は
+   「背景色の差」「影1層」「疑似要素のオーバーレイ」の3つだけだった。 */
 .sig-card {
+  position: relative;
   display: flex; flex-direction: column; gap: clamp(14px, 1.8vw, 20px);
   text-align: left;
-  background: none; border: 0; padding: 0; margin: 0;
+  background: #fff; border: 0; border-radius: 6px;
+  padding: clamp(12px, 2vw, 20px); margin: 0;
   font: inherit; color: inherit; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+/* 影と枠は要素本体ではなく ::after に載せる。理由は2つ。
+   (1) 枠を疑似要素のオーバーレイにすると、レイアウトが1pxも動かず、border-radius: inherit で
+       カードの角丸に自動で追従する。
+   (2) .sig-card は .reveal も持ち、.reveal の transition（後ろで宣言される）が同じ詳細度で勝つ。
+       本体に box-shadow の transition を書くと上書きされ、ホバーで影が補間なしに切り替わる。
+       疑似要素なら .reveal と干渉しない。
+   影は平常時も薄く置く（none から生やすと補間されず、反応が遅れて見える）。 */
+.sig-card::after {
+  content: ""; position: absolute; inset: 0;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  box-shadow: var(--shadow-rest);
+  pointer-events: none;
+}
 .sig-card__photo {
   display: block; overflow: hidden;
-  border-radius: 18px;
+  border-radius: 6px;
   aspect-ratio: 1 / 1; /* matches the source photos so object-fit: cover crops nothing */
   background: var(--paper);
 }
-.sig-card__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-.sig-card:hover .sig-card__photo img,
-.sig-card:focus-visible .sig-card__photo img { transform: scale(1.045); }
+/* 写真の拡大は hover と focus-visible の両方で起きる。focus-visible はキーボード操作なので hover のゲートには入れない
+   （hover: none のタブレットに外付けキーボードをつなぐと、ここだけがゲートの外で効く）。
+   transition もこちらに置く：ゲートの中だと hover: none では宣言ごと無くなり、フォーカスで一瞬で切り替わる。
+   :hover の規則は下のゲートに残るので、タッチ端末でホバー状態が張り付くことは無い。
+   動きを止めるのは reduced-motion の --dur: 0s（下の @media (prefers-reduced-motion) ）が受け持つ */
+.sig-card__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur) var(--ease); }
+.sig-card:focus-visible .sig-card__photo img { transform: scale(1.05); }
+/* ホバーは「持ち上げる」方向に統一する：影を alpha 0.10 → 0.18 に濃くし、枠を alpha 0.4 まで出す。
+   写真は枠（overflow: hidden）を固定して中身だけ拡大するので、レイアウトは動かない。
+   transition 宣言もゲートの中に置く（タッチ端末ではホバー状態が張り付かない）。写真の transition だけは上でゲートの外に出した。
+   「詳しく」の文字は opacity で薄めず色を変える：opacity .7 だと白の上で 2.9〜3.0 まで落ちて 4.5 を割る
+   （フッターの color-mix(…, transparent) と同じ失敗）。--ink（白の上で 14.23）に切り替える */
+@media (hover: hover) {
+  .sig-card::after { transition: box-shadow var(--dur) var(--ease), border-color var(--dur-color) var(--ease); }
+  .sig-card__more { transition: color var(--dur-color) var(--ease); }
+  .sig-card:hover::after {
+    box-shadow: var(--shadow-hover);
+    border-color: color-mix(in srgb, var(--flavor, var(--sunset)) 40%, transparent);
+  }
+  .sig-card:hover .sig-card__photo img { transform: scale(1.05); }
+  .sig-card:hover .sig-card__more { color: var(--ink); }
+}
 .sig-card:focus-visible { outline: none; }
-.sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor, var(--sunset)); outline-offset: 3px; }
+/* リングは面の色ではなく -ink。--flavor だと紙の上で lemon 2.95 / rose 3.00 になり、非テキストの 3:1（WCAG 1.4.11）を割る。
+   -ink は6色とも白の上で 5.21〜5.27 */
+.sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor-ink, var(--sunset-ink)); outline-offset: 3px; }
 .sig-card__body { display: flex; flex-direction: column; gap: 6px; }
-.sig-card__tag { font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--flavor, var(--sunset)); }
-.sig-card__name { font-family: var(--font-mincho); font-weight: 300; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: 1.35; color: var(--ink); }
+.sig-card__tag { font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--flavor-ink, var(--sunset-ink)); }
+.sig-card__name { font-family: var(--font-sans); font-weight: 700; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: var(--lh-display); color: var(--ink); }
 .sig-card__sub { font-size: var(--fs-note); color: var(--ink-soft); }
 .sig-card__meta { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; gap: 12px; }
-.sig-card__price { font-family: var(--font-num); font-weight: 600; font-size: 1.35rem; color: var(--ink); }
-.sig-card__more { font-size: var(--fs-note); color: var(--flavor, var(--sunset)); white-space: nowrap; transition: opacity 0.2s ease; }
-.sig-card:hover .sig-card__more { opacity: 0.7; }
+.sig-card__price { font-family: var(--font-num); font-weight: 600; font-size: 1.35rem; line-height: 1; color: var(--ink); }
+.sig-card__more { font-size: var(--fs-note); color: var(--flavor-ink, var(--sunset-ink)); white-space: nowrap; }
 
 .menu__more { margin-top: clamp(32px, 4vw, 52px); text-align: center; }
 .menu__more-link {
@@ -478,9 +659,12 @@ a { color: inherit; }
   padding: 14px 36px; border-radius: 999px;
   border: 1px solid var(--ink);
   color: var(--ink); font-weight: 600; font-size: var(--fs-body);
-  text-decoration: none; transition: background 0.25s ease, color 0.25s ease;
+  text-decoration: none;
 }
-.menu__more-link:hover { background: var(--ink); color: var(--paper); }
+@media (hover: hover) {
+  .menu__more-link { transition: background-color var(--dur-color) var(--ease), color var(--dur-color) var(--ease); }
+  .menu__more-link:hover { background: var(--ink); color: var(--paper); }
+}
 
 /* ============ Full menu page (/menu) ============
    Built to be read standing in front of the kitchen car: a menu-board title,
@@ -494,16 +678,19 @@ a { color: inherit; }
   font-size: clamp(2.6rem, 14vw, 3.6rem); letter-spacing: 0.04em; line-height: 1;
 }
 .board-title__jp {
-  margin: 12px 0 0; font-family: var(--font-mincho); font-weight: 300;
+  margin: 12px 0 0; font-family: var(--font-sans); font-weight: 700; line-height: var(--lh-heading);
   font-size: var(--fs-note); letter-spacing: 0.32em; color: var(--dark-muted);
 }
 
 .catnav {
   /* sits just below the fixed site header rather than under it */
-  position: sticky; top: var(--header-h, 52px); z-index: 30;
+  position: sticky; top: var(--header-h); z-index: 30;
   display: flex; gap: 8px; padding: 10px 14px;
   overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  /* 半透明で sticky なので、文字のコントラストは下をスクロールしてくる内容で変わる。
+     92% だと --ink-soft は 真っ黒の上で 4.19 / --dark の上で 4.32 と 4.5 を割った（mid-grey 4.60 / 白 5.03）。
+     97% なら最悪（真っ黒）でも 4.69、--dark の上で 4.75。ぼかし（blur）は据え置く */
+  background: color-mix(in srgb, var(--paper) 97%, transparent);
   backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
 }
 .catnav::-webkit-scrollbar { display: none; }
@@ -525,27 +712,30 @@ a { color: inherit; }
   padding: 8px clamp(18px, 5vw, 24px) clamp(48px, 8vw, 72px);
 }
 
-.mcat { padding-top: clamp(30px, 5vw, 42px); scroll-margin-top: calc(var(--header-h, 52px) + 52px); }
-#focus    { --accent: var(--sunset); }
-#soda     { --accent: var(--rose); }
-#straight { --accent: var(--tea-brown); }
-#lemon    { --accent: var(--lemon); }
-#alcohol  { --accent: var(--amber); }
+.mcat { padding-top: clamp(30px, 5vw, 42px); scroll-margin-top: calc(var(--header-h) + 52px); }
+/* 面・線・outline は --accent、文字は --accent-ink。二つを必ず対で持つ */
+#focus    { --accent: var(--sunset);    --accent-ink: var(--sunset-ink); }
+#soda     { --accent: var(--rose);      --accent-ink: var(--rose-ink); }
+#straight { --accent: var(--tea-brown); --accent-ink: var(--tea-brown-ink); }
+#lemon    { --accent: var(--lemon);     --accent-ink: var(--lemon-ink); }
+#alcohol  { --accent: var(--amber);     --accent-ink: var(--amber-ink); }
 .mcat__head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
 .mcat__num {
   font-family: var(--font-num); font-weight: 700; font-size: 0.85rem;
-  font-variant-numeric: tabular-nums; color: var(--accent);
+  font-variant-numeric: tabular-nums; color: var(--accent-ink);
 }
 /* Category headings carry their own accent — that separation, more than size
    alone, is what keeps a section header from reading as another drink name. */
 .mcat__title {
-  margin: 0; font-family: var(--font-serif); font-weight: 700;
-  font-size: clamp(1.6rem, 6vw, 2rem); letter-spacing: 0.02em; color: var(--accent);
+  margin: 0; font-family: var(--font-sans); font-weight: 700;
+  font-size: clamp(1.6rem, 6vw, 2rem); line-height: var(--lh-display); letter-spacing: 0.02em; color: var(--accent-ink);
 }
-.mcat__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe); }
+.mcat__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe-ink); }
 .mcat__rule { height: 2px; width: 34px; margin: 6px 0 18px; border-radius: 2px; background: var(--accent); }
 
-/* SEASONAL: photo-led grid */
+/* SEASONAL: photo-led grid。同格の2枚なので 1fr 1fr のまま（理由は .signature と同じ）。
+   外枠 .menu-page が max-width: 640px で可読幅を決めているので、1fr 同士でも幅は動かない。
+   1列には落とさない：この頁はスマホで立ち読みするメニューで、2枚並びが基本形 */
 .focus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; }
 .focus-card {
   display: flex; flex-direction: column; gap: 3px;
@@ -555,12 +745,15 @@ a { color: inherit; }
 }
 .focus-card__photo {
   display: block; aspect-ratio: 1 / 1; margin-bottom: 8px;
-  border-radius: 14px; overflow: hidden; background: var(--paper-2);
+  border-radius: 6px; overflow: hidden; background: var(--paper-2);
 }
-.focus-card__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-.focus-card:hover .focus-card__photo img { transform: scale(1.04); }
-.focus-card:focus-visible .focus-card__photo { outline: 2px solid var(--accent); outline-offset: 3px; }
-.focus-card__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); line-height: 1.35; color: var(--ink); }
+.focus-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+@media (hover: hover) {
+  .focus-card__photo img { transition: transform var(--dur) var(--ease); }
+  .focus-card:hover .focus-card__photo img { transform: scale(1.05); }
+}
+.focus-card:focus-visible .focus-card__photo { outline: 2px solid var(--accent-ink); outline-offset: 3px; }   /* 面の --accent は lemon 2.95 / rose 3.00 で 3:1 を割る */
+.focus-card__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); line-height: var(--lh-heading); color: var(--ink); }
 .focus-card__note { font-size: var(--fs-note); color: var(--ink-soft); }
 .focus-card__price { margin-top: 4px; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body); color: var(--ink-soft); }
 
@@ -572,17 +765,19 @@ a { color: inherit; }
   -webkit-tap-highlight-color: transparent;
 }
 .mrow--static { cursor: default; }
-.mrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-.mrow__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); color: var(--ink); line-height: 1.4; }
+.mrow:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; border-radius: 6px; }   /* 面の --accent は lemon 2.95 / rose 3.00 で 3:1 を割る */
+.mrow__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); color: var(--ink); line-height: var(--lh-heading); }
 .mrow__note { display: block; margin-top: 2px; font-weight: 400; font-size: var(--fs-note); color: var(--ink-soft); }
 .mrow__leader { flex: 1; min-width: 16px; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
 .mrow__price { flex: 0 0 auto; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body); color: var(--ink-soft); white-space: nowrap; }
-.mrow__price--off { color: var(--sunset); font-weight: 700; }
+.mrow__price--off { color: var(--sunset-ink); font-weight: 700; }
 
 .mbadge {
   display: inline-block; margin-left: 7px; padding: 1px 8px; border-radius: 999px;
   font-family: var(--font-sans); font-weight: 600; font-size: 0.6rem; letter-spacing: 0.04em; vertical-align: 1px;
-  background: color-mix(in srgb, var(--accent) 15%, var(--paper)); color: var(--accent);
+  /* 同じ色の文字を同じ色のティントに載せるので、ティントは薄く保つ。
+     15% だと -ink でも 4.14〜4.33 で届かない。8% だと #focus が 4.4999 で 4.5 を割るため 7%（4.56〜4.67） */
+  background: color-mix(in srgb, var(--accent) 7%, var(--paper)); color: var(--accent-ink);
 }
 
 .mnote { margin: clamp(28px, 4vw, 40px) 0 0; padding: clamp(18px, 3vw, 24px); background: var(--paper-2); border-radius: 12px; }
@@ -593,7 +788,10 @@ a { color: inherit; }
 
 .menu-back { margin-top: clamp(36px, 5vw, 56px); text-align: center; }
 .menu-back a { color: var(--ink-soft); font-size: var(--fs-body); text-decoration: none; border-bottom: 1px solid var(--border-strong); padding-bottom: 2px; }
-.menu-back a:hover { color: var(--ink); }
+@media (hover: hover) {
+  .menu-back a { transition: color var(--dur-color) var(--ease); }
+  .menu-back a:hover { color: var(--ink); }
+}
 
 /* ============ Schedule ============ */
 .schedule { background: var(--paper); }
@@ -613,11 +811,15 @@ a { color: inherit; }
   align-items: center;
   min-width: 64px;
 }
-.schedule__month { font-family: var(--font-num); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.18em; color: var(--sunset); }
+.schedule__month { font-family: var(--font-num); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.18em; color: var(--sunset-ink); }
 .schedule__day { font-family: var(--font-num); font-weight: 600; font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1; color: var(--ink); }
-.schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe); margin-top: 2px; }
-.schedule__info { flex: 1; min-width: 0; }
-.schedule__event { margin: 0 0 4px; font-weight: 700; font-size: clamp(1rem, 2vw, 1.25rem); color: var(--ink); }
+.schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe-ink); margin-top: 2px; }
+/* flex: 1 だけだと basis が 0 になり、info 列は「縮められるだけ縮む」ので折り返しが一度も発生しない
+   （下の 640px の flex-wrap: wrap は空振りしていた）。375px で info が 167px まで潰れ、
+   日付 64px と 2026 のタグを横に並べたまま、イベント名が3〜4行に割れていた。
+   basis に 12rem（192px）を持たせ、足りなければタグを下の行に落として、イベント名の行長を守る */
+.schedule__info { flex: 1 1 12rem; min-width: 0; }
+.schedule__event { margin: 0 0 4px; font-weight: 700; font-size: var(--fs-sub); line-height: var(--lh-heading); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .schedule__time {
   margin: 3px 0 0;
@@ -639,15 +841,20 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: var(--fs-note);
-  color: var(--sunset);
+  color: var(--sunset-ink);
   text-decoration: none;
   border-bottom: 1px solid color-mix(in srgb, var(--sunset) 40%, transparent);
-  transition: opacity 0.2s ease;
 }
-.schedule__link:hover { opacity: 0.7; }
 .schedule__link--site {
   color: var(--ink-soft);
   border-bottom-color: var(--border-strong);
+}
+/* ホバーは opacity で薄めず --ink に切り替える。opacity .7 だと紙の上で 2.8〜2.9 まで落ちて 4.5 を割る
+   （色のトークンが基準を満たしていても、透過で壊れる。フッターの color-mix(…, transparent) と同じ失敗）。
+   --ink は紙の上で 13.51。--site（--ink-soft）も同じ規則で --ink に寄る */
+@media (hover: hover) {
+  .schedule__link { transition: color var(--dur-color) var(--ease); }
+  .schedule__link:hover { color: var(--ink); }
 }
 .schedule__tag {
   flex: 0 0 auto;
@@ -658,7 +865,7 @@ a { color: inherit; }
   border-radius: 999px;
   padding: 6px 14px;
 }
-.schedule__tag--soon { color: var(--sunset); border-color: color-mix(in srgb, var(--sunset) 45%, transparent); }
+.schedule__tag--soon { color: var(--sunset-ink); border-color: color-mix(in srgb, var(--sunset) 45%, transparent); }
 
 /* ============ MEGURI（恩送りチケット）emotional CTA ============ */
 .meguri-cta {
@@ -702,12 +909,17 @@ a { color: inherit; }
   filter: sepia(0.18) saturate(1.2) contrast(1.05) brightness(1.03);
   /* Soft, uneven feathered edge — several overlapping soft-edged blobs unioned
      together read as a bleeding/watercolor border rather than a hard crop. */
+  /* mask-image が読むのは alpha だけ。下の不透明な色の RGB は描画に一切効かない。
+     それでも純黒にしないのは、「mask は例外」という覚えておくべき例外を作らないため
+     （verify-css の検査4は mask の中も数える）。alpha の並び（不透明 → transparent）と各ストップの位置は
+     黒を使ったときと同一なので、見た目は変わらない。luminance モードに切り替えても、白なら見えたまま。
+     ★ 黒に戻さないこと。見た目は同じでも検査4が落ちる。 */
   --m:
-    radial-gradient(58% 62% at 30% 26%, #000 60%, transparent 78%),
-    radial-gradient(55% 58% at 76% 22%, #000 58%, transparent 76%),
-    radial-gradient(60% 55% at 80% 78%, #000 60%, transparent 78%),
-    radial-gradient(56% 60% at 22% 80%, #000 58%, transparent 76%),
-    radial-gradient(70% 70% at 50% 50%, #000 65%, transparent 84%);
+    radial-gradient(58% 62% at 30% 26%, #fff 60%, transparent 78%),
+    radial-gradient(55% 58% at 76% 22%, #fff 58%, transparent 76%),
+    radial-gradient(60% 55% at 80% 78%, #fff 60%, transparent 78%),
+    radial-gradient(56% 60% at 22% 80%, #fff 58%, transparent 76%),
+    radial-gradient(70% 70% at 50% 50%, #fff 65%, transparent 84%);
   -webkit-mask-image: var(--m);
   mask-image: var(--m);
 }
@@ -745,18 +957,18 @@ a { color: inherit; }
   color: var(--dark-muted);
 }
 .meguri-cta__kanji {
-  font-family: var(--font-ryumin);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: 2.2em;
   line-height: 1;
   color: var(--dark-accent);
 }
 .meguri-cta__title {
   margin: 0 0 clamp(16px, 2.4vw, 26px);
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.6rem, 1.1rem + 2.4vw, 2.6rem);
-  line-height: 1.5;
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
 }
 .meguri-cta__lead {
@@ -783,16 +995,15 @@ a { color: inherit; }
   align-items: center;
   padding: 16px 40px;
   border-radius: 999px;
-  background: var(--sunset);
+  background: var(--sunset-ink);
+  border: 1px solid var(--apricot);   /* 深緑の上。塗りは文字用に暗くしたので、面との境目は枠が受け持つ（--apricot は --dark に 6.93） */
   color: var(--paper);
   font-weight: 700;
-  font-size: var(--fs-body-lg, 1.0625rem);
+  font-size: var(--fs-body-lg);
   letter-spacing: 0.04em;
   text-decoration: none;
-  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 0 10px 30px rgba(197, 90, 59, 0.28);
 }
-.meguri-cta__button:hover { background: #a9482f; transform: translateY(-2px); box-shadow: 0 14px 36px rgba(197, 90, 59, 0.36); }
 /* After the sale closes the link still leads to MEGURI, but as an explanation
    rather than a purchase — so it stops shouting. */
 .meguri-cta__button--quiet {
@@ -800,7 +1011,13 @@ a { color: inherit; }
   border: 1px solid color-mix(in srgb, var(--dark-text) 45%, transparent);
   color: var(--dark-text);
 }
-.meguri-cta__button--quiet:hover { background: color-mix(in srgb, var(--dark-text) 12%, transparent); box-shadow: none; }
+/* 動くもの（transform / box-shadow）は --dur、色だけ --dur-color。
+   :hover の並び（通常 → --quiet）は変えない：--quiet:hover が background / box-shadow を上書きする */
+@media (hover: hover) {
+  .meguri-cta__button { transition: transform var(--dur) var(--ease), background-color var(--dur-color) var(--ease), box-shadow var(--dur) var(--ease); }
+  .meguri-cta__button:hover { background: #a9482f; transform: translateY(-2px); box-shadow: 0 14px 36px rgba(197, 90, 59, 0.36); }
+  .meguri-cta__button--quiet:hover { background: color-mix(in srgb, var(--dark-text) 12%, transparent); box-shadow: none; }
+}
 /* hidden属性は、display 指定を持つ要素でも必ず勝たせる。
    （.support__grid の display:grid が hidden を上書きし、販売終了後もカードが見え続けた事故の再発防止） */
 [hidden] { display: none !important; }
@@ -814,7 +1031,7 @@ a { color: inherit; }
 .schedule__next-title {
   margin: 0 0 10px;
   font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset-ink);
 }
 .schedule__next-body { margin: 0; font-size: var(--fs-body); line-height: 1.8; color: var(--ink-soft); }
 .meguri-cta__sub {
@@ -835,7 +1052,7 @@ a { color: inherit; }
   gap: clamp(16px, 2.4vw, 28px);
 }
 .footer__logo { height: clamp(24px, 3vw, 32px); width: auto; }
-.footer__tagline { margin: 0; font-family: var(--font-mincho); font-size: var(--fs-note); letter-spacing: 0.08em; color: var(--dark-muted); }
+.footer__tagline { margin: 0; font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-note); letter-spacing: 0.08em; color: var(--dark-muted); }
 .footer__social {
   display: flex;
   gap: clamp(28px, 5vw, 56px);
@@ -846,15 +1063,19 @@ a { color: inherit; }
   flex-direction: column;
   gap: 4px;
   text-decoration: none;
-  transition: opacity 0.25s ease;
 }
-.footer__social a:hover { opacity: 0.7; }
-.footer__social-label { font-family: var(--font-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--sunset); }
+/* 暗面の上なので opacity .7 でも文字は 5.58（--dark-accent のラベル）/ 7.30（--dark-text のハンドル）で 4.5 を割らない */
+@media (hover: hover) {
+  .footer__social a { transition: opacity var(--dur) var(--ease); }
+  .footer__social a:hover { opacity: 0.7; }
+}
+.footer__social-label { font-family: var(--font-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--dark-accent); }
 .footer__social-handle { font-family: var(--font-num); font-size: 0.9rem; color: var(--dark-text); }
-.footer__copy { margin: clamp(12px, 2vw, 24px) 0 0; font-family: var(--font-num); font-size: 0.7rem; letter-spacing: 0.06em; color: color-mix(in srgb, var(--dark-muted) 70%, transparent); }
+.footer__copy { margin: clamp(12px, 2vw, 24px) 0 0; font-family: var(--font-num); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--dark-muted); }
 
 /* ============ Responsive ============ */
 @media (max-width: 760px) {
+  :root { --header-content: 28px; }   /* ヘッダーの中身はハンバーガーボタン（高さ 28px）。nav リンクは出ない */
   .nav { display: none; }
   .nav-toggle { display: flex; }
   .header.nav-open { background: rgba(15, 36, 31, 0.98); }
@@ -867,41 +1088,51 @@ a { color: inherit; }
     padding: 24px var(--pad-x) 32px;
     background: rgba(15, 36, 31, 0.98);
     backdrop-filter: blur(10px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+    /* 深緑のヒーローの上に落ちる影。インク色 #2b2b26 だと深緑より明るく、影が消える（Δ(+2,-2,-1)）ので --dark-deep にする。
+       紙の上に重なっても同じ影で働く。alpha は 0.28 → 0.40：深緑の上で Δ(-5,-5,-4)（旧・純黒 0.28 は Δ(-7,-11,-9)）。純黒は使わない */
+    box-shadow: 0 12px 24px rgba(15, 36, 31, 0.40);
   }
   .header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
   .header.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-  .story__grid { grid-template-columns: 1fr; }
+  .story__grid { grid-template-columns: 100%; gap: 32px 0; }  /* 1fr ではなく 100%（1列にする意図の明示）。段階は踏まず一気に落とす */
   .meguri-cta { grid-template-columns: 1fr; }
   .meguri-cta__media { max-width: 360px; margin: 0 auto; width: 100%; }
 }
 
-@media (max-width: 560px) {
-  .signature { grid-template-columns: 1fr; gap: clamp(28px, 8vw, 40px); }
-  .sig-card { max-width: 420px; margin: 0 auto; width: 100%; }
-}
+/* コンテンツ軸（640px）の規則は、下の ============ Responsive: content axis ============ にまとめてある */
 
-@media (max-width: 440px) {
-  .schedule__item { flex-wrap: wrap; }
-  .schedule__tag { order: 3; }
-}
-
-/* ============ Scroll reveal ============ */
-.reveal {
+/* ============ Scroll reveal ============
+   隠す側（opacity: 0）は .js の配下だけ。.js は各ページの <head> の冒頭にある同期スクリプトが <html> に付ける。
+   JS が無効・読み込み失敗の環境では .js が付かず、.reveal は素の要素のまま（常に見える）。
+   参照7サイトは「JS が初期値 0 を立てる」方式で、JS が落ちると本文が永久に opacity: 0 のまま残る。そこは真似ない。
+   script.js 側にも保険がある（IntersectionObserver が無い環境では最初から is-visible を付ける）。 */
+.js .reveal {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(var(--rise));
+  /* 登場だけは --dur（0.3s）ではなく専用の長さ。opacity と transform で duration をずらし、
+     不透明度を先に完走させることで、動きが「完全に見えている要素」の上で起きる */
+  transition: opacity 0.7s var(--ease), transform 0.8s var(--ease);
   transition-delay: calc(var(--delay, 0) * 90ms);
 }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.js .reveal.is-visible { opacity: 1; transform: translateY(0); }
+/* キーボードでフォーカスが入った要素は、IntersectionObserver を待たずに見せる。
+   Tab でスクロールされた要素は画面の下端にぴったり寄る。script.js の観測枠は下端 8% を削っている（rootMargin）ので、
+   そこに入った要素は交差と見なされず opacity: 0 のまま残り、フォーカスリングだけが透明な要素の上に出ていた。 */
+.js .reveal:focus-within { opacity: 1; transform: translateY(0); }
 
+/* 動きを止める仕組みは2層。
+   (1) トークン：--dur / --dur-color を 0s にして、それを使う全ての遷移（ホバー・フォーカス・モーダル・ヘッダー）を一括で止める。
+       .sig-card::after の影、.sig-card / .focus-card の写真の拡大、ヘッダー、モーダルはここで止まる。
+   (2) 個別：トークンを使わず時間を直書きしている2つ（.reveal の 0.7s / 0.8s と、.hero__scroll-cue の 1.9s）だけは、下で名指しして止める。
+   新しい動きを足すときは、時間を直書きせずトークンを使うこと。直書きするならこのブロックに足すこと。
+   詳細度：.js .reveal は 0,2,0 なので、ここも .js 付きで書く（.reveal 単体だと負けて登場演出が復活する）。 */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  :root { --dur: 0s; --dur-color: 0s; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
   .hero__scroll-cue span { animation: none; }
-  .sig-card__photo img { transition: none; }
 }
 
 /* ============ Drink detail modal ============ */
@@ -910,9 +1141,13 @@ a { color: inherit; }
   display: flex; align-items: center; justify-content: center;
   padding: clamp(16px, 4vw, 40px);
   visibility: hidden; opacity: 0;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  /* visibility は「開くときは即」「閉じるときはフェードが終わってから」切り替える。
+     以前は opacity と同じ --dur で補間していたので、開いた瞬間の computed visibility がまだ hidden のままで、
+     script.js の close.focus() が黙って失敗していた（フォーカスがモーダルに入らず、背景のカードに残った）。
+     開くときの遅延を 0s にして即 visible にすれば、同じ処理の中でフォーカスが入る。見た目は変わらない。 */
+  transition: opacity var(--dur) var(--ease), visibility 0s linear var(--dur);
 }
-.drink-modal.is-open { visibility: visible; opacity: 1; }
+.drink-modal.is-open { visibility: visible; opacity: 1; transition-delay: 0s; }
 .drink-modal__overlay { position: absolute; inset: 0; background: rgba(15, 36, 31, 0.55); backdrop-filter: blur(3px); }
 .drink-modal__dialog {
   position: relative;
@@ -922,21 +1157,48 @@ a { color: inherit; }
   display: flex;
   background: var(--paper);
   border-radius: 18px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  /* 影が落ちる先は rgba(15, 36, 31, 0.55) のオーバーレイで暗くなった面。インクだと暗い面で逆に明るくなる（R +5）ので --dark-deep にする。
+     alpha は 0.3 → 0.4。純黒は使わない */
+  box-shadow: 0 30px 80px rgba(15, 36, 31, 0.4);
   transform: translateY(16px) scale(0.98);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur) var(--ease);
 }
 .drink-modal.is-open .drink-modal__dialog { transform: none; }
+/* 閉じるボタン。シートはつかんで下げる操作を持たない（つかみ棒は外した）ので、画面に見える閉じ方はこのボタンだけ。
+   写真の上にも紙の上にも載る。半透明の紙色（旧 rgba(251,249,243,.85)）は、明るい写真の上では溶け、紙の上では消えた。
+   「塗り + 縁」の二重にして、背景が何色でも輪郭が残るようにする。
+     塗り --dark、縁 --paper 2px：塗りと縁の境は 13.4:1。どんな写真の上でも、この内側の境は常に最大のコントラストで残る。
+     縁の外側は写真の色しだいだが、暗い写真なら縁（紙色）が、明るい写真なら塗り（深緑）が輪郭になる。どちらにも寄らない中間の明るさでは両方が効く。
+     文字・×は --paper で、--dark の上 13.4:1。
+   ×だけにせず「閉じる」を添える：つかみ棒を外したいま、画面に見える閉じ方はここだけで、×は「取り消し」「削除」とも読める。
+   ラベルを足すと当たり判定も横に広がり（実測 375px で 111×48px、デスクトップで 103×40px）、親指の届く右上で外しにくくなる。aria-label は据え置き（見えるラベルと同じ語）。 */
+.drink-modal { --close-h: 40px; }
 .drink-modal__close {
   position: absolute; top: 12px; right: 12px; z-index: 2;
-  width: 40px; height: 40px; border-radius: 999px;
-  border: 0; cursor: pointer;
-  background: rgba(251, 249, 243, 0.85);
-  color: var(--ink); font-size: 1.5rem; line-height: 1;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s ease;
+  display: flex; align-items: center; gap: 10px;
+  height: var(--close-h); padding: 0 14px 0 16px;
+  border: 2px solid var(--paper); border-radius: 999px;
+  background: var(--dark); color: var(--paper);
+  box-shadow: 0 2px 10px rgba(15, 36, 31, 0.35);   /* 明るい写真の上で縁が溶けるぶんを影で受ける。影の色は --dark-deep（インクは暗い面で弱い） */
+  font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700; line-height: 1; letter-spacing: 0.08em;
+  cursor: pointer;
 }
-.drink-modal__close:hover { background: var(--paper); }
+/* × は字ではなく線 2 本で描く。字形だとフォントごとに上下の位置がずれ、ピルの中央に来ない */
+.drink-modal__close-x { position: relative; flex: none; width: 14px; height: 14px; }
+.drink-modal__close-x::before, .drink-modal__close-x::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 16px; height: 2px; border-radius: 1px; background: currentColor;
+}
+.drink-modal__close-x::before { transform: translate(-50%, -50%) rotate(45deg); }
+.drink-modal__close-x::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+/* フォーカスも二重にする（既定の --sunset-ink のリングは暗い写真の上で見えない）。
+   内側から：塗り / 紙の縁 2px / 深緑 3px / 紙 2px。深緑の帯は明るい背景で、紙の線は暗い写真で見える。
+   outline は forced-colors でも残る */
+.drink-modal__close:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; box-shadow: 0 0 0 3px var(--dark); }
+@media (hover: hover) {
+  .drink-modal__close { transition: background-color var(--dur-color) var(--ease); }
+  .drink-modal__close:hover { background: var(--dark-deep); }
+}
 .drink-modal__media { flex: 0 0 42%; background: var(--paper-2); }
 .drink-modal__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .drink-modal__content {
@@ -945,17 +1207,11 @@ a { color: inherit; }
   padding: clamp(22px, 3vw, 34px);
   overflow-y: auto;
 }
-.drink-modal__tag { margin: 0 0 8px; font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--accent, var(--sunset)); }
+.drink-modal__tag { margin: 0 0 8px; font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--accent-ink, var(--sunset-ink)); }
 .drink-modal__name { margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.35; color: var(--ink); }
 .drink-modal__sub { margin: 6px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .drink-modal__desc { margin: clamp(12px, 1.8vw, 16px) 0 0; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
-.drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; color: var(--ink); }
-
-@media (max-width: 640px) {
-  .drink-modal__dialog { flex-direction: column; width: min(420px, 100%); }
-  .drink-modal__media { flex: 0 0 auto; }
-  .drink-modal__media img { aspect-ratio: 4 / 3; height: auto; }
-}
+.drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; line-height: 1; color: var(--ink); }
 
 /* ---- Sheet variant (/menu): rises from the bottom, stacked, with the
    ingredient line and taste meters the menu page shows. ---- */
@@ -966,26 +1222,35 @@ a { color: inherit; }
   max-height: 88svh;
   border-radius: 20px 20px 0 0;
   transform: translateY(100%);
-  transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur) var(--ease);
   overflow-y: auto;
 }
 .drink-modal--sheet.is-open .drink-modal__dialog { transform: none; }
-.drink-modal__grabber {
-  width: 36px; height: 4px; border-radius: 999px;
-  background: var(--border-strong); margin: 12px auto 2px; flex: 0 0 auto;
+/* シートは dialog 自体がスクロールする（max-height 88svh）ので、position: absolute のままだと閉じるボタンも一緒に流れて消える
+   （375×812 でサンセットを開いて 190px 下げると y=-81 まで上がった）。sticky にして、スクロールしても上端 12px に残す。
+   margin の下側を負にして高さ 0 の箱にし、ボタンは写真の上に重ねる（in-flow のままだと写真が下に押される）。
+   置き場所：写真があるときは写真の角から 8px 内側（写真は左右 18px・上 18px の余白なので 26px）、
+   写真が無いとき（ドリンク 11 品のうち 9 品）は紙の角から 12px。--close-top / --close-right がその差分。 */
+.drink-modal--sheet .drink-modal__close {
+  position: sticky; top: 12px; align-self: flex-end; flex: none;
+  margin: var(--close-top, 12px) var(--close-right, 12px) calc(-1 * (var(--close-top, 12px) + var(--close-h))) 0;
 }
+.drink-modal--sheet:has(.drink-modal__media:not(:empty)) { --close-top: 26px; --close-right: 26px; }
 .drink-modal--sheet .drink-modal__media {
-  flex: 0 0 auto; aspect-ratio: 4 / 3; margin: 10px 18px 0;
-  border-radius: 14px; overflow: hidden;
+  flex: 0 0 auto; aspect-ratio: 4 / 3; margin: 18px 18px 0;
+  border-radius: 6px; overflow: hidden;
 }
+/* 写真が無いと、ボタンが題名の右端に重なる（「プレミアム瀬戸内レモンスカッシュ」は 375px で右端まで届く）。
+   写真の無いシートは、ボタンの下（上端 12px + 高さ + 8px）から内容を始める */
+.drink-modal--sheet .drink-modal__media:empty + .drink-modal__content { padding-top: calc(12px + var(--close-h) + 8px); }
 .drink-modal--sheet .drink-modal__media img { aspect-ratio: auto; height: 100%; }
 .drink-modal--sheet .drink-modal__content { overflow: visible; padding: 16px 20px 28px; }
 .drink-modal--sheet .drink-modal__price { margin-top: 6px; font-size: 1.05rem; }
 .drink-modal--sheet .drink-modal__desc { margin-top: 14px; font-size: var(--fs-body); }
 
-.drink-modal__ingredients { margin: 8px 0 0; font-size: 0.72rem; line-height: 1.7; color: var(--taupe); }
+.drink-modal__ingredients { margin: 8px 0 0; font-size: 0.72rem; line-height: 1.7; color: var(--taupe-ink); }
 .drink-modal__ingredients:empty { display: none; }
-.drink-modal__note { margin: 5px 0 0; font-size: 0.7rem; line-height: 1.7; color: var(--taupe); }
+.drink-modal__note { margin: 5px 0 0; font-size: 0.7rem; line-height: 1.7; color: var(--taupe-ink); }
 .drink-modal__note:empty { display: none; }
 
 .drink-modal__facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
@@ -993,9 +1258,12 @@ a { color: inherit; }
   padding: 6px 12px; border-radius: 999px; background: var(--paper-2);
   font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600;
 }
-.fact--caffeine-yes { color: var(--tea-brown); }
-.fact--caffeine-no  { color: var(--herbal); }
-.fact--age { color: var(--amber); background: color-mix(in srgb, var(--amber) 14%, var(--paper-2)); }
+.fact--caffeine-yes { color: var(--tea-brown-ink); }
+.fact--caffeine-no  { color: var(--herbal-ink); }
+/* 年齢注意だけは色の置換で救えない：琥珀のティント（14%）の上に琥珀の文字を載せると、
+   --amber-ink でも 3.87 しか出ない（4% まで薄めても 4.35）。文字は --ink（10.47）にして、
+   カテゴリの信号は背景のティントに任せる */
+.fact--age { color: var(--ink); background: color-mix(in srgb, var(--amber) 14%, var(--paper-2)); }
 
 .taste { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
 .taste:empty { display: none; }
@@ -1003,7 +1271,10 @@ a { color: inherit; }
 .taste__label { font-size: 0.72rem; color: var(--ink-soft); }
 .taste__dots { display: flex; gap: 5px; }
 .taste__dot { width: 9px; height: 9px; border-radius: 999px; background: var(--border-strong); }
-.taste__dot.filled { background: var(--accent, var(--sunset)); }
+/* 塗った点は「味の段階」を読み取る情報そのもの（甘さ・爽快感・香りの 1〜3）なので、非テキストの 3:1（WCAG 1.4.11）が要る。
+   面の --accent は紙の上で lemon 2.95 / rose 3.00（2.9995）で届かない。-ink にする（紙の上で 4.95〜5.00）。
+   -ink を塗りに使う唯一の例外。ダイアログは紙の面で、深緑の上には出ない。 */
+.taste__dot.filled { background: var(--accent-ink, var(--sunset-ink)); }
 
 /* ============ Schedule page (/schedule/) ============ */
 /* 出店予定と、これまでの出店の記録をまとめたページ。
@@ -1013,7 +1284,7 @@ a { color: inherit; }
 
 /* 過去の出店。予定と同じ見た目だと今の情報に見えるので、少し落ち着かせる */
 .schedule__list--past .schedule__day { color: var(--ink-soft); }
-.schedule__list--past .schedule__month { color: var(--taupe); }
+.schedule__list--past .schedule__month { color: var(--taupe-ink); }
 
 /* 会場変更の経緯など、その日の補足 */
 .schedule__note {
@@ -1044,7 +1315,7 @@ a { color: inherit; }
 .shop-note__title {
   margin: 0 0 12px;
   font-size: var(--fs-eyebrow);
-  letter-spacing: 0.22em; color: var(--sunset);
+  letter-spacing: 0.22em; color: var(--sunset-ink);
 }
 .shop-note__body {
   margin: 0 0 16px;
@@ -1053,20 +1324,18 @@ a { color: inherit; }
 .shop-note__link {
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
   text-decoration: none;
-  transition: opacity 0.2s;
 }
-.shop-note__link:hover { opacity: 0.7; }
-@media (max-width: 560px) {
-  .shop-note { flex-direction: column; }
-  .shop-note__media { flex: none; width: min(190px, 58%); }
-  .shop-note__body-col { width: 100%; }
+/* opacity .7 は紙の上で 2.91。色を --ink（13.51）に切り替える */
+@media (hover: hover) {
+  .shop-note__link { transition: color var(--dur-color) var(--ease); }
+  .shop-note__link:hover { color: var(--ink); }
 }
 
 /* ============ Online store（トップ：出店がないあいだの受け皿） ============
    白い角丸カードに収める案は既存の世界観（罫線と余白で区切る編集的なレイアウト）から
-   浮いていたため撤回。商品写真は紙の上に直接置き、見出しは他セクションと同じ明朝にそろえる。 */
+   浮いていたため撤回。商品写真は紙の上に直接置き、見出しは他セクションと同じ書体にそろえる。 */
 .store { background: var(--paper-2); }
 .store__item {
   display: flex;
@@ -1085,38 +1354,37 @@ a { color: inherit; }
   margin: 0 0 14px;
   font-size: var(--fs-eyebrow);
   letter-spacing: 0.22em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
 }
 .store__name {
   margin: 0 0 4px;
-  font-family: var(--font-mincho);
-  font-weight: 300; /* Ryumin Pr6N は 300 のみ配信 */
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
   color: var(--ink);
 }
-.store__sub { margin: 0 0 16px; font-size: var(--fs-note); color: var(--taupe); }
+.store__sub { margin: 0 0 16px; font-size: var(--fs-note); color: var(--taupe-ink); }
 .store__text { margin: 0 0 20px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
 /* リンクはスケジュール欄と同じ「太字＋矢印」の言語にそろえる（下線・囲みは使わない） */
 .store__link {
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
   text-decoration: none;
-  transition: opacity 0.2s;
 }
-.store__link:hover { opacity: 0.7; }
+/* opacity .7 は薄面 --paper-2 の上で 2.75。色を --ink（12.29）に切り替える */
+@media (hover: hover) {
+  .store__link { transition: color var(--dur-color) var(--ease); }
+  .store__link:hover { color: var(--ink); }
+}
 .store__coming {
   max-width: 820px;
   margin: clamp(40px, 6vw, 64px) auto 0;
   padding-top: clamp(20px, 3vw, 28px);
   border-top: 1px solid var(--border-strong);
   font-size: var(--fs-note); line-height: 2; color: var(--ink-soft);
-}
-@media (max-width: 560px) {
-  .store__item { flex-direction: column; }
-  .store__media { flex: none; width: min(210px, 62%); }
-  .store__body { width: 100%; }
 }
 
 
@@ -1132,9 +1400,11 @@ a { color: inherit; }
 .footer__op a {
   color: var(--dark-muted);
   text-decoration: none;
-  transition: color 0.25s ease;
 }
-.footer__op a:hover { color: var(--dark-text); }
+@media (hover: hover) {
+  .footer__op a { transition: color var(--dur-color) var(--ease); }
+  .footer__op a:hover { color: var(--dark-text); }
+}
 
 /* ============ 秋の特設（現在はティート 信州巨峰） ============
    STORY と同じ紙色が続いて境目が消えていたので、季節ものは深緑の一枚のカードに収める。
@@ -1142,9 +1412,10 @@ a { color: inherit; }
 .autumn { background: var(--paper); }
 .autumn__name {
   margin: 0 0 6px;
-  font-family: var(--font-mincho);
-  font-weight: 300; /* Ryumin Pr6N は 300 のみ配信 */
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  line-height: var(--lh-heading);
   letter-spacing: 0.04em;
   color: var(--ink);
 }
@@ -1152,24 +1423,28 @@ a { color: inherit; }
   display: block; margin-top: 4px;
   font-family: var(--font-sans); font-weight: 500;
   font-size: var(--fs-note); letter-spacing: 0.06em;
-  color: var(--taupe);
+  color: var(--taupe-ink);
 }
 .autumn__price {
   margin: 0 0 12px;
   font-family: var(--font-num); font-weight: 600;
-  font-size: 1.3rem; color: var(--ink);
+  font-size: 1.3rem; line-height: 1; color: var(--ink);
 }
 /* 購入先へのボタン */
 .autumn__cta {
   margin-top: auto;
   display: block; text-align: center; text-decoration: none;
   padding: 14px 16px; min-height: 48px; border-radius: 999px;
-  background: var(--sunset); color: #fff;
+  background: var(--sunset-ink); color: #fff;
+  border: 1px solid var(--apricot);   /* 深緑カードの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: 0.9rem; letter-spacing: 0.06em;
-  transition: opacity 0.2s;
 }
-.autumn__cta:hover { opacity: 0.88; }
+/* 暗面の上で opacity .88 にしても、ボタン内の文字（白 on --sunset-ink）は 4.76 で 4.5 を割らない */
+@media (hover: hover) {
+  .autumn__cta { transition: opacity var(--dur) var(--ease); }
+  .autumn__cta:hover { opacity: 0.88; }
+}
 .autumn__cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 /* つくり手の紹介。ティートは TEAtriCO のものなので、名前と取り組みをはっきり置く */
 .autumn__maker {
@@ -1181,31 +1456,34 @@ a { color: inherit; }
 .autumn__maker-label {
   margin: 0 0 10px;
   font-size: var(--fs-eyebrow); letter-spacing: 0.22em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
 }
 .autumn__maker-name {
   margin: 0 0 12px;
-  font-family: var(--font-num); font-weight: 600;
-  font-size: clamp(1.2rem, 2vw, 1.4rem); letter-spacing: 0.02em;
+  font-family: var(--font-sans); font-weight: 600;
+  font-size: var(--fs-sub); line-height: var(--lh-heading); letter-spacing: 0.02em;
   color: var(--ink);
 }
 .autumn__maker-text { margin: 0 0 16px; max-width: 60ch; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
 .autumn__fine {
   max-width: 880px;
   margin: clamp(28px, 4vw, 40px) auto 0;
-  font-size: 0.72rem; line-height: 1.9; color: var(--taupe);
+  font-size: 0.72rem; line-height: 1.9; color: var(--taupe-ink);
 }
 /* ヒーローからBOXへの導線。最初の画面から1タップで届かせる */
 .hero__cta-row { margin: clamp(22px, 3vw, 30px) 0 0; }
 .hero__cta {
   display: inline-flex; align-items: center;
   min-height: 44px; padding: 12px 26px; border-radius: 999px;
-  background: var(--sunset); color: #fff; text-decoration: none;
+  background: var(--sunset-ink); color: #fff; text-decoration: none;
+  border: 1px solid var(--apricot);   /* 深緑のヒーローの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.06em;
-  transition: opacity 0.2s;
 }
-.hero__cta:hover { opacity: 0.88; }
+@media (hover: hover) {
+  .hero__cta { transition: opacity var(--dur) var(--ease); }
+  .hero__cta:hover { opacity: 0.88; }
+}
 .hero__cta:focus-visible { outline: 2px solid var(--dark-text); outline-offset: 3px; }
 
 /* 発送遅延など、期間限定の運営からのお知らせ。「次回の出店」欄と同じ佇まいにそろえる */
@@ -1220,7 +1498,7 @@ a { color: inherit; }
 .site-notice__title {
   margin: 0 0 10px;
   font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset-ink);
 }
 .site-notice__body { margin: 0; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
 
@@ -1232,26 +1510,18 @@ a { color: inherit; }
   max-width: 880px; margin: 0 auto;
 }
 .kyoho__media { flex: 0 0 clamp(220px, 44%, 400px); margin: 0; }
-.kyoho__media img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.kyoho__media img { display: block; width: 100%; height: auto; border-radius: 6px; }
 .kyoho__body { flex: 1; min-width: 0; }
 .kyoho__text { margin: 0 0 22px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
 .autumn__cta--inline { display: inline-block; margin-top: 0; padding-inline: 28px; }
 
-/* つくり手ブロックに写真を添える形（巨峰：茶葉の寄り。白背景なので丸く切って紙になじませる） */
+/* つくり手ブロックに写真を添える形（巨峰：茶葉の寄り。白背景の写真なので、丸く切らず矩形の枠のまま置く） */
 .autumn__maker--media { display: flex; align-items: center; gap: clamp(24px, 5vw, 48px); }
 .autumn__maker-media { flex: 0 0 clamp(110px, 20%, 160px); margin: 0; }
 .autumn__maker-media img {
   display: block; width: 100%; height: auto;
-  border-radius: 999px;
+  border-radius: 6px;
   mix-blend-mode: multiply;
-}
-
-@media (max-width: 640px) {
-  .kyoho { flex-direction: column; }
-  .kyoho__media { flex: none; width: 100%; max-width: 420px; }
-  .kyoho__body { width: 100%; }
-  .autumn__maker--media { flex-direction: column; align-items: flex-start; }
-  .autumn__maker-media { width: min(150px, 46%); }
 }
 
 /* 秋の特設カード本体。暗面なので、文字色は暗面用のトークンに差し替える */
@@ -1264,7 +1534,7 @@ a { color: inherit; }
   color: var(--dark-text);
 }
 .autumn__card .section__head { margin-bottom: clamp(36px, 5vw, 52px); }
-.autumn__card .section__eyebrow { color: var(--apricot); }
+.autumn__card .section__eyebrow { color: var(--dark-text); }
 .autumn__card .section__title { color: var(--dark-text); }
 .autumn__card .section__note { color: var(--dark-muted); }
 .autumn__card .autumn__name,
@@ -1275,7 +1545,131 @@ a { color: inherit; }
 .autumn__card .autumn__maker { border-top-color: color-mix(in srgb, var(--dark-text) 18%, transparent); }
 .autumn__card .autumn__maker-label { color: var(--apricot); }
 .autumn__card .autumn__maker-text { color: var(--dark-muted); }
-.autumn__card .autumn__fine { color: color-mix(in srgb, var(--dark-muted) 85%, transparent); }
-/* 茶葉の寄りは白背景ごと丸く見せる。深緑の上に、皿にのせたように浮かぶ */
+.autumn__card .autumn__fine { color: var(--dark-muted); }
+/* 茶葉の寄りは白背景ごと見せる。深緑の上に、白い写真が矩形の枠のまま1枚置かれる */
 .autumn__card .autumn__maker-media img { mix-blend-mode: normal; }
 .autumn__card .autumn__cta:focus-visible { outline-color: var(--dark-text); }
+
+/* ============ Responsive: content axis（640px）============
+   「横並び → 縦積み」と、スマホで部品を整える規則は、すべてこの1本にまとめる。
+   しきい値は 640px と、ナビ用の 760px（上の Responsive）の2本だけ。
+   実機はスマホ 320〜430px とタブレット 768px 以上で、440〜760px の帯はほぼ空。
+   そこに 440 / 560 / 640 と3本置いても得るものが無かったので 640 に寄せた。
+   ファイルの末尾に置くのは、各部品の素の規則（flex / width など）と詳細度が同じで、
+   後ろに書かれたほうが勝つため。途中に置くと、後ろの素の規則に上書きされる。 */
+@media (max-width: 640px) {
+  /* スマホは行間を広げるのが定説だが逆。1行の文字数が減るぶん詰めてよい。
+     実測でも本文 2.4→2.2、見出し 1.7→1.6、リード 240%→200% と狭めている */
+  body { line-height: 2.0; }
+
+  /* SPのほうを大きくする。1画面の要素数が少なく縦スクロール量が大きいので、
+     20pxでは登場に気づかれない。小さい画面では動きを控えるという定石とは逆 */
+  :root { --rise: 30px; }
+
+  /* ---- 横並び → 縦積み（一気に落とす。段階は踏まない） ---- */
+  .signature { grid-template-columns: 100%; gap: clamp(28px, 8vw, 40px) 0; }
+  .sig-card { max-width: 420px; margin: 0 auto; width: 100%; }
+
+  .schedule__item { flex-wrap: wrap; }
+  .schedule__tag { order: 3; }
+
+  .shop-note { flex-direction: column; }
+  .shop-note__media { flex: none; width: min(190px, 58%); }
+  .shop-note__body-col { width: 100%; }
+
+  .store__item { flex-direction: column; }
+  .store__media { flex: none; width: min(210px, 62%); }
+  .store__body { width: 100%; }
+
+  .kyoho { flex-direction: column; }
+  .kyoho__media { flex: none; width: 100%; max-width: 420px; }
+  .kyoho__body { width: 100%; }
+  .autumn__maker--media { flex-direction: column; align-items: flex-start; }
+  .autumn__maker-media { width: min(150px, 46%); }
+
+  .drink-modal__dialog { flex-direction: column; width: min(420px, 100%); }
+  .drink-modal__media { flex: 0 0 auto; }
+  .drink-modal__media img { aspect-ratio: 4 / 3; height: auto; }
+
+  /* ---- 小さい部品は縮小ではなく拡大する ----
+     参照サイトの実測は、アイコン 10→14 / 12→18 / 16→22px（1.4〜1.5倍）、ボタン 80→100 / 180→220px（約1.25倍）。
+     スマホで消してよいのは装飾と英語サブラベルだけで、残す部品は大きく描き直す。
+     --pad-y と --pad-x は触らない（縦の余白はスマホのほうが広い参照値が多く、左右 20px の下限は守る）。 */
+
+  /* 文字の下限は 12px（--fs-eyebrow）。引き上げるのは 0.6〜0.72rem（9.6〜11.5px）の固定値だけ。
+     --fs-note が 12px 始まりなので、これ以上に上げると注釈より見出しのラベルのほうが大きくなる */
+  .catnav a, .mbadge, .sig-card__tag, .drink-modal__tag, .mnote__title, .schedule__dow, .schedule__tag,
+  .schedule__next-title, .site-notice__title, .footer__social-label, .footer__copy, .autumn__fine,
+  .drink-modal__ingredients, .drink-modal__note, .fact, .taste__label { font-size: var(--fs-eyebrow); }
+
+  /* チップ・バッジ・点は 1.25〜1.45 倍 */
+  .mbadge { margin-left: 9px; padding: 2px 10px; }                     /* 7px / 1px 8px */
+  .fact { padding: 8px 16px; }                                         /* 6px 12px */
+  .schedule__tag { padding: 8px 14px; }                                /* 6px 14px。横は据え置く：増やすと右の info 列がさらに潰れる */
+  .catnav a { gap: 8px; padding: 11px 18px; }                          /* 41px → 48px。8px 14px */
+  .catnav a::before { width: 10px; height: 10px; }                     /* 7px */
+  .mcat { scroll-margin-top: calc(var(--header-h) + 60px); }    /* カテゴリ帯が 62→69px になったぶん */
+  .taste__dots { gap: 7px; }                                           /* 5px */
+  .taste__dot { width: 13px; height: 13px; }                           /* 9px */
+  .drink-modal { --close-h: 48px; }                                     /* 40px。閉じるボタンの高さ。シートの余白の計算も読む */
+  .drink-modal__close { padding: 0 18px 0 20px; }                       /* 0 14px 0 16px */
+  .header.nav-open .nav a { font-size: 1rem; }                         /* 13px。開いたドロワーの縦並び */
+
+  /* タップ領域 48px。文字だけのリンクは min-height で本体ごと広げる。
+     下線を border-bottom で引いているリンク（.schedule__link / .menu-back a）は、本体を広げると
+     下線が文字から離れるので、疑似要素で当たり判定だけ広げる */
+  .store__link, .shop-note__link, .footer__op a { display: inline-flex; align-items: center; min-height: 48px; }
+  .header__logo, .schedule__link, .menu-back a { position: relative; }
+  .header__logo::after { content: ""; position: absolute; inset: -14px -8px; }       /* 91×20px → 107×48px */
+  .schedule__link::after { content: ""; position: absolute; inset: -12px -6px; }       /* 25px → 49px */
+  .menu-back a::after { content: ""; position: absolute; inset: -14px -6px; }        /* 本体はインラインで約 22px → 50px */
+  .schedule__links { row-gap: 24px; }                                  /* 当たり判定が上下で重ならないように 6px から */
+}
+
+/* ============ Accessibility: キーボード・印刷 ============
+   参照7サイトの CSS（計 1.3MB）には、自前の :focus-visible がゼロ、@media print がゼロ。ここは真似ずに足す。 */
+
+/* フォーカスリングのフォールバック。
+   個別のリングを持つ部品（.sig-card / .focus-card / .mrow / .hero__cta / .autumn__cta）はそれぞれ自前のものを使う。
+   ここはそこから漏れる要素（本文中のリンク、ボタン、フォーム部品、summary、tabindex を持つ要素）の受け皿。
+   :where() は詳細度 0 なので、上の個別規則とは書く順番に関係なく個別規則が勝つ（.sig-card の outline: none も効く）。
+   border-radius は上書きしない：ピル形のボタン（999px）がフォーカスで角張るため。outline は要素の角丸に沿って描かれる。
+   色は --focus-ring を読む。既定は紙の上で 4.51〜5.22 の --sunset-ink（薄面 4.51 / 紙 4.96 / 白 5.22）。 */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring, var(--sunset-ink));
+  outline-offset: 2px;
+}
+/* 深緑の面の上では紙色のリングにする（--dark 13.38 / --dark-deep 15.43）。-ink は深緑の上で 2.7 しか出ない。
+   深緑の面を新しく足したら、ここにも足すこと。 */
+.header, .hero, .story-hero, .board-title, .story-vision, .meguri-cta, .autumn__card, .footer {
+  --focus-ring: var(--paper);
+}
+
+/* フォーカスが固定ヘッダーの下に潜らないようにする。
+   Shift+Tab で戻ると、ブラウザは要素を画面の上端ぴったりまで寄せる。上端には固定ヘッダー（52〜65px）があり、
+   /menu ではその下に sticky のカテゴリ帯（約 64px）が続くので、リンクや行が丸ごと隠れてリングが見えなかった。
+   scroll-margin-top は「スクロールで寄せるとき、要素の上に空けておく量」で、静止時の見た目は動かない。
+   ヘッダーとカテゴリ帯の中身は固定・sticky で動かないので、ここでは寄せ量を足さない。 */
+:where(a, button, input, select, textarea, summary, [tabindex]) { scroll-margin-top: calc(var(--header-h) + 1rem); }   /* ヘッダー + 余白 */
+.menu-page :where(a, button, [tabindex]) { scroll-margin-top: calc(var(--header-h) + 5rem); }                       /* + カテゴリ帯（64〜69px） */
+.header :where(a, button), .catnav :where(a) { scroll-margin-top: 0; }
+
+/* 印刷。.js .reveal は既定で opacity: 0 なので、スクロール前に印刷すると本文が白紙で出る。
+   !important は、詳細度 0,3,0 の .js .reveal.is-visible や将来の規則に関係なく、印刷では必ず見せるため。 */
+@media print {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  /* 深緑の面。ブラウザの既定（背景を印刷しない）だと、面が消えて明るい文字だけが白紙に残り、読めない。
+     面ごと印刷させる。上の --focus-ring と同じ面の一覧 */
+  .header, .hero, .story-hero, .board-title, .story-vision, .meguri-cta, .autumn__card, .footer {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* position: fixed は全ページに繰り返し出て、本文に重なる。最初の1枚の上端に1度だけ出す */
+  .header { position: absolute; }
+  /* ハンバーガーは操作部品で、紙の上では何もできない（印刷幅は約 717px で 760px 以下のレイアウトになるため出てしまう） */
+  .nav-toggle { display: none; }
+}

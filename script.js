@@ -13,18 +13,26 @@ document.querySelectorAll(".reveal[data-delay]").forEach((el) => {
   el.style.setProperty("--delay", el.dataset.delay);
 });
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
-);
-document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+// .reveal は <head> の同期スクリプトが付ける .js の配下でだけ opacity: 0 になる（style.css）。
+// IntersectionObserver が無い環境では、ここで落ちると以降の処理（ナビ・モーダル）まで止まり、
+// 本文も透明のまま残る。なので無ければ観測せず、最初から見せる。
+const reveals = document.querySelectorAll(".reveal");
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+  );
+  reveals.forEach((el) => observer.observe(el));
+} else {
+  reveals.forEach((el) => el.classList.add("is-visible"));
+}
 
 // Header background on scroll (skipped when the header is pinned solid, e.g. subpages)
 const header = document.querySelector(".header");
@@ -47,6 +55,16 @@ document.querySelectorAll(".nav a").forEach((link) => {
     header.classList.remove("nav-open");
     toggle.setAttribute("aria-expanded", "false");
   });
+});
+// Escape で開いたドロワーを閉じる。ドロワーの中のリンクにフォーカスがあれば、閉じるとそのリンクごと消える（display: none）ので、
+// フォーカスはトグルに戻す。ドリンクのモーダルが開いているときは、前面にあるモーダルを先に閉じる（下のハンドラ）のでここでは何もしない。
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Escape" || !header.classList.contains("nav-open")) return;
+  if (document.querySelector(".drink-modal.is-open")) return;
+  const inDrawer = document.activeElement !== toggle && header.contains(document.activeElement);
+  header.classList.remove("nav-open");
+  toggle.setAttribute("aria-expanded", "false");
+  if (inDrawer) toggle.focus();
 });
 
 // ============ Drink detail modal ============
@@ -100,6 +118,7 @@ const DRINKS = {
 };
 
 const FLAVOR_VAR = { sunset: "var(--sunset)", herbal: "var(--herbal)", "tea-brown": "var(--tea-brown)", lemon: "var(--lemon)", amber: "var(--amber)", rose: "var(--rose)" };
+const FLAVOR_INK_VAR = { sunset: "var(--sunset-ink)", herbal: "var(--herbal-ink)", "tea-brown": "var(--tea-brown-ink)", lemon: "var(--lemon-ink)", amber: "var(--amber-ink)", rose: "var(--rose-ink)" };
 
 const modal = document.getElementById("drinkModal");
 if (modal) {
@@ -127,7 +146,9 @@ if (modal) {
     lastFocused = document.activeElement;
 
     // Accent flows through CSS so light/dark handling stays in the stylesheet.
+    // 面・線は --accent、文字は --accent-ink。二つは必ず対で流す（片方だけだと文字が面の色を読む）
     modal.style.setProperty("--accent", FLAVOR_VAR[d.flavor] || "var(--sunset)");
+    modal.style.setProperty("--accent-ink", FLAVOR_INK_VAR[d.flavor] || "var(--sunset-ink)");
 
     const media = $("dmMedia");
     if (media) {
@@ -161,6 +182,10 @@ if (modal) {
         : "";
     }
 
+    // スクロールするのはシートでは dialog 自身、中央のダイアログでは content。前のドリンクで下げた位置が残ると、
+    // 次のドリンクが写真（と閉じるボタンの定位置）の見切れた状態で開く。開くたびに先頭へ戻す
+    modal.querySelectorAll(".drink-modal__dialog, .drink-modal__content").forEach((el) => { el.scrollTop = 0; });
+
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     // Background is left scrollable on purpose — locking it caused a layout
@@ -184,6 +209,20 @@ if (modal) {
   modal.querySelectorAll("[data-close]").forEach((c) => c.addEventListener("click", closeDrink));
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && modal.classList.contains("is-open")) closeDrink();
+  });
+
+  // フォーカスを閉じるまでダイアログの中に留める。ダイアログは aria-modal="true" を名乗っているので、
+  // キーボードもそれに従う（背景のカードやリンクへ抜けない）。中にあるのは今は閉じるボタンだけだが、
+  // 要素が増えても Tab は先頭と末尾でループする。
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab" || !modal.classList.contains("is-open")) return;
+    const dialog = modal.querySelector(".drink-modal__dialog");
+    const items = [...dialog.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])')];
+    if (!items.length) { e.preventDefault(); return; }
+    const first = items[0], last = items[items.length - 1];
+    if (!dialog.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 }
 
