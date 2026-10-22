@@ -196,5 +196,19 @@ if (modal) {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && modal.classList.contains("is-open")) closeDrink();
   });
+
+  // フォーカスを閉じるまでダイアログの中に留める。ダイアログは aria-modal="true" を名乗っているので、
+  // キーボードもそれに従う（背景のカードやリンクへ抜けない）。中にあるのは今は閉じるボタンだけだが、
+  // 要素が増えても Tab は先頭と末尾でループする。
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab" || !modal.classList.contains("is-open")) return;
+    const dialog = modal.querySelector(".drink-modal__dialog");
+    const items = [...dialog.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])')];
+    if (!items.length) { e.preventDefault(); return; }
+    const first = items[0], last = items[items.length - 1];
+    if (!dialog.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
 }
 
