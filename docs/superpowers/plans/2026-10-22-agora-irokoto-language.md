@@ -111,7 +111,7 @@ const tokens = Object.fromEntries(
 
 console.log('\n=== 1. 文字色のコントラスト（紙 --paper の上で4.5以上） ===');
 // 文字に使ってよい色は -ink 系と ink / ink-soft のみ。面用の素の色を文字に使っていないか
-const TEXT_TOKENS = ['ink', 'ink-soft', 'sunset-ink', 'taupe-ink', 'amber-ink', 'tea-brown-ink', 'herbal'];
+const TEXT_TOKENS = ['ink', 'ink-soft', 'sunset-ink', 'rose-ink', 'lemon-ink', 'amber-ink', 'tea-brown-ink', 'herbal-ink', 'taupe-ink'];
 for (const t of TEXT_TOKENS) {
   if (!tokens[t]) { check(`--${t} が定義されている`, false, '未定義'); continue; }
   const r = ratio(tokens[t], tokens.paper);
@@ -244,11 +244,16 @@ node tools/verify-css.mjs で静的に判定できる10項目を見る。
   --herbal-ink:    #5a734f;  /* 紙 4.99 / 薄面 4.54（元 #5F7A54 は薄面で 4.13） */
   --taupe-ink:     #706c5b;  /* 紙 5.01 / 薄面 4.55（元 #8a8570 は 3.52 / 3.20） */
 
+  /* 既存の補助テキスト色も薄面で基準割れしている。
+     --ink-soft #6a706f は紙 4.79 だが薄面 #F3EEE3 では 4.36。
+     明度98%まで落とすだけで両方満たす（見分けはつかない） */
+  --ink-soft:      #676d6c;  /* 紙 5.01 / 薄面 4.56（元 #6a706f は 4.79 / 4.36） */
+
   /* カテゴリ色の間接参照用。面は --accent、文字は --accent-ink を参照する。
      #soda が --accent: var(--rose) を入れており、.mcat__title が紙の上で 3.00 しかない。
      これは公開中のサイトに実在する不備で、今回あわせて直す */
   /* 深緑 --dark の面の上では -ink を使わないこと。
-     -ink は深緑の上で 2.93〜2.96 と、元の色（--sunset 3.29）より悪化する。
+     -ink は深緑の上で 2.67〜2.70 と、元の色（--sunset 3.29）より悪化する。
      深緑の上は --dark-accent(8.66) / --dark-text(11.80) / --apricot(6.93) を使う */
 
   /* --- 影 ---
@@ -444,7 +449,22 @@ fonts.adobe.com 側の操作。読み込みが軽くなるが必須ではない�
 イロコトはDOM順も日本語が先。英字は読み上げる意味を持たない装飾なので `aria-hidden` を付ける
 （参照7サイトは全て付けておらず、スクリーンリーダーが「Service Service」と二度読む状態になっている）。
 
-全5ページ・13箇所に同じ変換をかける。`.hero__eyebrow` も同様に `.hero__title` の後ろへ移す。
+> **対象は `section__eyebrow` だけ。** 実物を読んだ結果、eyebrow は2種類あった。
+>
+> | クラス | 中身 | 扱い |
+> |---|---|---|
+> | `.section__eyebrow` | `AUTUMN TEA TIME` / `VISION` | **装飾**。反転して `opacity: .2` + `aria-hidden` |
+> | `.hero__eyebrow` | `千葉のキッチンカー ／ TEA & COFFEE` | **情報**。そのまま残す |
+> | `.meguri-cta__eyebrow` | `巡 恩送りチケット MEGURI` | **情報**。そのまま残す |
+>
+> 後ろの2つは装飾のラテン文字ではなく、業態と所在地・企画名を伝える日本語。
+> `opacity: .2` に落として `aria-hidden` を付けると、**店の説明が見えなくなり読み上げからも消える**。
+> DOM順も動かさない。これらに必要なのはコントラストの修正だけで、
+> 両方とも `--dark` の面に乗っているので `--dark-accent #C9CF9E`（8.66）にする。
+>
+> イロコトの型が成立するのは、`.ja` と `.en` が**同じ意味を重複して持っている**とき
+> （事業内容 / Services）に限る。英字を消しても情報が失われないから装飾にできる。
+> 重複していないラベルに同じ型を当てると、ただ情報を削ったことになる。
 
 - [ ] **Step 2: CSSで英字を装飾に降格する**
 
@@ -539,11 +559,14 @@ JSが落ちると英字が消える。"
 sed -i -E 's/([;{[:space:]])color: var\(--sunset\)/\1color: var(--sunset-ink)/g;
            s/([;{[:space:]])color: var\(--taupe\)/\1color: var(--taupe-ink)/g;
            s/([;{[:space:]])color: var\(--amber\)/\1color: var(--amber-ink)/g;
-           s/([;{[:space:]])color: var\(--tea-brown\)/\1color: var(--tea-brown-ink)/g' style.css
+           s/([;{[:space:]])color: var\(--tea-brown\)/\1color: var(--tea-brown-ink)/g;
+           s/([;{[:space:]])color: var\(--herbal\)/\1color: var(--herbal-ink)/g;
+           s/([;{[:space:]])color: var\(--rose\)/\1color: var(--rose-ink)/g;
+           s/([;{[:space:]])color: var\(--lemon\)/\1color: var(--lemon-ink)/g' style.css
 ```
 
 **深緑パネルの上のルールは除外すること。** `.hero__eyebrow` と `.footer__social-label` は
-`--dark` の面に乗っており、`-ink` にすると 3.29 → 2.96 と**悪化する**。
+`--dark` の面に乗っており、`-ink` にすると 3.29 → 2.70 と**悪化する**。
 この2つは `--dark-accent`（8.66）に変える。
 
 **間接参照の経路も直す。** `color: var(--accent)` / `color: var(--flavor, var(--sunset))` が7箇所あり
@@ -600,7 +623,7 @@ grep -n "background-color: var(--.*-ink)" style.css && echo "⚠ 面の色を壊
 
 深緑 `--dark` の面の上では `--dark-text` `--dark-muted` を使う。
 `--lemon` `--rose` をこの面の上で文字に使う場合はそのままでよい（4.54 / 4.46）。
-紙の上で使っている箇所があれば `--herbal`（4.53）か `--ink` に替える。
+紙の上で使っている箇所があれば `--herbal-ink` か `--ink` に替える。`--herbal` そのままは薄面で 4.13 なので使わない。
 
 Run: `grep -n "color: var(--lemon)\|color: var(--rose)" style.css`
 
@@ -966,7 +989,7 @@ PCの2カラムは repeat(2,1fr) ではなく「固定px + 1fr」の非対称に
 - [ ] **Step 1: グローバルな `:focus-visible` のフォールバックを足す**
 
 > **訂正（実測による）：** 仕様 §3.6 は「`:focus-visible` を自前で足す」と書いているが、
-> **agora には既に9箇所ある**（`style.css:463,464,465,562,575,1173,1209,1281`）。
+> **agora には既に8箇所ある**（`style.css:463,464,465,562,575,1173,1209,1281`）。
 > 「1.3MB中に自前実装ゼロ」はイロコト7サイトの話であって、agora の話ではない。
 >
 > 既存の9箇所は**触らない**。特に `.sig-card:focus-visible { outline: none; }` は
