@@ -456,7 +456,10 @@ a { color: inherit; }
   margin: 0;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(1.75rem, 2.4rem + 1vw, 3rem);
+  /* 「TEA&COFFEE」は改行できない1語で、幅は字面の約 7.3em。2.4rem + 1vw のままだと 320px で
+     41.6px → 約 302px となり、内側の幅 280px（スクロールバー付きなら 270px）をはみ出して横スクロールが出ていた。
+     408px 未満だけ 10.4vw に切り替えて収める（408px 以上は従来の式のまま。320px で約 33px、語の幅は約 242px） */
+  font-size: clamp(1.75rem, min(2.4rem + 1vw, 10.4vw), 3rem);
   line-height: var(--lh-display);
   letter-spacing: 0.06em;
 }
