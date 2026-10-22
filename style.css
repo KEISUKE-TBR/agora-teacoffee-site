@@ -144,12 +144,6 @@ body {
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "palt";
 }
-@media (max-width: 640px) {
-  /* スマホは行間を広げるのが定説だが逆。1行の文字数が減るぶん詰めてよい。
-     実測でも本文 2.4→2.2、見出し 1.7→1.6、リード 240%→200% と狭めている */
-  body { line-height: 2.0; }
-}
-
 img {
   max-width: 100%; display: block;
   -webkit-user-select: none; user-select: none;
@@ -369,8 +363,13 @@ a { color: inherit; }
 .story { background: var(--paper); }
 .story__grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  gap: clamp(28px, 5vw, 72px);
+  /* 左は見出しだけ（最大でも「という名前。」の約200px）なので、固定幅にして右の本文だけを可変にする。
+     0.8fr / 1.2fr のままだと両方が伸び縮みして、本文の1行の長さが画面幅につられて動く。
+     290px なのは、この段組みが 761px（下の 760px で1列になる直前）まで続くため：そこでも本文が
+     約360px（22字）残る。380px にすると 761px で本文が約270px まで潰れる。
+     gap は2値で書き、使わない行方向に 0 を明示する（1行しか無いので行間は要らない） */
+  grid-template-columns: 290px 1fr;
+  gap: 0 clamp(28px, 5vw, 72px);
   align-items: start;
 }
 .story__title {
@@ -522,19 +521,26 @@ a { color: inherit; }
   line-height: 2;
   color: color-mix(in srgb, var(--dark-text) 84%, transparent);
 }
-.story-vision__lead {
-  margin-top: clamp(6px, 1vw, 10px) !important;
+/* 詳細度を .story-vision__body p（0,1,1）より上の 0,2,0 に揃える。以前は .story-vision__lead 単体（0,1,0）で
+   負けており、margin-top / font-size / color の3つを強制指定（important）で無理に通していた
+   （.story__sign と同じ負け方）。詳細度を直したので強制指定は不要。足し直さないこと */
+.story-vision__body .story-vision__lead {
+  margin-top: clamp(6px, 1vw, 10px);
   font-family: var(--font-sans);
   font-weight: 700; /* kit の Hiragino は 300 / 600 のみ。400・500 は W3 に落ちて上の段落と同じになるので、W6 で差をつける */
-  font-size: var(--fs-body-lg) !important;
-  color: var(--dark-text) !important;
+  font-size: var(--fs-body-lg);
+  color: var(--dark-text);
 }
 
 /* SIGNATURE showcase (TOP page) — photo-led, editorial */
+/* 2枚のカードは同格（サンセットとハーバル。どちらが主でも従でもない）なので、等分の 1fr 1fr のまま。
+   左を固定幅にすると、片方のカードだけが細くなって序列があるように見える。
+   固定幅が効くのは「ラベルと本文」のように役割が違う組（.story__grid）。
+   gap は2値で書く（行が1本なので行間は 0。1列に落ちたときだけ下の 640px で行間を持たせる） */
 .signature {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(20px, 3.5vw, 48px);
+  gap: 0 clamp(20px, 3.5vw, 48px);
 }
 /* カード。地の .menu を --paper-2 に沈め、その上に白いカードを立てる。
    border は付けない。参照7サイトでカードに border を付けた例は0件で、分離は
@@ -673,7 +679,9 @@ a { color: inherit; }
 .mcat__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe-ink); }
 .mcat__rule { height: 2px; width: 34px; margin: 6px 0 18px; border-radius: 2px; background: var(--accent); }
 
-/* SEASONAL: photo-led grid */
+/* SEASONAL: photo-led grid。同格の2枚なので 1fr 1fr のまま（理由は .signature と同じ）。
+   外枠 .menu-page が max-width: 640px で可読幅を決めているので、1fr 同士でも幅は動かない。
+   1列には落とさない：この頁はスマホで立ち読みするメニューで、2枚並びが基本形 */
 .focus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; }
 .focus-card {
   display: flex; flex-direction: column; gap: 3px;
@@ -1027,20 +1035,12 @@ a { color: inherit; }
   .header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
   .header.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-  .story__grid { grid-template-columns: 1fr; }
+  .story__grid { grid-template-columns: 100%; gap: 32px 0; }  /* 1fr ではなく 100%（1列にする意図の明示）。段階は踏まず一気に落とす */
   .meguri-cta { grid-template-columns: 1fr; }
   .meguri-cta__media { max-width: 360px; margin: 0 auto; width: 100%; }
 }
 
-@media (max-width: 560px) {
-  .signature { grid-template-columns: 1fr; gap: clamp(28px, 8vw, 40px); }
-  .sig-card { max-width: 420px; margin: 0 auto; width: 100%; }
-}
-
-@media (max-width: 440px) {
-  .schedule__item { flex-wrap: wrap; }
-  .schedule__tag { order: 3; }
-}
+/* コンテンツ軸（640px）の規則は、下の ============ Responsive: content axis ============ にまとめてある */
 
 /* ============ Scroll reveal ============ */
 .reveal {
@@ -1052,12 +1052,6 @@ a { color: inherit; }
   transition-delay: calc(var(--delay, 0) * 90ms);
 }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
-
-@media (max-width: 640px) {
-  /* SPのほうを大きくする。1画面の要素数が少なく縦スクロール量が大きいので、
-     20pxでは登場に気づかれない。小さい画面では動きを控えるという定石とは逆 */
-  :root { --rise: 30px; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1116,12 +1110,6 @@ a { color: inherit; }
 .drink-modal__sub { margin: 6px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .drink-modal__desc { margin: clamp(12px, 1.8vw, 16px) 0 0; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
 .drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; line-height: 1; color: var(--ink); }
-
-@media (max-width: 640px) {
-  .drink-modal__dialog { flex-direction: column; width: min(420px, 100%); }
-  .drink-modal__media { flex: 0 0 auto; }
-  .drink-modal__media img { aspect-ratio: 4 / 3; height: auto; }
-}
 
 /* ---- Sheet variant (/menu): rises from the bottom, stacked, with the
    ingredient line and taste meters the menu page shows. ---- */
@@ -1230,11 +1218,6 @@ a { color: inherit; }
   .shop-note__link { transition: color var(--dur-color) var(--ease); }
   .shop-note__link:hover { color: var(--ink); }
 }
-@media (max-width: 560px) {
-  .shop-note { flex-direction: column; }
-  .shop-note__media { flex: none; width: min(190px, 58%); }
-  .shop-note__body-col { width: 100%; }
-}
 
 /* ============ Online store（トップ：出店がないあいだの受け皿） ============
    白い角丸カードに収める案は既存の世界観（罫線と余白で区切る編集的なレイアウト）から
@@ -1288,11 +1271,6 @@ a { color: inherit; }
   padding-top: clamp(20px, 3vw, 28px);
   border-top: 1px solid var(--border-strong);
   font-size: var(--fs-note); line-height: 2; color: var(--ink-soft);
-}
-@media (max-width: 560px) {
-  .store__item { flex-direction: column; }
-  .store__media { flex: none; width: min(210px, 62%); }
-  .store__body { width: 100%; }
 }
 
 
@@ -1432,14 +1410,6 @@ a { color: inherit; }
   mix-blend-mode: multiply;
 }
 
-@media (max-width: 640px) {
-  .kyoho { flex-direction: column; }
-  .kyoho__media { flex: none; width: 100%; max-width: 420px; }
-  .kyoho__body { width: 100%; }
-  .autumn__maker--media { flex-direction: column; align-items: flex-start; }
-  .autumn__maker-media { width: min(150px, 46%); }
-}
-
 /* 秋の特設カード本体。暗面なので、文字色は暗面用のトークンに差し替える */
 .autumn__card {
   max-width: 1040px;
@@ -1465,3 +1435,45 @@ a { color: inherit; }
 /* 茶葉の寄りは白背景ごと見せる。深緑の上に、白い写真が矩形の枠のまま1枚置かれる */
 .autumn__card .autumn__maker-media img { mix-blend-mode: normal; }
 .autumn__card .autumn__cta:focus-visible { outline-color: var(--dark-text); }
+
+/* ============ Responsive: content axis（640px）============
+   「横並び → 縦積み」と、スマホで部品を整える規則は、すべてこの1本にまとめる。
+   しきい値は 640px と、ナビ用の 760px（上の Responsive）の2本だけ。
+   実機はスマホ 320〜430px とタブレット 768px 以上で、440〜760px の帯はほぼ空。
+   そこに 440 / 560 / 640 と3本置いても得るものが無かったので 640 に寄せた。
+   ファイルの末尾に置くのは、各部品の素の規則（flex / width など）と詳細度が同じで、
+   後ろに書かれたほうが勝つため。途中に置くと、後ろの素の規則に上書きされる。 */
+@media (max-width: 640px) {
+  /* スマホは行間を広げるのが定説だが逆。1行の文字数が減るぶん詰めてよい。
+     実測でも本文 2.4→2.2、見出し 1.7→1.6、リード 240%→200% と狭めている */
+  body { line-height: 2.0; }
+
+  /* SPのほうを大きくする。1画面の要素数が少なく縦スクロール量が大きいので、
+     20pxでは登場に気づかれない。小さい画面では動きを控えるという定石とは逆 */
+  :root { --rise: 30px; }
+
+  /* ---- 横並び → 縦積み（一気に落とす。段階は踏まない） ---- */
+  .signature { grid-template-columns: 100%; gap: clamp(28px, 8vw, 40px) 0; }
+  .sig-card { max-width: 420px; margin: 0 auto; width: 100%; }
+
+  .schedule__item { flex-wrap: wrap; }
+  .schedule__tag { order: 3; }
+
+  .shop-note { flex-direction: column; }
+  .shop-note__media { flex: none; width: min(190px, 58%); }
+  .shop-note__body-col { width: 100%; }
+
+  .store__item { flex-direction: column; }
+  .store__media { flex: none; width: min(210px, 62%); }
+  .store__body { width: 100%; }
+
+  .kyoho { flex-direction: column; }
+  .kyoho__media { flex: none; width: 100%; max-width: 420px; }
+  .kyoho__body { width: 100%; }
+  .autumn__maker--media { flex-direction: column; align-items: flex-start; }
+  .autumn__maker-media { width: min(150px, 46%); }
+
+  .drink-modal__dialog { flex-direction: column; width: min(420px, 100%); }
+  .drink-modal__media { flex: 0 0 auto; }
+  .drink-modal__media img { aspect-ratio: 4 / 3; height: auto; }
+}
