@@ -3,8 +3,9 @@ import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, rmSync } from 'nod
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
-const SCRIPT = 'Y:/00_apps/agora-site/tools/verify-css.mjs';
+const SCRIPT = fileURLToPath(new URL('./verify-css.mjs', import.meta.url));
 
 const BASE_CSS = `:root {
   --paper: #FBF9F3; --paper-2: #F3EEE3; --ink: #2b2b26; --ink-soft: #676d6c; --dark-muted: #9aa19b;
@@ -123,17 +124,79 @@ const many = Array.from({ length: 14 }, (_, i) => `.m${i} { font-family: var(--f
 r = run({ css: BASE_CSS + many });
 t('F7: 14 violations print 10 locations then "… and 4 more"', has(r.out, '14箇所') && has(r.out, '… and 4 more') && (r.out.match(/style\.css:\d+  \.m\d+/g) || []).length === 10, r.out);
 
-// ---- Minor: shadows ----
+// ---- Pure black, in ANY property (check 4) ----
 const sh = (decl) => run({ css: BASE_CSS + `.x { ${decl} }\n` });
-const shLine = (rr) => line(rr.out, '純黒の影が無い');
-t('shadow: rgba(0,0,0,.2) NG', has(shLine(sh('box-shadow: 0 1px 2px rgba(0,0,0,.2);')), 'NG'));
-t('shadow: rgb(0 0 0 / 0.1) NG', has(shLine(sh('box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);')), 'NG'));
-t('shadow: filter drop-shadow(rgba(0 0 0 / .3)) NG', has(shLine(sh('filter: drop-shadow(0 2px 4px rgba(0 0 0 / 0.3));')), 'NG'));
-t('shadow: text-shadow #000 NG', has(shLine(sh('text-shadow: 0 1px #000;')), 'NG'));
-t('shadow: --shadow-rest custom property with black NG', has(shLine(sh('--shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.1);')), 'NG'));
-t('shadow: ink-tinted rgba(43,43,38,.1) OK', has(shLine(sh('box-shadow: 0 1px 2px rgba(43, 43, 38, 0.1);')), 'OK'));
-t('shadow: black only in a comment OK', has(shLine(run({ css: BASE_CSS + '/* box-shadow: 0 1px rgba(0,0,0,.2); */\n' })), 'OK'));
-t('shadow: custom property NAME containing "black" is not a hit', has(shLine(sh('--shadow-black: 0 1px 2px rgba(43, 43, 38, 0.1);')), 'OK'));
+const blackLine = (rr) => line(rr.out, '純黒が無い');
+const blackCount = (rr) => Number((blackLine(rr).match(/— (\d+)箇所/) || [])[1] || 0);
+const flagged = (decl, n = 1) => { const rr = sh(decl); return has(blackLine(rr), 'NG') && blackCount(rr) === n; };
+const clean = (decl) => has(blackLine(sh(decl)), 'OK');
+const flagCases = [
+  // hex, every length that can be black
+  'color: #000;', 'color: #000000;', 'color: #000000ff;', 'color: #000000FF;', 'color: #00000080;',
+  'color: #000f;', 'color: #0008;', 'color: #0001;',
+  // rgb / rgba, comma and space syntax, percentages
+  'color: rgb(0,0,0);', 'color: rgb(0, 0, 0);', 'color: rgba(0,0,0,.2);', 'color: rgba(0, 0, 0, 0.28);',
+  'color: rgb(0 0 0);', 'color: rgb(0 0 0 / .2);', 'color: rgb(0 0 0 / 20%);', 'color: rgba(0 0 0 / 0.3);', 'color: rgb(0% 0% 0%);',
+  // hsl / hsla (lightness 0% is black whatever the hue)
+  'color: hsl(0,0%,0%);', 'color: hsl(0 0% 0%);', 'color: hsl(0 0% 0% / .3);', 'color: hsla(0, 0%, 0%, .5);',
+  'color: hsl(200 50% 0%);', 'color: hsl(0deg 0% 0%);',
+  // keyword
+  'color: black;', 'border-color: black;', 'background: BLACK;',
+  // any property / any position
+  'background: #000;', 'border: 1px solid #000;', 'outline: 2px solid black;', 'fill: #000;', '--c: #000;',
+  'color: var(--c, #000);', 'box-shadow: 0 0 0 1px rgba(0,0,0,.1);', 'text-shadow: 0 1px #000;',
+  'filter: drop-shadow(0 2px 4px rgba(0 0 0 / 0.3));', 'background: linear-gradient(black, transparent);',
+  'color: color-mix(in srgb, #000 20%, white);', '--shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.1);',
+];
+for (const d of flagCases) t(`black: flagged  ${d}`, flagged(d), blackLine(sh(d)));
+t('black: two blacks in one declaration count as 2', flagged('box-shadow: 0 1px #000, 0 2px 4px rgba(0,0,0,.2);', 2), blackLine(sh('box-shadow: 0 1px #000, 0 2px 4px rgba(0,0,0,.2);')));
+
+const cleanCases = [
+  'color: transparent;', 'background: transparent;',
+  // colours that merely contain the digits
+  'color: #000aff;', 'color: #00aaff;', 'color: #0a0000;', 'color: #000001;', 'color: #1a000000;', 'color: #0000ff;',
+  'color: #000a00;', 'color: #00000a;',
+  'color: rgb(0 0 1);', 'color: rgba(0,0,1,.5);', 'color: rgb(1 0 0 / .5);', 'color: hsl(0 0% 1%);', 'color: hsl(0 0% 100%);',
+  // fully transparent black renders nothing
+  'color: rgba(0,0,0,0);', 'color: rgb(0 0 0 / 0);', 'color: rgb(0 0 0 / 0%);', 'color: #0000;', 'color: #00000000;', 'color: hsl(0 0% 0% / 0);',
+  // names, not colours
+  '--shadow-black: 0 1px 2px rgba(43,43,38,.1);', 'color: var(--black);', 'box-shadow: var(--shadow-black);',
+  // words inside strings, url() and font declarations
+  'content: "black";', "content: 'black';", 'background: url(black.png);', 'font-family: Arial Black, sans-serif;',
+  'font: 700 1rem Arial Black;',
+  // ink-tinted values the project uses
+  'box-shadow: 0 1px 2px rgba(43, 43, 38, 0.1);', 'color: #2b2b26;',
+];
+for (const d of cleanCases) t(`black: not flagged  ${d}`, clean(d), blackLine(sh(d)));
+r = run({ css: BASE_CSS + '.black { color: red; }\n.x:not(.black) { y: z; }\n' });
+t('black: class name .black in a selector is not a hit', has(blackLine(r), 'OK'), blackLine(r));
+r = run({ css: BASE_CSS + '/* box-shadow: 0 1px #000; background: black; */\n' });
+t('black: black only in a comment is not a hit', has(blackLine(r), 'OK'), blackLine(r));
+t('black: baseline (ink-tinted shadow) passes', has(blackLine(base), 'OK'), blackLine(base));
+
+// mask gradient: only alpha is read, but #000 is still a violation (no exceptions) and shows file:line per stop
+const MASK = `.m {
+  --m:
+    radial-gradient(58% 62% at 30% 26%, #000 60%, transparent 78%),
+    radial-gradient(55% 58% at 76% 22%, #000 58%, transparent 76%);
+  -webkit-mask-image: var(--m);
+  mask-image: var(--m);
+}
+`;
+r = run({ css: BASE_CSS + MASK });
+t('mask: two #000 stops in a mask-image gradient -> NG, 2 hits', has(blackLine(r), 'NG') && blackCount(r) === 2, blackLine(r));
+t('mask: each stop reported with its own file:line (24 and 25), transparent stops are not', has(r.out, 'style.css:24  radial-gradient(58% 62%') && has(r.out, 'style.css:25  radial-gradient(55% 58%') && !has(r.out, 'style.css:26'), r.out);
+r = run({ css: BASE_CSS + MASK.replace(/#000/g, '#2b2b26') });
+t('mask: same gradient with a non-black stop colour -> OK', has(blackLine(r), 'OK'), blackLine(r));
+r = run({ css: BASE_CSS + MASK.replace(/#000/g, 'rgb(0 0 0 / 1)') });
+t('mask: rgb(0 0 0 / 1) stops are still black -> NG', has(blackLine(r), 'NG') && blackCount(r) === 2, blackLine(r));
+// the real file's shape: 5 stops + 2 shadows = 7
+const SEVEN = MASK.replace(/\(55% 58% at 76% 22%, #000 58%, transparent 76%\);/, '(55% 58% at 76% 22%, #000 58%, transparent 76%),\n    radial-gradient(60% 55% at 80% 78%, #000 60%, transparent 78%),\n    radial-gradient(56% 60% at 22% 80%, #000 58%, transparent 76%),\n    radial-gradient(70% 70% at 50% 50%, #000 65%, transparent 84%);')
+  + '.h { box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28); }\n.d { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3); }\n';
+r = run({ css: BASE_CSS + SEVEN });
+t('black: the real 5 mask stops + 2 shadows -> 7 hits, 7 locations printed capped at 10', blackCount(r) === 7 && (r.out.match(/style\.css:\d+  .*(#000|rgba\(0, 0, 0)/g) || []).length === 7, blackLine(r));
+r = run({ css: BASE_CSS + Array.from({ length: 12 }, (_, i) => `.b${i} { color: #000; }`).join('\n') + '\n' });
+t('black: 12 hits print 10 locations then "… and 2 more"', blackCount(r) === 12 && has(r.out, '… and 2 more'), r.out.slice(0, 400));
 
 // ---- Minor: breakpoints ----
 r = run({ css: BASE_CSS + '@media (min-width: 641px) and (max-width: 759px) { .z { x: y; } }\n' });

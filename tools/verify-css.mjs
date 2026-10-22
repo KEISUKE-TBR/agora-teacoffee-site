@@ -195,13 +195,44 @@ for (const t of ['lemon', 'rose']) {
   console.log(`  INFO --${t} を文字色に使っている箇所: ${n}（深緑パネル内であること）`);
 }
 
-console.log('\n=== 4. 純黒の影を使っていない ===');
-// rgba(0,0,0,…) / rgb(0 0 0 / x) / #000 / black を、box-shadow・text-shadow・filter（drop-shadow）・--*shadow* の値から探す
-const BLACK = String.raw`rgba?\(\s*0(?:\.0+)?%?\s*[,\s]\s*0(?:\.0+)?%?\s*[,\s]\s*0(?:\.0+)?%?\s*[,)/]|#0{3}(?:0{3})?\b|\bblack\b`;
-const blackShadow = scanCss(/(?:box-shadow|text-shadow|filter|--[a-z0-9-]*shadow[a-z0-9-]*)\s*:[^;}]*/g)
-  .filter(({ m }) => new RegExp(BLACK, 'i').test(m[0].slice(m[0].indexOf(':') + 1)));
-check('純黒の影が無い（rgba(0,0,0,…) / rgb(0 0 0 / x) / drop-shadow を含む）', blackShadow.length === 0,
-  `${blackShadow.length}箇所`, blackShadow.map((h) => h.loc));
+console.log('\n=== 4. 純黒を使っていない（どのプロパティでも） ===');
+// 「真っ黒は使わない」はプロパティを問わない規則。影だけでなく background / border / outline / fill /
+// カスタムプロパティ / グラデーションの色止め / color-mix の引数 / var() のフォールバック、すべての値を見る。
+// 数えるもの:  #000  #000f  #000000  #000000ff（8桁も）  black
+//              rgb(0,0,0)  rgba(0,0,0,x)  rgb(0 0 0 / x)  rgb(0% 0% 0%)
+//              hsl(0,0%,0%)  hsl(0 0% 0% / x)  hsl(200 50% 0%)（明度0%ならどの色相でも黒）
+// 数えないもの: transparent、アルファが 0 と明記された黒（rgba(0,0,0,0) / #0000 / #00000000 / rgb(0 0 0 / 0)。描画される画素が無い）、
+//              黒ではない色（#000aff は青、#000001 / rgb(0 0 1) もほぼ黒だが黒ではない）、
+//              クラス名・var(--shadow-black) のような名前・"..." と url(...) と font の中身の語。
+//
+// 注意：.meguri-cta__photo img の --m（mask-image に使うラジアルグラデーション5本）にも #000 がある。
+// mask は alpha チャンネルしか読まないので、ここの RGB は一切描画されない。それでもこの規則に例外は作らない
+// （例外のある規則は腐る）。非黒に替えても mask の結果は変わらない（alpha は同じ）ので、挙動は不変。
+// 後で誰かが「mask だから #000 でも同じ」と戻さないこと。この検査が落ちるのはそのため。
+const blank = (m) => m.replace(/[^\n]/g, ' ');
+const stripNonColor = (body) => body.replace(
+  /url\([^)]*\)|"[^"]*"|'[^']*'|var\(\s*--[a-z0-9-]+|(?<![-\w])font(?:-family)?\s*:[^;}]*/gi, blank);
+const isZero = (t) => t !== undefined && /^[+-]?(?:\d+\.?\d*|\.\d+)%?$/.test(t) && parseFloat(t) === 0;
+const colorArgs = (inner) => inner.trim().split(/[\s,/]+/).filter(Boolean);
+const blackColors = (text) => {
+  const found = [];
+  for (const m of text.matchAll(/#([0-9a-f]+)\b/gi)) {
+    const h = m[1].toLowerCase();
+    const black = (h.length === 3 && h === '000') || (h.length === 4 && h.startsWith('000') && h[3] !== '0')
+      || (h.length === 6 && h === '000000') || (h.length === 8 && h.startsWith('000000') && h.slice(6) !== '00');
+    if (black) found.push({ index: m.index, text: m[0] });
+  }
+  for (const m of text.matchAll(/(?<![-\w])(rgba?|hsla?)\(([^()]*)\)/gi)) {
+    const a = colorArgs(m[2]);
+    const black = m[1].toLowerCase().startsWith('hsl') ? isZero(a[2]) : [a[0], a[1], a[2]].every(isZero);
+    if (black && !isZero(a[3])) found.push({ index: m.index, text: m[0] });
+  }
+  for (const m of text.matchAll(/(?<![-\w])black(?![-\w])/gi)) found.push({ index: m.index, text: m[0] });
+  return found.sort((x, y) => x.index - y.index);
+};
+const pureBlack = rules.flatMap((r) => blackColors(stripNonColor(r.body)).map((b) => locOf(r, r.bodyIdx + b.index)));
+check('純黒が無い（#000 / #000000ff / black / rgb(0 0 0 / x) / hsl(0 0% 0%) など、どの値でも）', pureBlack.length === 0,
+  `${pureBlack.length}箇所（mask-image のグラデーション内の #000 を含む。mask でも例外にしない）`, pureBlack);
 
 console.log('\n=== 5. 明朝（リュウミン）を使っていない ===');
 const mincho = scanCss(/var\(--font-(mincho|ryumin|kanji)\)/g);
