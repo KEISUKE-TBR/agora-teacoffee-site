@@ -135,7 +135,7 @@ node tools/verify-css.mjs で静的に判定できる10項目を見る。
 - Modify: `style.css:1-48`（`:root`）
 
 **Interfaces:**
-- Produces: `--sunset-ink` `--taupe-ink` `--amber-ink` `--tea-brown-ink` `--shadow-rest` `--shadow-hover` `--ease` `--dur` `--dur-color` `--bp-nav` `--bp-content`。以降の全タスクがこれを参照する
+- Produces: `--sunset-ink` `--taupe-ink` `--amber-ink` `--tea-brown-ink` `--shadow-rest` `--shadow-hover` `--ease` `--dur` `--dur-color` 。以降の全タスクがこれを参照する
 
 - [ ] **Step 1: 文字用の色・影・モーションのトークンを `:root` に足す**
 
