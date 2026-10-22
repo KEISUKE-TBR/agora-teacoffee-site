@@ -357,7 +357,7 @@ a { color: inherit; }
 .section__note {
   margin: clamp(12px, 1.6vw, 18px) 0 0;
   font-size: var(--fs-note);
-  color: var(--taupe);
+  color: var(--taupe-ink);
 }
 
 /* ============ Story ============ */
@@ -383,7 +383,7 @@ a { color: inherit; }
   font-size: 1.5rem;
   line-height: var(--lh-heading);   /* 手書き署名。継承の 2.2 だと上下に余る（実効サイズは 16px：.story__body p のほうが詳細度が高く、下の font-size: 1.5rem は負けている） */
   letter-spacing: 0.02em;
-  color: var(--sunset) !important;
+  color: var(--sunset-ink) !important;
 }
 .story__cta {
   align-self: flex-start;
@@ -414,13 +414,14 @@ a { color: inherit; }
 .menu__dots { flex: 1; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
 .menu__price { font-family: var(--font-num); font-weight: 500; color: var(--ink); white-space: nowrap; }
 
-/* Flavour accent mapping (A.G.O.R.A. signature palette) */
-[data-flavor="sunset"]    { --flavor: var(--sunset); }
-[data-flavor="herbal"]    { --flavor: var(--herbal); }
-[data-flavor="tea-brown"] { --flavor: var(--tea-brown); }
-[data-flavor="lemon"]     { --flavor: var(--lemon); }
-[data-flavor="amber"]     { --flavor: var(--amber); }
-[data-flavor="rose"]      { --flavor: var(--rose); }
+/* Flavour accent mapping (A.G.O.R.A. signature palette)
+   面・線・outline は --flavor、文字は --flavor-ink を読む。二つを必ず対で持つ */
+[data-flavor="sunset"]    { --flavor: var(--sunset);    --flavor-ink: var(--sunset-ink); }
+[data-flavor="herbal"]    { --flavor: var(--herbal);    --flavor-ink: var(--herbal-ink); }
+[data-flavor="tea-brown"] { --flavor: var(--tea-brown); --flavor-ink: var(--tea-brown-ink); }
+[data-flavor="lemon"]     { --flavor: var(--lemon);     --flavor-ink: var(--lemon-ink); }
+[data-flavor="amber"]     { --flavor: var(--amber);     --flavor-ink: var(--amber-ink); }
+[data-flavor="rose"]      { --flavor: var(--rose);      --flavor-ink: var(--rose-ink); }
 
 /* ============ Full story page (/story) ============ */
 .story-hero {
@@ -467,7 +468,7 @@ a { color: inherit; }
   font-weight: 600;
   font-size: clamp(3rem, 6vw, 4.5rem);
   line-height: 1;
-  color: var(--flavor, var(--sunset));
+  color: var(--flavor-ink, var(--sunset-ink));
 }
 .letter__head {
   margin: 0 0 clamp(14px, 2vw, 20px);
@@ -543,12 +544,12 @@ a { color: inherit; }
 .sig-card:focus-visible { outline: none; }
 .sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor, var(--sunset)); outline-offset: 3px; }
 .sig-card__body { display: flex; flex-direction: column; gap: 6px; }
-.sig-card__tag { font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--flavor, var(--sunset)); }
+.sig-card__tag { font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--flavor-ink, var(--sunset-ink)); }
 .sig-card__name { font-family: var(--font-sans); font-weight: 700; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: var(--lh-display); color: var(--ink); }
 .sig-card__sub { font-size: var(--fs-note); color: var(--ink-soft); }
 .sig-card__meta { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; gap: 12px; }
 .sig-card__price { font-family: var(--font-num); font-weight: 600; font-size: 1.35rem; line-height: 1; color: var(--ink); }
-.sig-card__more { font-size: var(--fs-note); color: var(--flavor, var(--sunset)); white-space: nowrap; transition: opacity 0.2s ease; }
+.sig-card__more { font-size: var(--fs-note); color: var(--flavor-ink, var(--sunset-ink)); white-space: nowrap; transition: opacity 0.2s ease; }
 .sig-card:hover .sig-card__more { opacity: 0.7; }
 
 .menu__more { margin-top: clamp(32px, 4vw, 52px); text-align: center; }
@@ -605,23 +606,24 @@ a { color: inherit; }
 }
 
 .mcat { padding-top: clamp(30px, 5vw, 42px); scroll-margin-top: calc(var(--header-h, 52px) + 52px); }
-#focus    { --accent: var(--sunset); }
-#soda     { --accent: var(--rose); }
-#straight { --accent: var(--tea-brown); }
-#lemon    { --accent: var(--lemon); }
-#alcohol  { --accent: var(--amber); }
+/* 面・線・outline は --accent、文字は --accent-ink。二つを必ず対で持つ */
+#focus    { --accent: var(--sunset);    --accent-ink: var(--sunset-ink); }
+#soda     { --accent: var(--rose);      --accent-ink: var(--rose-ink); }
+#straight { --accent: var(--tea-brown); --accent-ink: var(--tea-brown-ink); }
+#lemon    { --accent: var(--lemon);     --accent-ink: var(--lemon-ink); }
+#alcohol  { --accent: var(--amber);     --accent-ink: var(--amber-ink); }
 .mcat__head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
 .mcat__num {
   font-family: var(--font-num); font-weight: 700; font-size: 0.85rem;
-  font-variant-numeric: tabular-nums; color: var(--accent);
+  font-variant-numeric: tabular-nums; color: var(--accent-ink);
 }
 /* Category headings carry their own accent — that separation, more than size
    alone, is what keeps a section header from reading as another drink name. */
 .mcat__title {
   margin: 0; font-family: var(--font-sans); font-weight: 700;
-  font-size: clamp(1.6rem, 6vw, 2rem); line-height: var(--lh-display); letter-spacing: 0.02em; color: var(--accent);
+  font-size: clamp(1.6rem, 6vw, 2rem); line-height: var(--lh-display); letter-spacing: 0.02em; color: var(--accent-ink);
 }
-.mcat__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe); }
+.mcat__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe-ink); }
 .mcat__rule { height: 2px; width: 34px; margin: 6px 0 18px; border-radius: 2px; background: var(--accent); }
 
 /* SEASONAL: photo-led grid */
@@ -656,12 +658,14 @@ a { color: inherit; }
 .mrow__note { display: block; margin-top: 2px; font-weight: 400; font-size: var(--fs-note); color: var(--ink-soft); }
 .mrow__leader { flex: 1; min-width: 16px; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
 .mrow__price { flex: 0 0 auto; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body); color: var(--ink-soft); white-space: nowrap; }
-.mrow__price--off { color: var(--sunset); font-weight: 700; }
+.mrow__price--off { color: var(--sunset-ink); font-weight: 700; }
 
 .mbadge {
   display: inline-block; margin-left: 7px; padding: 1px 8px; border-radius: 999px;
   font-family: var(--font-sans); font-weight: 600; font-size: 0.6rem; letter-spacing: 0.04em; vertical-align: 1px;
-  background: color-mix(in srgb, var(--accent) 15%, var(--paper)); color: var(--accent);
+  /* 同じ色の文字を同じ色のティントに載せるので、ティントは薄く保つ。
+     15% だと -ink でも 4.14〜4.33 で届かない。8% だと #focus が 4.4999 で 4.5 を割るため 7%（4.56〜4.67） */
+  background: color-mix(in srgb, var(--accent) 7%, var(--paper)); color: var(--accent-ink);
 }
 
 .mnote { margin: clamp(28px, 4vw, 40px) 0 0; padding: clamp(18px, 3vw, 24px); background: var(--paper-2); border-radius: 12px; }
@@ -692,9 +696,9 @@ a { color: inherit; }
   align-items: center;
   min-width: 64px;
 }
-.schedule__month { font-family: var(--font-num); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.18em; color: var(--sunset); }
+.schedule__month { font-family: var(--font-num); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.18em; color: var(--sunset-ink); }
 .schedule__day { font-family: var(--font-num); font-weight: 600; font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1; color: var(--ink); }
-.schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe); margin-top: 2px; }
+.schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe-ink); margin-top: 2px; }
 .schedule__info { flex: 1; min-width: 0; }
 .schedule__event { margin: 0 0 4px; font-weight: 700; font-size: var(--fs-sub); line-height: var(--lh-heading); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
@@ -718,7 +722,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: var(--fs-note);
-  color: var(--sunset);
+  color: var(--sunset-ink);
   text-decoration: none;
   border-bottom: 1px solid color-mix(in srgb, var(--sunset) 40%, transparent);
   transition: opacity 0.2s ease;
@@ -737,7 +741,7 @@ a { color: inherit; }
   border-radius: 999px;
   padding: 6px 14px;
 }
-.schedule__tag--soon { color: var(--sunset); border-color: color-mix(in srgb, var(--sunset) 45%, transparent); }
+.schedule__tag--soon { color: var(--sunset-ink); border-color: color-mix(in srgb, var(--sunset) 45%, transparent); }
 
 /* ============ MEGURI（恩送りチケット）emotional CTA ============ */
 .meguri-cta {
@@ -862,7 +866,7 @@ a { color: inherit; }
   align-items: center;
   padding: 16px 40px;
   border-radius: 999px;
-  background: var(--sunset);
+  background: var(--sunset-ink);
   color: var(--paper);
   font-weight: 700;
   font-size: var(--fs-body-lg);
@@ -893,7 +897,7 @@ a { color: inherit; }
 .schedule__next-title {
   margin: 0 0 10px;
   font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset-ink);
 }
 .schedule__next-body { margin: 0; font-size: var(--fs-body); line-height: 1.8; color: var(--ink-soft); }
 .meguri-cta__sub {
@@ -930,7 +934,7 @@ a { color: inherit; }
 .footer__social a:hover { opacity: 0.7; }
 .footer__social-label { font-family: var(--font-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--dark-accent); }
 .footer__social-handle { font-family: var(--font-num); font-size: 0.9rem; color: var(--dark-text); }
-.footer__copy { margin: clamp(12px, 2vw, 24px) 0 0; font-family: var(--font-num); font-size: 0.7rem; letter-spacing: 0.06em; color: color-mix(in srgb, var(--dark-muted) 70%, transparent); }
+.footer__copy { margin: clamp(12px, 2vw, 24px) 0 0; font-family: var(--font-num); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--dark-muted); }
 
 /* ============ Responsive ============ */
 @media (max-width: 760px) {
@@ -1024,7 +1028,7 @@ a { color: inherit; }
   padding: clamp(22px, 3vw, 34px);
   overflow-y: auto;
 }
-.drink-modal__tag { margin: 0 0 8px; font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--accent, var(--sunset)); }
+.drink-modal__tag { margin: 0 0 8px; font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--accent-ink, var(--sunset-ink)); }
 .drink-modal__name { margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.35; color: var(--ink); }
 .drink-modal__sub { margin: 6px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .drink-modal__desc { margin: clamp(12px, 1.8vw, 16px) 0 0; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
@@ -1062,9 +1066,9 @@ a { color: inherit; }
 .drink-modal--sheet .drink-modal__price { margin-top: 6px; font-size: 1.05rem; }
 .drink-modal--sheet .drink-modal__desc { margin-top: 14px; font-size: var(--fs-body); }
 
-.drink-modal__ingredients { margin: 8px 0 0; font-size: 0.72rem; line-height: 1.7; color: var(--taupe); }
+.drink-modal__ingredients { margin: 8px 0 0; font-size: 0.72rem; line-height: 1.7; color: var(--taupe-ink); }
 .drink-modal__ingredients:empty { display: none; }
-.drink-modal__note { margin: 5px 0 0; font-size: 0.7rem; line-height: 1.7; color: var(--taupe); }
+.drink-modal__note { margin: 5px 0 0; font-size: 0.7rem; line-height: 1.7; color: var(--taupe-ink); }
 .drink-modal__note:empty { display: none; }
 
 .drink-modal__facts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
@@ -1072,9 +1076,12 @@ a { color: inherit; }
   padding: 6px 12px; border-radius: 999px; background: var(--paper-2);
   font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600;
 }
-.fact--caffeine-yes { color: var(--tea-brown); }
-.fact--caffeine-no  { color: var(--herbal); }
-.fact--age { color: var(--amber); background: color-mix(in srgb, var(--amber) 14%, var(--paper-2)); }
+.fact--caffeine-yes { color: var(--tea-brown-ink); }
+.fact--caffeine-no  { color: var(--herbal-ink); }
+/* 年齢注意だけは色の置換で救えない：琥珀のティント（14%）の上に琥珀の文字を載せると、
+   --amber-ink でも 3.87 しか出ない（4% まで薄めても 4.35）。文字は --ink（10.47）にして、
+   カテゴリの信号は背景のティントに任せる */
+.fact--age { color: var(--ink); background: color-mix(in srgb, var(--amber) 14%, var(--paper-2)); }
 
 .taste { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
 .taste:empty { display: none; }
@@ -1092,7 +1099,7 @@ a { color: inherit; }
 
 /* 過去の出店。予定と同じ見た目だと今の情報に見えるので、少し落ち着かせる */
 .schedule__list--past .schedule__day { color: var(--ink-soft); }
-.schedule__list--past .schedule__month { color: var(--taupe); }
+.schedule__list--past .schedule__month { color: var(--taupe-ink); }
 
 /* 会場変更の経緯など、その日の補足 */
 .schedule__note {
@@ -1123,7 +1130,7 @@ a { color: inherit; }
 .shop-note__title {
   margin: 0 0 12px;
   font-size: var(--fs-eyebrow);
-  letter-spacing: 0.22em; color: var(--sunset);
+  letter-spacing: 0.22em; color: var(--sunset-ink);
 }
 .shop-note__body {
   margin: 0 0 16px;
@@ -1132,7 +1139,7 @@ a { color: inherit; }
 .shop-note__link {
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
   text-decoration: none;
   transition: opacity 0.2s;
 }
@@ -1164,7 +1171,7 @@ a { color: inherit; }
   margin: 0 0 14px;
   font-size: var(--fs-eyebrow);
   letter-spacing: 0.22em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
 }
 .store__name {
   margin: 0 0 4px;
@@ -1175,13 +1182,13 @@ a { color: inherit; }
   letter-spacing: 0.04em;
   color: var(--ink);
 }
-.store__sub { margin: 0 0 16px; font-size: var(--fs-note); color: var(--taupe); }
+.store__sub { margin: 0 0 16px; font-size: var(--fs-note); color: var(--taupe-ink); }
 .store__text { margin: 0 0 20px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
 /* リンクはスケジュール欄と同じ「太字＋矢印」の言語にそろえる（下線・囲みは使わない） */
 .store__link {
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
   text-decoration: none;
   transition: opacity 0.2s;
 }
@@ -1233,7 +1240,7 @@ a { color: inherit; }
   display: block; margin-top: 4px;
   font-family: var(--font-sans); font-weight: 500;
   font-size: var(--fs-note); letter-spacing: 0.06em;
-  color: var(--taupe);
+  color: var(--taupe-ink);
 }
 .autumn__price {
   margin: 0 0 12px;
@@ -1245,7 +1252,7 @@ a { color: inherit; }
   margin-top: auto;
   display: block; text-align: center; text-decoration: none;
   padding: 14px 16px; min-height: 48px; border-radius: 999px;
-  background: var(--sunset); color: #fff;
+  background: var(--sunset-ink); color: #fff;
   font-family: var(--font-sans); font-weight: 700;
   font-size: 0.9rem; letter-spacing: 0.06em;
   transition: opacity 0.2s;
@@ -1262,7 +1269,7 @@ a { color: inherit; }
 .autumn__maker-label {
   margin: 0 0 10px;
   font-size: var(--fs-eyebrow); letter-spacing: 0.22em;
-  color: var(--sunset);
+  color: var(--sunset-ink);
 }
 .autumn__maker-name {
   margin: 0 0 12px;
@@ -1274,14 +1281,14 @@ a { color: inherit; }
 .autumn__fine {
   max-width: 880px;
   margin: clamp(28px, 4vw, 40px) auto 0;
-  font-size: 0.72rem; line-height: 1.9; color: var(--taupe);
+  font-size: 0.72rem; line-height: 1.9; color: var(--taupe-ink);
 }
 /* ヒーローからBOXへの導線。最初の画面から1タップで届かせる */
 .hero__cta-row { margin: clamp(22px, 3vw, 30px) 0 0; }
 .hero__cta {
   display: inline-flex; align-items: center;
   min-height: 44px; padding: 12px 26px; border-radius: 999px;
-  background: var(--sunset); color: #fff; text-decoration: none;
+  background: var(--sunset-ink); color: #fff; text-decoration: none;
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.06em;
   transition: opacity 0.2s;
@@ -1301,7 +1308,7 @@ a { color: inherit; }
 .site-notice__title {
   margin: 0 0 10px;
   font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset-ink);
 }
 .site-notice__body { margin: 0; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
 
@@ -1356,7 +1363,7 @@ a { color: inherit; }
 .autumn__card .autumn__maker { border-top-color: color-mix(in srgb, var(--dark-text) 18%, transparent); }
 .autumn__card .autumn__maker-label { color: var(--apricot); }
 .autumn__card .autumn__maker-text { color: var(--dark-muted); }
-.autumn__card .autumn__fine { color: color-mix(in srgb, var(--dark-muted) 85%, transparent); }
+.autumn__card .autumn__fine { color: var(--dark-muted); }
 /* 茶葉の寄りは白背景ごと丸く見せる。深緑の上に、皿にのせたように浮かぶ */
 .autumn__card .autumn__maker-media img { mix-blend-mode: normal; }
 .autumn__card .autumn__cta:focus-visible { outline-color: var(--dark-text); }
