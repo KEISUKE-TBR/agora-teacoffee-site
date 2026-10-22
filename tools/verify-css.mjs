@@ -3,8 +3,9 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-const CSS = ['style.css', 'meguri/style.css'];
-const HTML = ['index.html', 'menu/index.html', 'schedule/index.html', 'story/index.html', 'meguri/index.html'];
+// meguri/ は別ブランド（独自の :root と書体を持つ受付終了済みキャンペーン）なので対象外。
+const CSS = ['style.css'];
+const HTML = ['index.html', 'menu/index.html', 'schedule/index.html', 'story/index.html'];
 const css = CSS.map((f) => readFileSync(f, 'utf8')).join('\n');
 const html = HTML.map((f) => readFileSync(f, 'utf8')).join('\n');
 
