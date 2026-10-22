@@ -68,11 +68,10 @@
   --rise: 20px;
 
   /* Typography — brand fonts via Adobe Fonts (kit ysy1ycw), with graceful fallbacks:
-     Scandia (Latin sans) + Hiragino Kaku Gothic (JP body) + Ryumin (JP mincho display) */
-  --font-sans: "scandia-web", "hiragino-kaku-gothic-pron", "Inter", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;  /* body / labels */
+     Scandia (Latin sans) + Hiragino Kaku Gothic (JP body and headings).
+     和文は --font-sans 一本。見出しは 700、補助テキストは 500（本文の継承値） */
+  --font-sans: "scandia-web", "hiragino-kaku-gothic-pron", "Inter", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;  /* body / headings / labels */
   --font-serif: "scandia-web", "Inter", -apple-system, sans-serif;      /* Latin display */
-  --font-mincho: "a-otf-ryumin-pr6n", "Shippori Mincho", serif;         /* JP display (headings) */
-  --font-ryumin: "a-otf-ryumin-pr6n", "A-OTF Ryumin Pr6N", "Shippori Mincho", serif;
   --font-hand: "Caveat", cursive;                                       /* handwritten accent */
   --font-num: "scandia-web", "Inter", sans-serif;                       /* figures — never monospace */
 
@@ -265,9 +264,10 @@ a { color: inherit; }
 .hero__title-jp {
   display: block;
   margin-top: clamp(12px, 1.6vw, 20px);
-  font-family: var(--font-mincho);
-  font-weight: 300; /* Ryumin Pr6N is served only at weight 300 (L) */
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2rem);
+  line-height: 1.3;
   letter-spacing: 0.06em;
 }
 
@@ -329,9 +329,10 @@ a { color: inherit; }
 .section__head { margin-bottom: clamp(36px, 5vw, 60px); }
 .section__title {
   margin: 0;
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: var(--fs-h2);
+  line-height: 1.3;
   letter-spacing: 0.04em;
 }
 .section__note {
@@ -350,8 +351,8 @@ a { color: inherit; }
 }
 .story__title {
   margin: 0;
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: var(--fs-h2);
   line-height: 1.5;
   letter-spacing: 0.04em;
@@ -428,8 +429,8 @@ a { color: inherit; }
 }
 .story-hero__jp {
   margin: clamp(10px, 1.6vw, 16px) 0 0;
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 500;
   font-size: var(--fs-body);
   letter-spacing: 0.08em;
   color: var(--dark-muted);
@@ -460,9 +461,10 @@ a { color: inherit; }
 }
 .letter__head {
   margin: 0 0 clamp(14px, 2vw, 20px);
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+  line-height: 1.3;
   color: var(--ink);
 }
 .letter__body p { margin: 0; font-size: var(--fs-body); line-height: 2; color: var(--ink-soft); }
@@ -479,8 +481,8 @@ a { color: inherit; }
 .story-vision .section__eyebrow { color: var(--dark-accent); }
 .story-vision__title {
   margin: 0 0 clamp(20px, 3vw, 30px);
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
   line-height: 1.45;
   letter-spacing: 0.04em;
@@ -494,7 +496,8 @@ a { color: inherit; }
 }
 .story-vision__lead {
   margin-top: clamp(6px, 1vw, 10px) !important;
-  font-family: var(--font-mincho);
+  font-family: var(--font-sans);
+  font-weight: 500;
   font-size: var(--fs-body-lg) !important;
   color: var(--dark-text) !important;
 }
@@ -525,7 +528,7 @@ a { color: inherit; }
 .sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor, var(--sunset)); outline-offset: 3px; }
 .sig-card__body { display: flex; flex-direction: column; gap: 6px; }
 .sig-card__tag { font-family: var(--font-sans); font-weight: 700; font-size: 0.68rem; letter-spacing: 0.2em; color: var(--flavor, var(--sunset)); }
-.sig-card__name { font-family: var(--font-mincho); font-weight: 300; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: 1.35; color: var(--ink); }
+.sig-card__name { font-family: var(--font-sans); font-weight: 700; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: 1.35; color: var(--ink); }
 .sig-card__sub { font-size: var(--fs-note); color: var(--ink-soft); }
 .sig-card__meta { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; gap: 12px; }
 .sig-card__price { font-family: var(--font-num); font-weight: 600; font-size: 1.35rem; color: var(--ink); }
@@ -554,7 +557,7 @@ a { color: inherit; }
   font-size: clamp(2.6rem, 14vw, 3.6rem); letter-spacing: 0.04em; line-height: 1;
 }
 .board-title__jp {
-  margin: 12px 0 0; font-family: var(--font-mincho); font-weight: 300;
+  margin: 12px 0 0; font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.32em; color: var(--dark-muted);
 }
 
@@ -805,16 +808,16 @@ a { color: inherit; }
   color: var(--dark-muted);
 }
 .meguri-cta__kanji {
-  font-family: var(--font-ryumin);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: 2.2em;
   line-height: 1;
   color: var(--dark-accent);
 }
 .meguri-cta__title {
   margin: 0 0 clamp(16px, 2.4vw, 26px);
-  font-family: var(--font-mincho);
-  font-weight: 300;
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.6rem, 1.1rem + 2.4vw, 2.6rem);
   line-height: 1.5;
   letter-spacing: 0.04em;
@@ -895,7 +898,7 @@ a { color: inherit; }
   gap: clamp(16px, 2.4vw, 28px);
 }
 .footer__logo { height: clamp(24px, 3vw, 32px); width: auto; }
-.footer__tagline { margin: 0; font-family: var(--font-mincho); font-size: var(--fs-note); letter-spacing: 0.08em; color: var(--dark-muted); }
+.footer__tagline { margin: 0; font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-note); letter-spacing: 0.08em; color: var(--dark-muted); }
 .footer__social {
   display: flex;
   gap: clamp(28px, 5vw, 56px);
@@ -1126,7 +1129,7 @@ a { color: inherit; }
 
 /* ============ Online store（トップ：出店がないあいだの受け皿） ============
    白い角丸カードに収める案は既存の世界観（罫線と余白で区切る編集的なレイアウト）から
-   浮いていたため撤回。商品写真は紙の上に直接置き、見出しは他セクションと同じ明朝にそろえる。 */
+   浮いていたため撤回。商品写真は紙の上に直接置き、見出しは他セクションと同じ書体にそろえる。 */
 .store { background: var(--paper-2); }
 .store__item {
   display: flex;
@@ -1149,9 +1152,10 @@ a { color: inherit; }
 }
 .store__name {
   margin: 0 0 4px;
-  font-family: var(--font-mincho);
-  font-weight: 300; /* Ryumin Pr6N は 300 のみ配信 */
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.35rem, 2.6vw, 1.8rem);
+  line-height: 1.3;
   letter-spacing: 0.04em;
   color: var(--ink);
 }
@@ -1202,9 +1206,10 @@ a { color: inherit; }
 .autumn { background: var(--paper); }
 .autumn__name {
   margin: 0 0 6px;
-  font-family: var(--font-mincho);
-  font-weight: 300; /* Ryumin Pr6N は 300 のみ配信 */
+  font-family: var(--font-sans);
+  font-weight: 700;
   font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  line-height: 1.3;
   letter-spacing: 0.04em;
   color: var(--ink);
 }
