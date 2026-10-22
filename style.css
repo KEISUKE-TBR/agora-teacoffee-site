@@ -4,7 +4,7 @@
   --paper: #FBF9F3;        /* background */
   --paper-2: #F3EEE3;      /* alt surface */
   --ink: #2b2b26;          /* text */
-  --ink-soft: #6a706f;     /* muted text */
+  /* --ink-soft（補助テキスト色）は、下の「文字用の派生値」ブロックで定義 */
   --taupe: #8a8570;        /* captions / tertiary */
   --border: #e4dfd0;
   --border-strong: #ddd8c8;
@@ -23,6 +23,50 @@
   --amber: #9A6B3A;
   --rose: #C97B84;
 
+  /* --- 文字用の派生値 ---
+     1色で面も文字も賄わない。面・線用（上の値）と文字用（ここ）を分ける。
+     紙 #FBF9F3 と薄面 #F3EEE3 の両方で 4.5 を満たす最小限の暗さに落としてある。
+     薄面を外して紙だけで計算すると全部 4.11〜4.16 で基準割れする
+     （.menu .store .schedule__next .fact が薄面に乗っているため） */
+  --sunset-ink:    #af5035;  /* 紙 4.96 / 薄面 4.51（元 #C55A3B は 4.07 / 3.70） */
+  --rose-ink:      #975c63;  /* 紙 4.95 / 薄面 4.51（元 #C97B84 は 3.00 / 2.73） */
+  --lemon-ink:     #66722b;  /* 紙 4.98 / 薄面 4.53（元 #8A9A3A は 2.95 / 2.68） */
+  --amber-ink:     #8e6336;  /* 紙 5.00 / 薄面 4.55 */
+  --tea-brown-ink: #83674f;  /* 紙 4.96 / 薄面 4.52 */
+  --herbal-ink:    #5a734f;  /* 紙 4.99 / 薄面 4.54（元 #5F7A54 は薄面で 4.13） */
+  --taupe-ink:     #706c5b;  /* 紙 5.01 / 薄面 4.55（元 #8a8570 は 3.52 / 3.20） */
+
+  /* 既存の補助テキスト色も薄面で基準割れしている。
+     --ink-soft #6a706f は紙 4.79 だが薄面 #F3EEE3 では 4.36。
+     明度98%まで落とすだけで両方満たす（見分けはつかない） */
+  --ink-soft:      #676d6c;  /* 紙 5.01 / 薄面 4.56（元 #6a706f は 4.79 / 4.36） */
+
+  /* カテゴリ色の間接参照用。面は --accent、文字は --accent-ink を参照する。
+     #soda が --accent: var(--rose) を入れており、.mcat__title が紙の上で 3.00 しかない。
+     これは公開中のサイトに実在する不備で、今回あわせて直す */
+  /* 深緑 --dark の面の上では -ink を使わないこと。
+     -ink は深緑の上で 2.67〜2.70 と、元の色（--sunset 3.29）より悪化する。
+     深緑の上は --dark-accent(8.66) / --dark-text(11.80) / --apricot(6.93) を使う */
+
+  /* --- 影 ---
+     純黒を使わない。黒い影は青みが出て面から浮く。インク色 #2b2b26 の rgba にする。
+     none から生やすと補間されず反応が鈍く見えるので、平常時も薄く置く。
+     ホバーは alpha を1段だけ動かし、ぼかしと距離は据え置く */
+  --shadow-rest:  0 10px 30px rgba(43, 43, 38, 0.10);
+  --shadow-hover: 0 14px 36px rgba(43, 43, 38, 0.18);
+
+  /* --- モーション ---
+     デュレーションとイージングは各1本。用途で使い分けない。
+     この曲線は元から2箇所で使われていた値で、他所から輸入したものではない */
+  --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+  --dur:       0.3s;
+  --dur-color: 0.15s;  /* 色だけ倍速。位置が動かない変化は目が追えるので速くてよい */
+
+  /* --- 登場演出の持ち上げ量 ---
+     SPのほうを大きくする。小さい画面では動きを控えるのが定石だが逆で、
+     SPは1画面の要素数が少なく縦スクロール量が大きいため20pxでは気づかれない */
+  --rise: 20px;
+
   /* Typography — brand fonts via Adobe Fonts (kit ysy1ycw), with graceful fallbacks:
      Scandia (Latin sans) + Hiragino Kaku Gothic (JP body) + Ryumin (JP mincho display) */
   --font-sans: "scandia-web", "hiragino-kaku-gothic-pron", "Inter", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;  /* body / labels */
@@ -36,9 +80,16 @@
   --pad-x: clamp(20px, 5vw, 80px);
   --pad-y: clamp(72px, 11vw, 160px);
 
-  --fs-eyebrow: clamp(0.6875rem, 0.66rem + 0.14vw, 0.75rem);
-  --fs-note: clamp(0.75rem, 0.72rem + 0.14vw, 0.8125rem);
-  --fs-body: clamp(0.9375rem, 0.89rem + 0.24vw, 1.0625rem);
+  /* タイプスケール：2px刻みの偶数px。比率（×1.25等）は使わない。
+     和文は字面が正方形なのでキリのいい偶数のほうが揃う */
+  --fs-hero:    clamp(1.75rem, 1.2rem + 2.3vw, 2.25rem);   /* 28 → 36px */
+  --fs-section: clamp(1.5rem,  1.1rem + 1.7vw, 2rem);      /* 24 → 32px */
+  --fs-sub:     clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem); /* 18 → 20px。※下の Step で実際に当てる */
+  --fs-body:    1rem;                                       /* 16px 固定 */
+  --fs-note:    clamp(0.75rem, 0.72rem + 0.14vw, 0.875rem);/* 12 → 14px */
+  --fs-eyebrow: 0.75rem;                                    /* 12px。英字ラベルは下で見出しの半分に上書き */
+
+  /* 旧スケール。上の --fs-hero / --fs-section に移すまで参照が残っているので据え置く */
   --fs-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
   --fs-display: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem);
 }
@@ -79,11 +130,19 @@ html {
 body {
   margin: 0;
   font-family: var(--font-sans);
+  font-weight: 500;              /* 400ではない。和文ゴシックのRegularは画面で細すぎる */
+  font-size: var(--fs-body);
+  line-height: 2.2;              /* 和文の行送り。欧文の1.5とは別物 */
+  letter-spacing: 0.04em;        /* 正のまま。和文でも詰めない */
   color: var(--ink);
   background: var(--paper);
-  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "palt";
+}
+@media (max-width: 640px) {
+  /* スマホは行間を広げるのが定説だが逆。1行の文字数が減るぶん詰めてよい。
+     実測でも本文 2.4→2.2、見出し 1.7→1.6、リード 240%→200% と狭めている */
+  body { line-height: 2.0; }
 }
 
 img {
@@ -190,7 +249,7 @@ a { color: inherit; }
   margin: 0 0 clamp(20px, 3vw, 34px);
   font-size: var(--fs-eyebrow);
   letter-spacing: 0.34em;
-  color: var(--sunset);
+  color: var(--dark-accent);
 }
 
 .hero__title { margin: 0; }
@@ -617,7 +676,7 @@ a { color: inherit; }
 .schedule__day { font-family: var(--font-num); font-weight: 600; font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1; color: var(--ink); }
 .schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe); margin-top: 2px; }
 .schedule__info { flex: 1; min-width: 0; }
-.schedule__event { margin: 0 0 4px; font-weight: 700; font-size: clamp(1rem, 2vw, 1.25rem); color: var(--ink); }
+.schedule__event { margin: 0 0 4px; font-weight: 700; font-size: var(--fs-sub); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .schedule__time {
   margin: 3px 0 0;
@@ -849,7 +908,7 @@ a { color: inherit; }
   transition: opacity 0.25s ease;
 }
 .footer__social a:hover { opacity: 0.7; }
-.footer__social-label { font-family: var(--font-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--sunset); }
+.footer__social-label { font-family: var(--font-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--dark-accent); }
 .footer__social-handle { font-family: var(--font-num); font-size: 0.9rem; color: var(--dark-text); }
 .footer__copy { margin: clamp(12px, 2vw, 24px) 0 0; font-family: var(--font-num); font-size: 0.7rem; letter-spacing: 0.06em; color: color-mix(in srgb, var(--dark-muted) 70%, transparent); }
 
@@ -1186,7 +1245,7 @@ a { color: inherit; }
 .autumn__maker-name {
   margin: 0 0 12px;
   font-family: var(--font-num); font-weight: 600;
-  font-size: clamp(1.2rem, 2vw, 1.4rem); letter-spacing: 0.02em;
+  font-size: var(--fs-sub); letter-spacing: 0.02em;
   color: var(--ink);
 }
 .autumn__maker-text { margin: 0 0 16px; max-width: 60ch; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
