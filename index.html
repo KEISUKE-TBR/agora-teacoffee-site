@@ -43,10 +43,10 @@
   })(document);
 </script>
 
-<!-- Style-guide typography: Shippori Mincho (headings), Inter (body/labels/figures), Caveat (accent) -->
+<!-- Google Fonts: Inter (Latin fallback in --font-sans, figures), Caveat (handwritten accent). Japanese is set in Hiragino Kaku Gothic via the Adobe Fonts kit above. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
 
@@ -179,8 +179,8 @@
   <section class="section autumn" id="autumn">
     <div class="autumn__card reveal">
       <div class="section__head">
-        <p class="section__eyebrow">AUTUMN TEA TIME</p>
         <h2 class="section__title">おうちで、味覚の秋を。</h2>
+        <p class="section__eyebrow" aria-hidden="true">AUTUMN TEA TIME</p>
         <p class="section__note">
           果汁を搾ったあとの信州巨峰の果皮を、丁寧に乾燥させたフルーツティー。<br>
           芳醇な香りとやさしい甘みを、フルーツごと味わえます。
@@ -225,9 +225,11 @@
 
   <!-- ============ Story ============ -->
   <section class="section story" id="story">
-    <p class="section__eyebrow reveal">STORY</p>
     <div class="story__grid">
-      <h2 class="story__title reveal">アゴラ、<br>という名前。</h2>
+      <div class="story__head">
+        <h2 class="story__title reveal">アゴラ、<br>という名前。</h2>
+        <p class="section__eyebrow" aria-hidden="true">STORY</p>
+      </div>
       <div class="story__body reveal" data-delay="1">
         <p>紀元前のギリシャ。人々は「アゴラ」と呼ばれる広場に集まり、売り買いをし、議論を交わし、日々の言葉を分かち合いました。それは市場であり、対話の場であり、街の心臓でした。</p>
         <p>A.G.O.R.A. TEA&amp;COFFEE が目指すのも、そんな場所です。一杯のコーヒーやお茶が、人と人のあいだにささやかな対話を生む。忙しない毎日のなかに、立ち止まって語らう「広場」をつくること。それが私たちの願いです。</p>
@@ -240,8 +242,8 @@
   <!-- ============ Menu (Signature showcase) ============ -->
   <section class="section menu" id="menu">
     <div class="section__head">
-      <p class="section__eyebrow reveal">SIGNATURE</p>
       <h2 class="section__title reveal">キッチンカーの、一杯。</h2>
+      <p class="section__eyebrow" aria-hidden="true">SIGNATURE</p>
       <p class="section__note reveal" data-delay="1">ソルベがゆっくり溶けていく、2つのティーソーダ。出店の看板メニューです。</p>
     </div>
     <div class="signature">
@@ -272,8 +274,8 @@
   <!-- ============ Schedule ============ -->
   <section class="section schedule" id="schedule">
     <div class="section__head">
-      <p class="section__eyebrow reveal">SCHEDULE</p>
       <h2 class="section__title reveal">出店スケジュール</h2>
+      <p class="section__eyebrow" aria-hidden="true">SCHEDULE</p>
       <p class="section__note reveal" data-delay="1">※ 最新情報は Instagram / X をご覧ください。</p>
     </div>
     <ul class="schedule__list" data-events="upcoming">
@@ -339,8 +341,8 @@
   <!-- ============ Online store（出店がないあいだの受け皿） ============ -->
   <section class="section store" id="store">
     <div class="section__head">
-      <p class="section__eyebrow reveal">ONLINE STORE</p>
       <h2 class="section__title reveal">おうちでも、この味を。</h2>
+      <p class="section__eyebrow" aria-hidden="true">ONLINE STORE</p>
       <p class="section__note reveal" data-delay="1">キッチンカーでお出ししている一杯は、運営元 soundpunos が扱う素材からつくっています。</p>
     </div>
 
