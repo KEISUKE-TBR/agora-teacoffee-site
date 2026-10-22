@@ -85,6 +85,7 @@
   --fs-hero:    clamp(1.75rem, 1.2rem + 2.3vw, 2.25rem);   /* 28 → 36px */
   --fs-section: clamp(1.5rem,  1.1rem + 1.7vw, 2rem);      /* 24 → 32px */
   --fs-sub:     clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem); /* 18 → 20px。※下の Step で実際に当てる */
+  --fs-body-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);   /* 16 → 18px。リード文・大きめのボタン */
   --fs-body:    1rem;                                       /* 16px 固定 */
   --fs-note:    clamp(0.75rem, 0.72rem + 0.14vw, 0.875rem);/* 12 → 14px */
   --fs-eyebrow: 0.75rem;                                    /* 12px。英字ラベルは下で見出しの半分に上書き */
@@ -845,7 +846,7 @@ a { color: inherit; }
   background: var(--sunset);
   color: var(--paper);
   font-weight: 700;
-  font-size: var(--fs-body-lg, 1.0625rem);
+  font-size: var(--fs-body-lg);
   letter-spacing: 0.04em;
   text-decoration: none;
   transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
