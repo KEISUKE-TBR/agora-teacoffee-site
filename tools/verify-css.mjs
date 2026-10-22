@@ -128,20 +128,30 @@ for (const t of ['ink', 'ink-soft', ...INK_TOKENS]) checkContrast(t);
 
 // 深緑 --dark の上では -ink は元の色より悪化する（2.67〜2.70）。静的には「どのルールが深緑の上か」を
 // 確実には判定できない（.autumn__maker-text は紙、.autumn__cta は深緑、のように同じブロック名で面が違う）。
-// そこで、(a) 既知の2か所だけは断定で見て、(b) -ink の使用箇所を全部並べて目視に回す。
-const DARK_SAFE = /var\(--(dark-accent|dark-text|apricot)\)/;
-const KNOWN_DARK = ['.hero__eyebrow', '.footer__social-label'];
+// そこで、(a) 既知の3か所だけは断定で見て（--dark に対して 4.5 以上）、(b) -ink の使用箇所を全部並べて目視に回す。
+// 既知の3か所はどれも --dark の面に乗っている:
+//   .hero__eyebrow         今は --sunset（3.29）。--dark-accent #C9CF9E（8.66）にする
+//   .meguri-cta__eyebrow   今は --dark-muted（5.33）で足りている。-ink には変えないこと
+//   .footer__social-label  今は --sunset（3.29）。--dark-accent にする
+const KNOWN_DARK = ['.hero__eyebrow', '.meguri-cta__eyebrow', '.footer__social-label'];
 const darkOffenders = [];
+const darkNow = [];
 for (const sel of KNOWN_DARK) {
   const rs = rules.filter((r) => splitTop(r.head).includes(sel));
   const decls = rs.flatMap((r) => [...r.body.matchAll(TEXT_COLOR)].map((m) => ({ r, value: m[1].trim(), idx: m.index })));
   if (decls.length === 0) darkOffenders.push(`${sel}: 文字色の指定が見つからない`);
   for (const d of decls) {
-    if (!DARK_SAFE.test(d.value)) darkOffenders.push(`${d.r.f}:${lineOf(d.r.src, d.r.bodyIdx + d.idx)}  ${sel} { color: ${d.value} }`);
+    const where = `${d.r.f}:${lineOf(d.r.src, d.r.bodyIdx + d.idx)}  ${sel} { color: ${d.value} }`;
+    const name = (d.value.match(/^var\(\s*--([a-z0-9-]+)\s*\)(?:\s*!important)?$/) || [])[1];
+    if (!name || !tokens[name] || !tokens.dark) { darkOffenders.push(`${where}  （色を解決できない）`); continue; }
+    const rr = ratio(tokens[name], tokens.dark);
+    darkNow.push(`${sel} = --${name} ${rr.toFixed(2)}`);
+    if (rr < 4.5) darkOffenders.push(`${where}  → --dark の上で ${rr.toFixed(2)}`);
   }
 }
-check('深緑パネル上の文字（.hero__eyebrow / .footer__social-label）が深緑用の色を使っている',
-  darkOffenders.length === 0, '--dark-accent / --dark-text / --apricot のいずれかにすること（-ink は深緑の上で悪化する）', darkOffenders);
+check('深緑パネル上の文字（.hero__eyebrow / .meguri-cta__eyebrow / .footer__social-label）が --dark の上で4.5以上',
+  darkOffenders.length === 0, '--dark-accent #C9CF9E（8.66）/ --dark-text（11.80）/ --apricot（6.93）を使う。-ink は 2.67〜2.70 に悪化するので使わない', darkOffenders);
+info(`深緑パネル上の既知ルールの現状: ${darkNow.join(' / ')}`);
 const darkSurfaces = new Set();
 for (const r of rules) {
   if (!/(?:^|[;\s])background(?:-color)?\s*:\s*var\(--dark(?:-deep)?\)/.test(r.body)) continue;
@@ -153,7 +163,7 @@ const maybeDark = (head) => [...head.matchAll(/\.([a-z0-9_-]+)/gi)].some((m) =>
 const inkUses = rules.flatMap((r) => [...r.body.matchAll(TEXT_COLOR)]
   .filter((m) => varNames(m[1]).some((n) => n.endsWith('-ink')))
   .map((m) => `${r.f}:${lineOf(r.src, r.bodyIdx + m.index)}  ${excerpt(r.head)}  { color: ${m[1].trim()} }${maybeDark(r.head) ? '   <-- 深緑パネル上の可能性あり' : ''}`));
-info(`-ink を文字色に使っている箇所: ${inkUses.length}件（深緑パネルの上では使わないこと。既知の深緑上は .hero__eyebrow と .footer__social-label）`);
+info(`-ink を文字色に使っている箇所: ${inkUses.length}件（深緑パネルの上では使わないこと。既知の深緑上は .hero__eyebrow / .meguri-cta__eyebrow / .footer__social-label）`);
 for (const u of inkUses) console.log(`       ${u}`);
 
 console.log('\n=== 2. 面用の色を文字に使っていないか ===');
@@ -291,32 +301,59 @@ info(`prefers-reduced-motion: ${ats.filter((a) => /prefers-reduced-motion/.test(
   ` / transition・animation を止めている: ${yn(rmRules.some((r) => /(?:transition|animation)\s*:\s*none/.test(r.body)))}` +
   ` / --dur を参照している: ${yn(rmRules.some((r) => /--dur/.test(r.body)))}）。--dur 系の導入後は新しい動きも止まるか目視で確認`);
 
-console.log('\n=== 9. 装飾の英字ラベルに aria-hidden ===');
-// 対象は「英字だけの装飾ラベル」。和文を含む eyebrow は実際の情報を持つので、隠すと支援技術から消える。
-const CJK = /[\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Han}]/u;
+console.log('\n=== 9. 装飾の英字ラベルに aria-hidden（section__eyebrow のみ） ===');
+// 対象は section__eyebrow だけ。中身は AUTUMN TEA TIME / VISION のような装飾のラテン文字。
+// hero__eyebrow（千葉のキッチンカー ／ TEA & COFFEE）と meguri-cta__eyebrow（巡 恩送りチケット MEGURI）は
+// 業態や企画名を伝える日本語で、英字が和文の重複になっていない。隠す・薄くする・並べ替えるといずれも情報が消えるので
+// 対象外にし、それを守らせる逆向きの検査を check 10 の下に置く。
+// イロコトの型が成り立つのは、和文と英字が同じ意味を重複して持っているとき（事業内容 / Services）だけ。
+const classesOf = (attrs) => ((attrs.match(/class="([^"]*)"/) || [])[1] || '').split(/\s+/);
 const eyebrowEls = htmlFiles.flatMap((file) =>
   [...file.src.matchAll(/<([a-z][a-z0-9]*)\b([^>]*\bclass="[^"]*__eyebrow[^"]*"[^>]*)>([\s\S]*?)<\/\1>/g)].map((m) => ({
-    file, idx: m.index, attrs: m[2], text: m[3].replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').trim(),
+    file, idx: m.index, attrs: m[2], classes: classesOf(m[2]), text: m[3].replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').trim(),
   })));
-const decorative = eyebrowEls.filter((e) => !CJK.test(e.text));
-const withJapanese = eyebrowEls.filter((e) => CJK.test(e.text));
-const unhidden = decorative.filter((e) => !/\baria-hidden="true"/.test(e.attrs));
-check('英字だけの装飾 eyebrow すべてに aria-hidden', decorative.length > 0 && unhidden.length === 0,
-  `${decorative.length - unhidden.length}/${decorative.length}`, unhidden.map((e) => locOf(e.file, e.idx)));
-info(`aria-hidden の対象外（和文を含む eyebrow。隠すと情報が消える）: ${withJapanese.length}件 ` +
-  withJapanese.map((e) => `${e.file.f}:${lineOf(e.file.src, e.idx)} 「${e.text}」`).join(' / '));
+const sectionEyebrows = eyebrowEls.filter((e) => e.classes.includes('section__eyebrow'));
+const otherEyebrows = eyebrowEls.filter((e) => !e.classes.includes('section__eyebrow'));
+const unhidden = sectionEyebrows.filter((e) => !/\baria-hidden="true"/.test(e.attrs));
+check('section__eyebrow すべてに aria-hidden', sectionEyebrows.length > 0 && unhidden.length === 0,
+  `${sectionEyebrows.length - unhidden.length}/${sectionEyebrows.length}`, unhidden.map((e) => locOf(e.file, e.idx)));
+info(`check 9・10 の対象外（section__eyebrow 以外。内容を持つ日本語なので隠さず順序も動かさない）: ${otherEyebrows.length}件 ` +
+  otherEyebrows.map((e) => `${e.file.f}:${lineOf(e.file.src, e.idx)} ${e.classes[0]} 「${e.text}」`).join(' / '));
 
-console.log('\n=== 10. 見出しのDOM順（和文が先、英字が後） ===');
-// <h2 class="...__title">…</h2> より前に同セクションの __eyebrow が来ていないこと
-// 注意：hero__eyebrow と meguri-cta__eyebrow は和文を含む（check 9 の対象外）が、この判定には含まれる。
-// 位置の横に印を付けるので、並べ替えてよい装飾ラベルかどうかは内容を見て決めること。
+console.log('\n=== 10. 見出しのDOM順（和文が先、英字が後。section__eyebrow のみ） ===');
+// <h2 class="...__title">…</h2> より前に同じセクションの section__eyebrow が来ていないこと。
+// </section> や <section をまたいだ先の見出しは数えない。
+const SAME_SECTION = String.raw`(?:(?!</section>|<section)[\s\S]){0,200}?`;
+const eyebrowFirst = (cls) => new RegExp(String.raw`class="[^"]*\b${cls}\b[^"]*"${SAME_SECTION}<h[1-6][^>]*class="[^"]*__title`, 'g');
 const wrongOrder = htmlFiles.flatMap((file) =>
-  [...file.src.matchAll(/class="[^"]*__eyebrow[^"]*"[\s\S]{0,200}?<h[1-6][^>]*class="[^"]*__title/g)].map((m) => {
-    const line = lineOf(file.src, m.index);
-    const jp = eyebrowEls.some((e) => e.file === file && lineOf(file.src, e.idx) === line && CJK.test(e.text));
-    return `${locOf(file, m.index)}${jp ? '   [和文を含む eyebrow]' : ''}`;
-  }));
-check('eyebrow が title より後にある', wrongOrder.length === 0, `${wrongOrder.length}箇所で eyebrow が先に出ている`, wrongOrder);
+  [...file.src.matchAll(eyebrowFirst('section__eyebrow'))].map((m) => locOf(file, m.index)));
+check('section__eyebrow が title より後にある', wrongOrder.length === 0,
+  `${wrongOrder.length}箇所で eyebrow が先に出ている`, wrongOrder);
+// 逆向きの検査：内容を持つ日本語の eyebrow を、装飾のラテン文字と同じ扱いにしていないこと。
+// aria-hidden を付けない / title の前から動かさない / opacity を落とさない（0.7 未満にしない）。
+const PROTECTED = ['hero__eyebrow', 'meguri-cta__eyebrow'];
+const protectedBad = [];
+for (const cls of PROTECTED) {
+  const els = eyebrowEls.filter((e) => e.classes.includes(cls));
+  if (els.length === 0) protectedBad.push(`${cls}: 見つからない（削除・改名された?）`);
+  for (const e of els) {
+    if (/\baria-hidden="true"/.test(e.attrs)) protectedBad.push(`${locOf(e.file, e.idx)}   aria-hidden が付いている（読み上げから消える）`);
+    const beforeTitle = new RegExp(String.raw`^<[a-z][a-z0-9]*[^>]*>${SAME_SECTION}<h[1-6][^>]*class="[^"]*__title`);
+    if (!beforeTitle.test(e.file.src.slice(e.idx))) protectedBad.push(`${locOf(e.file, e.idx)}   title の後ろに動いている`);
+  }
+}
+for (const r of rules) {
+  for (const cls of PROTECTED) {
+    if (!splitTop(r.head).some((p) => new RegExp(String.raw`\.${cls}(?![\w-])`).test(p))) continue;
+    for (const m of r.body.matchAll(/(?:^|[;\s])opacity\s*:\s*([\d.]+)/g)) {
+      const v = Number(m[1]);
+      if (v > 0 && v < 0.7) protectedBad.push(`${r.f}:${r.line}  .${cls} { opacity: ${m[1]} }（薄くすると店の説明が読めなくなる）`);
+    }
+  }
+}
+check('和文を含む eyebrow（hero__eyebrow / meguri-cta__eyebrow）を装飾扱いにしていない', protectedBad.length === 0,
+  '内容を持つ日本語なので、aria-hidden・title の後ろへの移動・opacity の引き下げをしない', protectedBad);
+
 
 console.log('\n=== 11. 配信物から外すもの（.assetsignore） ===');
 // wrangler.jsonc の assets.directory が ./ なので、置いたものはそのまま公開される
