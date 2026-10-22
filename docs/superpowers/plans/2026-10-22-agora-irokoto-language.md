@@ -665,44 +665,60 @@ git commit -m "影をインク色に、カードの枠線を疑似要素へ、�
 
 ---
 
-## Task 7: 引用
+## Task 7: 署名行の詳細度を直す
+
+> **当初の計画は前提が誤っていた。** 「引用ブロックのスタイルを入れ替える」としていたが、
+> **`blockquote` は4ページのどこにも存在しない**（実測：index 0 / menu 0 / schedule 0 / story 0）。
+> STORY は通常の `<p>` が2つと署名行で構成されていて、引用ブロックではなかった。
+>
+> 存在しない要素のCSSを書くのは死にコードを足すだけなので、仕様 §4.3 の引用スタイルは**実装しない**。
+> 将来 `blockquote` を使うことになったら、仕様に数値が残してある。
+>
+> 代わりに、実測で見つかった本物の不具合をこのタスクで直す。
 
 **Files:**
-- Modify: `style.css`（`.story__sign` 周辺、`blockquote`）
-- Modify: `story/index.html` `index.html`（STORY の引用部）
+- Modify: `style.css`（`.story__sign`）
 
-- [ ] **Step 1: 引用のスタイルを入れ替える**
+- [ ] **Step 1: 署名行の宣言が負けているのを直す**
 
-```css
-/* 引用に左の縦バーも引用符も使わない。グレーの面だけで引用らしさを出す。
-   左右の padding を上下の2倍にして、横に深く入れるのがポイント */
-blockquote {
-  margin: 24px 0;
-  padding: 20px 40px;
-  background: var(--paper-2);
-  border-radius: 6px;
-  line-height: 2;
-}
-blockquote::before,
-blockquote::after { content: none; }   /* 引用符を明示的に殺す */
-```
-
-`.story__sign`（イタリック明朝の署名）はゴシックに変わっているので、
-`font-style: italic` が残っていれば外す。
-
-- [ ] **Step 2: 確認用にデプロイして目視する**
-
-Run: `npx wrangler deploy --config wrangler.preview.jsonc`
-
-- [ ] **Step 3: コミット**
+`.story__sign` は `font-size: 1.5rem`（24px）を宣言しているが、
+**`.story__body p` のほうが詳細度が高いため 16px で描かれている**。宣言が丸ごと効いていない。
 
 ```bash
-git add style.css story/index.html index.html
-git commit -m "引用から縦バーと引用符を外し、グレーの面だけにする
+grep -n "story__body p\|story__sign" style.css
+```
 
-左右の padding を上下の2倍（20px 40px）にして、横に深く入れることだけで
-引用らしさを出す。参照サイトはリセット側で blockquote の引用符を
-明示的に殺している。"
+詳細度を合わせる（`.story__body .story__sign` にする）か、
+`.story__body p` 側の指定を緩める。**`!important` は足さない** —
+`color` に既に付いている `!important` も、詳細度を直したうえで外す。
+
+- [ ] **Step 2: 署名らしさの作法を当てる**
+
+参照サイトは引用・署名に**左の縦バーも引用符も使わない**。
+`.story__sign` は Caveat（手書き）なので、書体自体が署名の役割を果たしている。
+縦バーや記号を足さない。先頭の `—` は既にマークアップにあるのでそのまま。
+
+- [ ] **Step 3: 検証**
+
+Run: `node tools/verify-css.mjs`
+
+Expected: 違反数は変わらない（この項目は検査対象外）。回帰が無いことだけ確認する。
+
+ブラウザで `.story__sign` の実効 `font-size` が 24px になっていることを確認する
+（サーバーは `-c-1` で立て、`cache-control: no-store` を確認してから測る）。
+
+- [ ] **Step 4: コミット**
+
+```bash
+git add style.css
+git commit -m "署名行の font-size が詳細度負けしていたのを直す
+
+.story__sign は 1.5rem を宣言しているが .story__body p に負けて
+16px で描かれていた。!important を足さずに詳細度を揃える。
+
+当初この Task は blockquote のスタイル入れ替えを予定していたが、
+blockquote は4ページのどこにも存在しなかったため、
+存在しない要素のCSSを書くのをやめて実在の不具合を直すことにした。"
 ```
 
 ---
