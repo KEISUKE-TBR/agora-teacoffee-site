@@ -1050,8 +1050,12 @@ a { color: inherit; }
 
 /* コンテンツ軸（640px）の規則は、下の ============ Responsive: content axis ============ にまとめてある */
 
-/* ============ Scroll reveal ============ */
-.reveal {
+/* ============ Scroll reveal ============
+   隠す側（opacity: 0）は .js の配下だけ。.js は各ページの <head> の冒頭にある同期スクリプトが <html> に付ける。
+   JS が無効・読み込み失敗の環境では .js が付かず、.reveal は素の要素のまま（常に見える）。
+   参照7サイトは「JS が初期値 0 を立てる」方式で、JS が落ちると本文が永久に opacity: 0 のまま残る。そこは真似ない。
+   script.js 側にも保険がある（IntersectionObserver が無い環境では最初から is-visible を付ける）。 */
+.js .reveal {
   opacity: 0;
   transform: translateY(var(--rise));
   /* 登場だけは --dur（0.3s）ではなく専用の長さ。opacity と transform で duration をずらし、
@@ -1059,13 +1063,18 @@ a { color: inherit; }
   transition: opacity 0.7s var(--ease), transform 0.8s var(--ease);
   transition-delay: calc(var(--delay, 0) * 90ms);
 }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.js .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
+/* 動きを止める仕組みは2層。
+   (1) トークン：--dur / --dur-color を 0s にして、それを使う全ての遷移（ホバー・フォーカス・モーダル・ヘッダー）を一括で止める。
+       .sig-card::after の影、.sig-card / .focus-card の写真の拡大、ヘッダー、モーダルはここで止まる。
+   (2) 個別：トークンを使わず時間を直書きしている2つ（.reveal の 0.7s / 0.8s と、.hero__scroll-cue の 1.9s）だけは、下で名指しして止める。
+   新しい動きを足すときは、時間を直書きせずトークンを使うこと。直書きするならこのブロックに足すこと。
+   詳細度：.js .reveal は 0,2,0 なので、ここも .js 付きで書く（.reveal 単体だと負けて登場演出が復活する）。 */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  /* 動きのトークンを 0 にして、--dur / --dur-color を使う全ての遷移（ホバー・モーダル・ヘッダー）を一括で止める */
   :root { --dur: 0s; --dur-color: 0s; }
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
   .hero__scroll-cue span { animation: none; }
   .sig-card__photo img { transition: none; }
 }
@@ -1518,4 +1527,41 @@ a { color: inherit; }
   .schedule__link::after { content: ""; position: absolute; inset: -12px -6px; }       /* 25px → 49px */
   .menu-back a::after { content: ""; position: absolute; inset: -14px -6px; }        /* 本体はインラインで約 22px → 50px */
   .schedule__links { row-gap: 24px; }                                  /* 当たり判定が上下で重ならないように 6px から */
+}
+
+/* ============ Accessibility: キーボード・印刷 ============
+   参照7サイトの CSS（計 1.3MB）には、自前の :focus-visible がゼロ、@media print がゼロ。ここは真似ずに足す。 */
+
+/* フォーカスリングのフォールバック。
+   個別のリングを持つ部品（.sig-card / .focus-card / .mrow / .hero__cta / .autumn__cta）はそれぞれ自前のものを使う。
+   ここはそこから漏れる要素（本文中のリンク、ボタン、フォーム部品、summary、tabindex を持つ要素）の受け皿。
+   :where() は詳細度 0 なので、上の個別規則とは書く順番に関係なく個別規則が勝つ（.sig-card の outline: none も効く）。
+   border-radius は上書きしない：ピル形のボタン（999px）がフォーカスで角張るため。outline は要素の角丸に沿って描かれる。
+   色は --focus-ring を読む。既定は紙の上で 4.51〜5.22 の --sunset-ink（薄面 4.51 / 紙 4.96 / 白 5.22）。 */
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring, var(--sunset-ink));
+  outline-offset: 2px;
+}
+/* 深緑の面の上では紙色のリングにする（--dark 13.38 / --dark-deep 15.43）。-ink は深緑の上で 2.7 しか出ない。
+   深緑の面を新しく足したら、ここにも足すこと。 */
+.header, .hero, .story-hero, .board-title, .story-vision, .meguri-cta, .autumn__card, .footer {
+  --focus-ring: var(--paper);
+}
+
+/* 印刷。.js .reveal は既定で opacity: 0 なので、スクロール前に印刷すると本文が白紙で出る。
+   !important は、詳細度 0,3,0 の .js .reveal.is-visible や将来の規則に関係なく、印刷では必ず見せるため。 */
+@media print {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  /* 深緑の面。ブラウザの既定（背景を印刷しない）だと、面が消えて明るい文字だけが白紙に残り、読めない。
+     面ごと印刷させる。上の --focus-ring と同じ面の一覧 */
+  .header, .hero, .story-hero, .board-title, .story-vision, .meguri-cta, .autumn__card, .footer {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  /* position: fixed は全ページに繰り返し出て、本文に重なる。最初の1枚の上端に1度だけ出す */
+  .header { position: absolute; }
 }
