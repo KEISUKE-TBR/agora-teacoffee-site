@@ -71,7 +71,7 @@
      Scandia (Latin sans) + Hiragino Kaku Gothic (JP body and headings).
      和文は --font-sans 一本。見出しは 700、補助テキストは 500（本文の継承値） */
   --font-sans: "scandia-web", "hiragino-kaku-gothic-pron", "Inter", -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;  /* body / headings / labels */
-  --font-serif: "scandia-web", "Inter", -apple-system, sans-serif;      /* Latin display */
+  --font-serif: "scandia-web", "Inter", -apple-system, sans-serif;      /* 欧文ディスプレイ専用。名前は serif だが中身はサンセリフ。和文を入れないこと */
   --font-hand: "Caveat", cursive;                                       /* handwritten accent */
   --font-num: "scandia-web", "Inter", sans-serif;                       /* figures — never monospace */
 
@@ -88,6 +88,13 @@
   --fs-body:    1rem;                                       /* 16px 固定 */
   --fs-note:    clamp(0.75rem, 0.72rem + 0.14vw, 0.875rem);/* 12 → 14px */
   --fs-eyebrow: 0.75rem;                                    /* 12px。英字ラベルは下で見出しの半分に上書き */
+
+  /* 見出しの行送り。大きい文字ほど詰め、小さい文字ほど緩める（2段）。
+     参照サイトの実測は大きい表示文字 108px→130% / 100px→120% / 74px→130% / 64px→128% で、
+     スマホの見出しは逆に 1.7→1.6 と緩い。28px を境に分ける。
+     単行の欧文ラベルと数字だけは line-height: 1 を個別に書く。本文は body の 2.2 */
+  --lh-display: 1.3;   /* 28px 以上の見出し */
+  --lh-heading: 1.5;   /* 18〜28px 未満の見出し・ラベル */
 
   /* 旧スケール。上の --fs-hero / --fs-section に移すまで参照が残っているので据え置く */
   --fs-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
@@ -267,7 +274,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(1.25rem, 0.9rem + 1.5vw, 2rem);
-  line-height: 1.3;
+  line-height: var(--lh-display);
   letter-spacing: 0.06em;
 }
 
@@ -332,7 +339,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: var(--fs-h2);
-  line-height: 1.3;
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
 }
 .section__note {
@@ -354,7 +361,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: var(--fs-h2);
-  line-height: 1.5;
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
 }
 .story__body { display: flex; flex-direction: column; gap: 1.4em; }
@@ -425,6 +432,7 @@ a { color: inherit; }
   font-family: var(--font-serif);
   font-weight: 500;
   font-size: clamp(1.75rem, 2.4rem + 1vw, 3rem);
+  line-height: var(--lh-display);
   letter-spacing: 0.06em;
 }
 .story-hero__jp {
@@ -464,7 +472,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(1.3rem, 2.2vw, 1.75rem);
-  line-height: 1.3;
+  line-height: var(--lh-heading);
   color: var(--ink);
 }
 .letter__body p { margin: 0; font-size: var(--fs-body); line-height: 2; color: var(--ink-soft); }
@@ -484,7 +492,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(1.5rem, 1.1rem + 2vw, 2.25rem);
-  line-height: 1.45;
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
 }
 .story-vision__body { display: flex; flex-direction: column; gap: 1.3em; }
@@ -497,7 +505,7 @@ a { color: inherit; }
 .story-vision__lead {
   margin-top: clamp(6px, 1vw, 10px) !important;
   font-family: var(--font-sans);
-  font-weight: 500;
+  font-weight: 700; /* kit の Hiragino は 300 / 600 のみ。400・500 は W3 に落ちて上の段落と同じになるので、W6 で差をつける */
   font-size: var(--fs-body-lg) !important;
   color: var(--dark-text) !important;
 }
@@ -531,7 +539,7 @@ a { color: inherit; }
 .sig-card__name { font-family: var(--font-sans); font-weight: 700; font-size: clamp(1.3rem, 2.4vw, 1.75rem); line-height: 1.35; color: var(--ink); }
 .sig-card__sub { font-size: var(--fs-note); color: var(--ink-soft); }
 .sig-card__meta { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; gap: 12px; }
-.sig-card__price { font-family: var(--font-num); font-weight: 600; font-size: 1.35rem; color: var(--ink); }
+.sig-card__price { font-family: var(--font-num); font-weight: 600; font-size: 1.35rem; line-height: 1; color: var(--ink); }
 .sig-card__more { font-size: var(--fs-note); color: var(--flavor, var(--sunset)); white-space: nowrap; transition: opacity 0.2s ease; }
 .sig-card:hover .sig-card__more { opacity: 0.7; }
 
@@ -557,7 +565,7 @@ a { color: inherit; }
   font-size: clamp(2.6rem, 14vw, 3.6rem); letter-spacing: 0.04em; line-height: 1;
 }
 .board-title__jp {
-  margin: 12px 0 0; font-family: var(--font-sans); font-weight: 700;
+  margin: 12px 0 0; font-family: var(--font-sans); font-weight: 700; line-height: var(--lh-heading);
   font-size: var(--fs-note); letter-spacing: 0.32em; color: var(--dark-muted);
 }
 
@@ -602,8 +610,8 @@ a { color: inherit; }
 /* Category headings carry their own accent — that separation, more than size
    alone, is what keeps a section header from reading as another drink name. */
 .mcat__title {
-  margin: 0; font-family: var(--font-serif); font-weight: 700;
-  font-size: clamp(1.6rem, 6vw, 2rem); letter-spacing: 0.02em; color: var(--accent);
+  margin: 0; font-family: var(--font-sans); font-weight: 700;
+  font-size: clamp(1.6rem, 6vw, 2rem); line-height: var(--lh-display); letter-spacing: 0.02em; color: var(--accent);
 }
 .mcat__sub { margin: 0 0 14px; font-size: var(--fs-note); color: var(--taupe); }
 .mcat__rule { height: 2px; width: 34px; margin: 6px 0 18px; border-radius: 2px; background: var(--accent); }
@@ -680,7 +688,7 @@ a { color: inherit; }
 .schedule__day { font-family: var(--font-num); font-weight: 600; font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1; color: var(--ink); }
 .schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe); margin-top: 2px; }
 .schedule__info { flex: 1; min-width: 0; }
-.schedule__event { margin: 0 0 4px; font-weight: 700; font-size: var(--fs-sub); color: var(--ink); }
+.schedule__event { margin: 0 0 4px; font-weight: 700; font-size: var(--fs-sub); line-height: var(--lh-heading); color: var(--ink); }
 .schedule__place { margin: 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .schedule__time {
   margin: 3px 0 0;
@@ -819,7 +827,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(1.6rem, 1.1rem + 2.4vw, 2.6rem);
-  line-height: 1.5;
+  line-height: var(--lh-display);
   letter-spacing: 0.04em;
 }
 .meguri-cta__lead {
@@ -1012,7 +1020,7 @@ a { color: inherit; }
 .drink-modal__name { margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.35; color: var(--ink); }
 .drink-modal__sub { margin: 6px 0 0; font-size: var(--fs-note); color: var(--ink-soft); }
 .drink-modal__desc { margin: clamp(12px, 1.8vw, 16px) 0 0; font-size: var(--fs-note); line-height: 1.8; color: var(--ink); }
-.drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; color: var(--ink); }
+.drink-modal__price { margin: clamp(12px, 1.8vw, 18px) 0 0; font-family: var(--font-num); font-weight: 600; font-size: 1.3rem; line-height: 1; color: var(--ink); }
 
 @media (max-width: 640px) {
   .drink-modal__dialog { flex-direction: column; width: min(420px, 100%); }
@@ -1155,7 +1163,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(1.35rem, 2.6vw, 1.8rem);
-  line-height: 1.3;
+  line-height: var(--lh-heading);
   letter-spacing: 0.04em;
   color: var(--ink);
 }
@@ -1209,7 +1217,7 @@ a { color: inherit; }
   font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(1.25rem, 2.2vw, 1.55rem);
-  line-height: 1.3;
+  line-height: var(--lh-heading);
   letter-spacing: 0.04em;
   color: var(--ink);
 }
@@ -1222,7 +1230,7 @@ a { color: inherit; }
 .autumn__price {
   margin: 0 0 12px;
   font-family: var(--font-num); font-weight: 600;
-  font-size: 1.3rem; color: var(--ink);
+  font-size: 1.3rem; line-height: 1; color: var(--ink);
 }
 /* 購入先へのボタン */
 .autumn__cta {
@@ -1250,8 +1258,8 @@ a { color: inherit; }
 }
 .autumn__maker-name {
   margin: 0 0 12px;
-  font-family: var(--font-num); font-weight: 600;
-  font-size: var(--fs-sub); letter-spacing: 0.02em;
+  font-family: var(--font-sans); font-weight: 600;
+  font-size: var(--fs-sub); line-height: var(--lh-heading); letter-spacing: 0.02em;
   color: var(--ink);
 }
 .autumn__maker-text { margin: 0 0 16px; max-width: 60ch; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
