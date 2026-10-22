@@ -233,14 +233,23 @@ node tools/verify-css.mjs で静的に判定できる10項目を見る。
 ```css
   /* --- 文字用の派生値 ---
      1色で面も文字も賄わない。面・線用（上の値）と文字用（ここ）を分ける。
-     紙 #FBF9F3 の上でコントラスト4.5を満たす最小限の暗さに落としてある。
-     明度94〜99%の差なので、並べても色の印象は変わらない */
-  --sunset-ink:    #b95537;  /* 4.52（元 #C55A3B は 4.07 で基準割れ） */
-  --taupe-ink:     #777260;  /* 4.57（元 #8a8570 は 3.52 で基準割れ） */
-  --amber-ink:     #976939;  /* 4.54 */
-  --tea-brown-ink: #8b6d53;  /* 4.52 */
-  /* --herbal #5F7A54 は 4.53 なのでそのまま文字に使える */
-  /* --lemon --rose は紙の上では 2.95 / 3.00。深緑 --dark の上でのみ文字にする（4.54 / 4.46） */
+     紙 #FBF9F3 と薄面 #F3EEE3 の両方で 4.5 を満たす最小限の暗さに落としてある。
+     薄面を外して紙だけで計算すると全部 4.11〜4.16 で基準割れする
+     （.menu .store .schedule__next .fact が薄面に乗っているため） */
+  --sunset-ink:    #af5035;  /* 紙 4.96 / 薄面 4.51（元 #C55A3B は 4.07 / 3.70） */
+  --rose-ink:      #975c63;  /* 紙 4.95 / 薄面 4.51（元 #C97B84 は 3.00 / 2.73） */
+  --lemon-ink:     #66722b;  /* 紙 4.98 / 薄面 4.53（元 #8A9A3A は 2.95 / 2.68） */
+  --amber-ink:     #8e6336;  /* 紙 5.00 / 薄面 4.55 */
+  --tea-brown-ink: #83674f;  /* 紙 4.96 / 薄面 4.52 */
+  --herbal-ink:    #5a734f;  /* 紙 4.99 / 薄面 4.54（元 #5F7A54 は薄面で 4.13） */
+  --taupe-ink:     #706c5b;  /* 紙 5.01 / 薄面 4.55（元 #8a8570 は 3.52 / 3.20） */
+
+  /* カテゴリ色の間接参照用。面は --accent、文字は --accent-ink を参照する。
+     #soda が --accent: var(--rose) を入れており、.mcat__title が紙の上で 3.00 しかない。
+     これは公開中のサイトに実在する不備で、今回あわせて直す */
+  /* 深緑 --dark の面の上では -ink を使わないこと。
+     -ink は深緑の上で 2.93〜2.96 と、元の色（--sunset 3.29）より悪化する。
+     深緑の上は --dark-accent(8.66) / --dark-text(11.80) / --apricot(6.93) を使う */
 
   /* --- 影 ---
      純黒を使わない。黒い影は青みが出て面から浮く。インク色 #2b2b26 の rgba にする。
@@ -531,6 +540,35 @@ sed -i -E 's/([;{[:space:]])color: var\(--sunset\)/\1color: var(--sunset-ink)/g;
            s/([;{[:space:]])color: var\(--taupe\)/\1color: var(--taupe-ink)/g;
            s/([;{[:space:]])color: var\(--amber\)/\1color: var(--amber-ink)/g;
            s/([;{[:space:]])color: var\(--tea-brown\)/\1color: var(--tea-brown-ink)/g' style.css
+```
+
+**深緑パネルの上のルールは除外すること。** `.hero__eyebrow` と `.footer__social-label` は
+`--dark` の面に乗っており、`-ink` にすると 3.29 → 2.96 と**悪化する**。
+この2つは `--dark-accent`（8.66）に変える。
+
+**間接参照の経路も直す。** `color: var(--accent)` / `color: var(--flavor, var(--sunset))` が7箇所あり
+（`style.css:399, 467, 472, 537, 543, 585, 948`）、カテゴリ側が面の色を流し込んでいる：
+
+```css
+#focus    { --accent: var(--sunset);    --accent-ink: var(--sunset-ink); }
+#soda     { --accent: var(--rose);      --accent-ink: var(--rose-ink); }
+#straight { --accent: var(--tea-brown); --accent-ink: var(--tea-brown-ink); }
+#lemon    { --accent: var(--lemon);     --accent-ink: var(--lemon-ink); }
+#alcohol  { --accent: var(--amber);     --accent-ink: var(--amber-ink); }
+```
+
+`--accent-ink` を併設し、**文字の7箇所だけ** `var(--accent-ink)` / `var(--flavor-ink, var(--sunset-ink))`
+に切り替える。面と線は `--accent` のまま。`--flavor` も同様に `--flavor-ink` を併設する。
+
+`.mcat__title` は現在 `#soda` で 3.00、`#lemon` で 2.95 しかない。**公開中のサイトに実在する不備**で、
+今回あわせて直る。
+
+**`style.css:585` のティント面を 15% → 8% に下げる。** 同じ色の文字を同じ色のティント面に載せており、
+15% のままだと `--rose-ink` でも 4.29 で届かない。8% なら 4.59：
+
+```css
+background: color-mix(in srgb, var(--accent) 8%, var(--paper));
+color: var(--accent-ink);
 ```
 
 実行後に **`background-color` が書き換わっていないこと**を必ず確認する：
