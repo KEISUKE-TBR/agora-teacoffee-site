@@ -10,6 +10,25 @@
 
 **Spec:** [docs/superpowers/specs/2026-10-22-agora-irokoto-design.md](../specs/2026-10-22-agora-irokoto-design.md)
 
+## Scope
+
+対象は **ルートの `style.css` と、それを読み込む4ページ**（`index.html` `menu/` `schedule/` `story/`）。
+
+> **MEGURI（`/meguri/`）は対象外。** 実測で判明した理由：
+> `meguri/index.html` はルートの `style.css` を**読み込んでいない**。`meguri/style.css` が
+> 独自の `:root` を24変数持ち、トークン名（`--green` `--cream` `--sage` `--apricot`）も
+> 書体（`--font-jp: "Zen Maru Gothic"` / `--font-en: "Poppins"`）も別系統で、
+> **独立したサブブランドとして意図的に分けられている**。
+> 中央揃え・深緑全面・丸ゴシックという意匠は「AI臭い」対象ではなく、振り替えると壊す。
+> さらにこのキャンペーンは既に**受付終了**している。
+>
+> `meguri/style.css` `meguri/index.html` `meguri/script.js` には**一切触らない**。
+> 特に `--font-kanji` を `--font-sans` に置換してはいけない。
+> `--font-sans` は `meguri/style.css` に存在しないので、書体が全部壊れる。
+>
+> ただしトップページの `.meguri-cta` ブロック（深緑のMEGURI告知）は
+> ルートの `style.css` で定義されているので**対象内**。
+
 ## Global Constraints
 
 - **配色は変えない。** `--paper #FBF9F3` / `--dark #16302a` / `--sunset #C55A3B` とカテゴリ6色（`herbal` `lemon` `amber` `rose` `tea-brown`）は維持する。文字用の `-ink` 派生を足すのは役割分離であって配色変更ではない
@@ -31,10 +50,10 @@
 | ファイル | 役割 | 変更 |
 |---|---|---|
 | `style.css` | 全5ページ共通のスタイル（1255行） | 大幅修正 |
-| `meguri/style.css` | MEGURI ページの追加スタイル（460行） | 修正 |
+| `meguri/style.css` | MEGURI ページ（独立したサブブランド） | **対象外** |
 | `index.html` | トップ | 見出しのDOM順 |
-| `menu/index.html` `schedule/index.html` `story/index.html` `meguri/index.html` | 下層4ページ | 見出しのDOM順 |
-| `script.js` `meguri/script.js` | スクロール登場・モーダル | 軽微 |
+| `menu/index.html` `schedule/index.html` `story/index.html` | 下層3ページ | 見出しのDOM順 |
+| `script.js` | スクロール登場・モーダル | 軽微 |
 | `tools/verify-css.mjs` | **新規** 静的検証（依存なしで node 単体で走る） | 新規 |
 | `wrangler.preview.jsonc` | **新規** 確認用 Worker の設定 | 新規 |
 
@@ -63,8 +82,8 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-const CSS = ['style.css', 'meguri/style.css'];
-const HTML = ['index.html', 'menu/index.html', 'schedule/index.html', 'story/index.html', 'meguri/index.html'];
+const CSS = ['style.css'];
+const HTML = ['index.html', 'menu/index.html', 'schedule/index.html', 'story/index.html'];
 const css = CSS.map((f) => readFileSync(f, 'utf8')).join('\n');
 const html = HTML.map((f) => readFileSync(f, 'utf8')).join('\n');
 
@@ -291,7 +310,7 @@ body {
 `--fs-sub` を小見出しに当てる。現状18〜20px相当で書かれている見出しを洗い出して差し替える：
 
 ```bash
-grep -nE "font-size:\s*(1\.1|1\.125|1\.15|1\.2|1\.25)rem" style.css meguri/style.css
+grep -nE "font-size:\s*(1\.1|1\.125|1\.15|1\.2|1\.25)rem" style.css
 ```
 
 出た箇所のうち、見出しとして使われているものを `var(--fs-sub)` に置き換える（本文や注記は対象外）。
@@ -320,7 +339,6 @@ git commit -m "トークン層：文字用の色・影・モーションを定�
 
 **Files:**
 - Modify: `style.css`（16箇所の `var(--font-mincho)` / `var(--font-ryumin)`）
-- Modify: `meguri/style.css:12`（`--font-kanji`）
 
 **Interfaces:**
 - Consumes: Task 2 のトークン
@@ -328,15 +346,14 @@ git commit -m "トークン層：文字用の色・影・モーションを定�
 
 - [ ] **Step 1: 明朝の参照箇所を列挙する**
 
-Run: `grep -n "var(--font-mincho)\|var(--font-ryumin)\|var(--font-kanji)" style.css meguri/style.css`
+Run: `grep -n "var(--font-mincho)\|var(--font-ryumin)\|var(--font-kanji)" style.css`
 
-Expected: `style.css` に14箇所、`meguri/style.css` に数箇所。全部を次の手順で潰す。
+Expected: `style.css` に15箇所。全部を次の手順で潰す。
 
 - [ ] **Step 2: 参照を `--font-sans` に置換する**
 
 ```bash
 sed -i 's/var(--font-mincho)/var(--font-sans)/g; s/var(--font-ryumin)/var(--font-sans)/g' style.css
-sed -i 's/var(--font-kanji)/var(--font-sans)/g' meguri/style.css
 ```
 
 - [ ] **Step 3: 見出しのウェイトを700に上げる**
@@ -357,7 +374,7 @@ Step 1 で列挙した見出し系セレクタの `font-weight` を `700` に変
   --font-ryumin: "a-otf-ryumin-pr6n", "A-OTF Ryumin Pr6N", "Shippori Mincho", serif;
 ```
 
-`meguri/style.css:12` の `--font-kanji` も削除。
+（`meguri/style.css` の `--font-kanji` は対象外。触らない）
 
 - [ ] **Step 5: 検証を走らせる**
 
@@ -375,7 +392,7 @@ Run: `npx wrangler deploy --config wrangler.preview.jsonc`
 - [ ] **Step 7: コミット**
 
 ```bash
-git add style.css meguri/style.css
+git add style.css
 git commit -m "明朝（リュウミン）を全面的に外す
 
 「小さい英字ラベル→明朝の大見出し」は生成AIが最も出しやすい型で、
@@ -392,7 +409,7 @@ fonts.adobe.com 側の操作。読み込みが軽くなるが必須ではない�
 
 **Files:**
 - Modify: `index.html`（eyebrow 7箇所）
-- Modify: `menu/index.html` `schedule/index.html`（2）`story/index.html`（2）`meguri/index.html`（2）
+- Modify: `menu/index.html` `schedule/index.html`（2）`story/index.html`（2）
 - Modify: `style.css`（`.hero__eyebrow:189` `.section__eyebrow:260` ほか）
 
 **Interfaces:**
@@ -482,7 +499,7 @@ Expected: 「9. 装飾の英字ラベルに aria-hidden」が 13/13 で OK、
 - [ ] **Step 5: コミット**
 
 ```bash
-git add index.html menu/index.html schedule/index.html story/index.html meguri/index.html style.css
+git add index.html menu/index.html schedule/index.html story/index.html style.css
 git commit -m "見出しの型を反転：和文が主役、英字は opacity .2 の装飾へ
 
 英字ラベルを先頭に置く型をやめ、和文ゴシック700を主役にして英字を
@@ -499,23 +516,31 @@ JSが落ちると英字が消える。"
 
 **Files:**
 - Modify: `style.css`（`color: var(--sunset)` 20箇所、`var(--taupe)` 9箇所）
-- Modify: `meguri/style.css`
 
 **Interfaces:**
 - Consumes: Task 2 の `-ink` トークン
 
 - [ ] **Step 1: 文字色として使われている箇所を `-ink` に差し替える**
 
+**先頭の区切り文字を必ず要求すること。** 素朴に `s/color: var(--sunset)/…/` と書くと
+`background-color: var(--sunset)` の末尾にも一致して、面の色を文字用の値に書き換えてしまう
+（`style.css:77` に実例がある）。直前が `;` `{` か空白であることを条件に入れる：
+
 ```bash
-for f in style.css meguri/style.css; do
-  sed -i 's/color: var(--sunset)/color: var(--sunset-ink)/g;
-          s/color: var(--taupe)/color: var(--taupe-ink)/g;
-          s/color: var(--amber)/color: var(--amber-ink)/g;
-          s/color: var(--tea-brown)/color: var(--tea-brown-ink)/g' "$f"
-done
+sed -i -E 's/([;{[:space:]])color: var\(--sunset\)/\1color: var(--sunset-ink)/g;
+           s/([;{[:space:]])color: var\(--taupe\)/\1color: var(--taupe-ink)/g;
+           s/([;{[:space:]])color: var\(--amber\)/\1color: var(--amber-ink)/g;
+           s/([;{[:space:]])color: var\(--tea-brown\)/\1color: var(--tea-brown-ink)/g' style.css
+```
+
+実行後に **`background-color` が書き換わっていないこと**を必ず確認する：
+
+```bash
+grep -n "background-color: var(--.*-ink)" style.css && echo "⚠ 面の色を壊した。巻き戻すこと" || echo "OK"
 ```
 
 対象は `.fact--caffeine-yes`（tea-brown）と `.fact--age`（amber）を含む全ての `color:` 指定。
+実測の件数は sunset 15 / taupe 9 / amber 1 / tea-brown 1。
 
 `background` / `border-color` / `outline` での `var(--sunset)` は**そのまま残す**（面と線は元の値が正しい）。
 
@@ -539,7 +564,7 @@ done
 `--lemon` `--rose` をこの面の上で文字に使う場合はそのままでよい（4.54 / 4.46）。
 紙の上で使っている箇所があれば `--herbal`（4.53）か `--ink` に替える。
 
-Run: `grep -n "color: var(--lemon)\|color: var(--rose)" style.css meguri/style.css`
+Run: `grep -n "color: var(--lemon)\|color: var(--rose)" style.css`
 
 出た箇所それぞれについて、親に `--dark` 系の背景があるかを確認する。
 
@@ -552,7 +577,7 @@ Expected: 「2. 面用の色を文字に使っていないか」の4項目が全
 - [ ] **Step 4: コミット**
 
 ```bash
-git add style.css meguri/style.css
+git add style.css
 git commit -m "文字に使う色を -ink 派生へ差し替え
 
 --sunset は33回中20回が文字色で、.schedule__month（12.8px）や
@@ -712,7 +737,7 @@ git commit -m "引用から縦バーと引用符を外し、グレーの面だ�
 - [ ] **Step 1: すべての transition をトークンに寄せる**
 
 ```bash
-grep -n "transition:" style.css meguri/style.css | grep -v "var(--dur)"
+grep -n "transition:" style.css | grep -v "var(--dur)"
 ```
 
 出た箇所を全て `var(--dur) var(--ease)` に書き換える。
@@ -770,7 +795,7 @@ Expected: 「7. ホバーは hover:hover でゲート」の2項目が OK。
 - [ ] **Step 6: コミット**
 
 ```bash
-git add style.css meguri/style.css script.js
+git add style.css script.js
 git commit -m "モーションを1デュレーション1イージングに統一
 
 素の ease 0.2s/0.25s/0.3s と単発の cubic-bezier が混在していたのを
@@ -789,11 +814,10 @@ git commit -m "モーションを1デュレーション1イージングに統一
 
 **Files:**
 - Modify: `style.css`（`@media` 8箇所、`.story` ほか2カラムのセレクタ）
-- Modify: `meguri/style.css`（`@media` 4箇所）
 
 - [ ] **Step 1: 現状のブレークポイントを列挙する**
 
-Run: `grep -n "@media" style.css meguri/style.css`
+Run: `grep -n "@media" style.css`
 
 Expected: 420 / 440 / 480 / 560 / 640 / 760 / 860px と `prefers-reduced-motion`。
 
@@ -816,7 +840,7 @@ Expected: 420 / 440 / 480 / 560 / 640 / 760 / 860px と `prefers-reduced-motion`
 2カラムになっているセレクタを探す：
 
 ```bash
-grep -nE "grid-template-columns:[^;]*(1fr 1fr|repeat\(2)" style.css meguri/style.css
+grep -nE "grid-template-columns:[^;]*(1fr 1fr|repeat\(2)" style.css
 ```
 
 `repeat(2, 1fr)` や `1fr 1fr` になっている箇所を、左が固定幅の非対称に変える。
@@ -872,7 +896,7 @@ Expected: 「6. ブレークポイントは2本だけ」が OK（`640, 760`）�
 - [ ] **Step 8: コミット**
 
 ```bash
-git add style.css meguri/style.css
+git add style.css
 git commit -m "レスポンシブ：ブレークポイント統合・非対称2カラム・モバイルの余白
 
 420/440/480/560/640/860 の6本が全部「横並び→縦積み」という同じ操作を
@@ -901,13 +925,23 @@ PCの2カラムは repeat(2,1fr) ではなく「固定px + 1fr」の非対称に
 
 参照7サイトが全て落としている項目。真似せず必ず足す。
 
-- [ ] **Step 1: `:focus-visible` を定義する**
+- [ ] **Step 1: グローバルな `:focus-visible` のフォールバックを足す**
+
+> **訂正（実測による）：** 仕様 §3.6 は「`:focus-visible` を自前で足す」と書いているが、
+> **agora には既に9箇所ある**（`style.css:463,464,465,562,575,1173,1209,1281`）。
+> 「1.3MB中に自前実装ゼロ」はイロコト7サイトの話であって、agora の話ではない。
+>
+> 既存の9箇所は**触らない**。特に `.sig-card:focus-visible { outline: none; }` は
+> リングを子の写真（`.sig-card__photo`）に移すための意図的な実装で、欠陥ではない。
+>
+> 足りないのは、個別指定の無い要素を覆う**グローバルなフォールバック**。
+> 本文中のリンク、フォーム部品、`summary` などは現在どこからも拾われていない。
 
 `style.css` の末尾に追加：
 
 ```css
-/* 参照7サイトは1.3MB中に自前の :focus-visible が0件で、キーボード操作の位置が見えない。
-   ホバーには any-hover を173回も使うのに、キーボードには何も書いていない。
+/* 個別指定のある部品（.sig-card / .mrow / .hero__cta など）はそれぞれが
+   自前のリングを持っている。ここはそこから漏れる要素のための受け皿。
    2色のリングにして、暗い面の上でも紙の上でも見えるようにする */
 :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
   outline: 3px solid var(--sunset-ink);
@@ -966,7 +1000,7 @@ Expected: **全10項目が OK**。終了コード0。
 - [ ] **Step 5: コミット**
 
 ```bash
-git add style.css index.html menu/index.html schedule/index.html story/index.html meguri/index.html
+git add style.css index.html menu/index.html schedule/index.html story/index.html
 git commit -m "アクセシビリティの穴を埋める：focus-visible / 印刷 / JS無効
 
 参照7サイトが全部落としている3点。
