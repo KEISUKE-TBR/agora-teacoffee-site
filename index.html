@@ -174,69 +174,110 @@
     <div class="hero__scroll-cue" aria-hidden="true"><span></span></div>
   </section>
 
-  <!-- ============ お茶とドーナツBOX（数量限定） ============ -->
-  <!-- 期限は設けず、なくなり次第終了。売り切れの表示は soundpunos ストア側に任せる。 -->
+  <!-- ============ 秋の特設（ドーナツBOX／巨峰ティートを切り替え） ============ -->
+  <!-- どちらも期限は設けず、なくなり次第終了。売り切れの表示は soundpunos ストア側に任せる。 -->
   <section class="section autumn" id="autumn">
     <div class="section__head">
       <p class="section__eyebrow reveal">AUTUMN TEA TIME</p>
       <h2 class="section__title reveal">おうちで、味覚の秋を。</h2>
-      <p class="section__note reveal" data-delay="1">
+    </div>
+
+    <!-- 商品の切り替え。hidden は display 指定より必ず勝つ全体ルールがあるので、タブの出し分けに安心して使える -->
+    <div class="autumn__tabs reveal" role="tablist" aria-label="商品をえらぶ">
+      <button class="autumn__tab" id="autumnTabDonut" role="tab" aria-selected="true" aria-controls="autumnPanelDonut">お茶とドーナツBOX</button>
+      <button class="autumn__tab" id="autumnTabKyoho" role="tab" aria-selected="false" aria-controls="autumnPanelKyoho">ティート 信州巨峰</button>
+    </div>
+
+    <div id="autumnPanelDonut" role="tabpanel" aria-labelledby="autumnTabDonut">
+      <p class="autumn__intro">
         栗、黒糖、黒ごま。UPBEET!Tokyo の秋の味のドーナツに、A.G.O.R.A. のアールグレイを添えて。<br>
         お湯を沸かして、ご自宅でひと息つく時間をお届けします。
       </p>
-    </div>
 
-    <!-- 台風・冠水による発送遅延のお知らせ。復旧して通常発送に戻ったら、このブロックごと削除する -->
-    <div class="site-notice reveal" data-delay="1">
-      <p class="site-notice__title">発送についてのお知らせ</p>
-      <p class="site-notice__body">
-        千葉県を襲った台風と冠水の影響により、オンラインストアでご注文いただいた商品の発送に遅れが生じています。<br>
-        状況が落ち着き次第、ご注文いただいた順にお送りいたします。お待たせしてしまい申し訳ありません。
+      <ul class="autumn__grid">
+        <li class="autumn__item">
+          <figure class="autumn__media">
+            <picture>
+              <source srcset="assets/img/donut-box-4.webp" type="image/webp">
+              <img src="assets/img/donut-box-4.jpg" alt="黒糖マロンミルクティー、キャロットケーキ、黒ごま、ピーナッツバター＆ミルクチョコの4種のドーナツ" loading="lazy" width="800" height="800">
+            </picture>
+          </figure>
+          <h3 class="autumn__name">お茶とドーナツBOX<span>4個入り</span></h3>
+          <p class="autumn__price">¥3,300</p>
+          <p class="autumn__items">黒糖マロンミルクティー／キャロットケーキ／黒ごま／ピーナッツバター＆ミルクチョコ<br>＋ A.G.O.R.A. アールグレイ茶葉（2杯分）</p>
+          <a class="autumn__cta" href="https://www.soundpunos.store/product/a-g-o-r-a-box-4-/5O3CQ4UAZZXOVADRVV2OPQZR" target="_blank" rel="noopener" aria-label="お茶とドーナツBOX 4個入りの商品ページを開く">詳しく見る・購入する　↗</a>
+        </li>
+        <li class="autumn__item">
+          <figure class="autumn__media">
+            <picture>
+              <source srcset="assets/img/donut-box-6.webp" type="image/webp">
+              <img src="assets/img/donut-box-6.jpg" alt="4個入りの4種に、有機抹茶とビーツベリーを加えた全6種のドーナツ" loading="lazy" width="800" height="800">
+            </picture>
+            <figcaption class="autumn__badge">4箱限定</figcaption>
+          </figure>
+          <h3 class="autumn__name">お茶とドーナツBOX<span>6個入り・全6種</span></h3>
+          <p class="autumn__price">¥4,500</p>
+          <p class="autumn__items">4個入りの4種 ＋ 有機抹茶／ビーツベリー<br>＋ A.G.O.R.A. アールグレイ茶葉（2杯分）</p>
+          <a class="autumn__cta" href="https://www.soundpunos.store/product/a-g-o-r-a-box-6-/X6FAWQBFW45MLHA3GALFU63P" target="_blank" rel="noopener" aria-label="お茶とドーナツBOX 6個入りの商品ページを開く">詳しく見る・購入する　↗</a>
+        </li>
+      </ul>
+
+      <!-- ドーナツは A.G.O.R.A. オリジナルではなく UPBEET!Tokyo のもの。つくり手をきちんと紹介する -->
+      <div class="autumn__maker">
+        <p class="autumn__maker-label">ABOUT THE DONUTS</p>
+        <h3 class="autumn__maker-name">UPBEET!Tokyo</h3>
+        <p class="autumn__maker-text">
+          東京のプラントベース＆グルテンフリースイーツのブランド。ドーナツは揚げずに焼いて蒸し、ひよこ豆や玄米粉、りんご100％のアップルソースでつくられています。乳・卵・小麦粉・白砂糖を使わないのに、ふわもちの食感。日本ヴィーガン協会の認証も受けています。
+        </p>
+        <a class="store__link" href="https://upbeettokyo.com/" target="_blank" rel="noopener">UPBEET!Tokyo のサイトを見る　↗</a>
+      </div>
+
+      <p class="autumn__fine">
+        数量限定・なくなり次第終了 ／ クール冷凍便でお届け<br>
+        ※ りんご・くるみ・ごま・落花生を使用した製品を含みます。詳しくは商品ページをご確認ください。
       </p>
     </div>
 
-    <ul class="autumn__grid">
-      <li class="autumn__item reveal" data-delay="1">
-        <figure class="autumn__media">
-          <picture>
-            <source srcset="assets/img/donut-box-4.webp" type="image/webp">
-            <img src="assets/img/donut-box-4.jpg" alt="黒糖マロンミルクティー、キャロットケーキ、黒ごま、ピーナッツバター＆ミルクチョコの4種のドーナツ" loading="lazy" width="800" height="800">
-          </picture>
-        </figure>
-        <h3 class="autumn__name">お茶とドーナツBOX<span>4個入り</span></h3>
-        <p class="autumn__price">¥3,300</p>
-        <p class="autumn__items">黒糖マロンミルクティー／キャロットケーキ／黒ごま／ピーナッツバター＆ミルクチョコ<br>＋ A.G.O.R.A. アールグレイ茶葉（2杯分）</p>
-        <a class="autumn__cta" href="https://www.soundpunos.store/product/a-g-o-r-a-box-4-/5O3CQ4UAZZXOVADRVV2OPQZR" target="_blank" rel="noopener" aria-label="お茶とドーナツBOX 4個入りの商品ページを開く">詳しく見る・購入する　↗</a>
-      </li>
-      <li class="autumn__item reveal" data-delay="2">
-        <figure class="autumn__media">
-          <picture>
-            <source srcset="assets/img/donut-box-6.webp" type="image/webp">
-            <img src="assets/img/donut-box-6.jpg" alt="4個入りの4種に、有機抹茶とビーツベリーを加えた全6種のドーナツ" loading="lazy" width="800" height="800">
-          </picture>
-          <figcaption class="autumn__badge">4箱限定</figcaption>
-        </figure>
-        <h3 class="autumn__name">お茶とドーナツBOX<span>6個入り・全6種</span></h3>
-        <p class="autumn__price">¥4,500</p>
-        <p class="autumn__items">4個入りの4種 ＋ 有機抹茶／ビーツベリー<br>＋ A.G.O.R.A. アールグレイ茶葉（2杯分）</p>
-        <a class="autumn__cta" href="https://www.soundpunos.store/product/a-g-o-r-a-box-6-/X6FAWQBFW45MLHA3GALFU63P" target="_blank" rel="noopener" aria-label="お茶とドーナツBOX 6個入りの商品ページを開く">詳しく見る・購入する　↗</a>
-      </li>
-    </ul>
-
-    <!-- ドーナツは A.G.O.R.A. オリジナルではなく UPBEET!Tokyo のもの。つくり手をきちんと紹介する -->
-    <div class="autumn__maker reveal" data-delay="2">
-      <p class="autumn__maker-label">ABOUT THE DONUTS</p>
-      <h3 class="autumn__maker-name">UPBEET!Tokyo</h3>
-      <p class="autumn__maker-text">
-        東京のプラントベース＆グルテンフリースイーツのブランド。ドーナツは揚げずに焼いて蒸し、ひよこ豆や玄米粉、りんご100％のアップルソースでつくられています。乳・卵・小麦粉・白砂糖を使わないのに、ふわもちの食感。日本ヴィーガン協会の認証も受けています。
+    <div id="autumnPanelKyoho" role="tabpanel" aria-labelledby="autumnTabKyoho" hidden>
+      <p class="autumn__intro">
+        果汁を搾ったあとの信州巨峰の果皮を、丁寧に乾燥させたフルーツティー。<br>
+        芳醇な香りとやさしい甘みを、フルーツごと味わえます。
       </p>
-      <a class="store__link" href="https://upbeettokyo.com/" target="_blank" rel="noopener">UPBEET!Tokyo のサイトを見る　↗</a>
-    </div>
 
-    <p class="autumn__fine reveal" data-delay="2">
-      数量限定・なくなり次第終了 ／ クール冷凍便でお届け<br>
-      ※ りんご・くるみ・ごま・落花生を使用した製品を含みます。詳しくは商品ページをご確認ください。
-    </p>
+      <div class="kyoho">
+        <figure class="kyoho__media">
+          <img src="assets/img/teaeat-kyoho.png" alt="ティート 信州巨峰のパッケージと巨峰の房、淹れたフルーツティーのカップ" loading="lazy" width="1000" height="1000">
+        </figure>
+        <div class="kyoho__body">
+          <h3 class="autumn__name">ティート 信州巨峰<span>50g・5〜6杯分</span></h3>
+          <p class="autumn__price">¥1,101</p>
+          <p class="kyoho__text">
+            ベリーやマンゴー、ハイビスカスとブレンドした、フルーツをそのまま食べられるお茶「ティート」。
+            熱湯を注いで5分蒸らすだけ。倍量で濃いめに淹れれば、アイスでもおいしい一杯です。
+          </p>
+          <a class="autumn__cta autumn__cta--inline" href="https://www.soundpunos.store/product/-50g/QBFCPTT4ASTFJ2LBXEYNPMQZ" target="_blank" rel="noopener" aria-label="ティート 信州巨峰 50g の商品ページを開く">詳しく見る・購入する　↗</a>
+        </div>
+      </div>
+
+      <!-- ティートは TEAtriCO（ティートリコ）のもの。この取り組みが商品の物語なので、きちんと紹介する -->
+      <div class="autumn__maker autumn__maker--media">
+        <figure class="autumn__maker-media">
+          <img src="assets/img/teaeat-kyoho-leaf.png" alt="クランベリーやりんご、巨峰の果皮などをブレンドした茶葉" loading="lazy" width="1000" height="1000">
+        </figure>
+        <div>
+          <p class="autumn__maker-label">ECO TeaEAT CYCLE</p>
+          <h3 class="autumn__maker-name">TEAtriCO のプレミアムティート</h3>
+          <p class="autumn__maker-text">
+            市場に流通しにくい規格外の果物などを、独自の加工とブレンドでお茶として生まれ変わらせる、ティートリコの取り組み「エコティートサイクル」から生まれました。搾汁後の巨峰の果皮には、香りや彩り、ポリフェノールや食物繊維がまだ多く残っています。一杯のティータイムが、フードロスの削減につながります。
+          </p>
+        </div>
+      </div>
+
+      <p class="autumn__fine">
+        賞味期限 2027年10月 ／ 直射日光・高温多湿を避けて保存<br>
+        ※ 保存料（亜硫酸塩）を使用しています。原材料の詳細は商品ページをご確認ください。
+      </p>
+    </div>
   </section>
 
   <!-- ============ Story ============ -->

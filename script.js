@@ -186,3 +186,17 @@ if (modal) {
     if (e.key === "Escape" && modal.classList.contains("is-open")) closeDrink();
   });
 }
+
+// ============ 秋の特設：商品の切り替え ============
+// タブで選ばれた商品のパネルだけを見せる。選択状態は aria-selected が持ち、
+// パネルの出し分けは hidden に任せる（[hidden] は display 指定より必ず勝つ全体ルールがある）。
+document.querySelectorAll(".autumn__tab").forEach((tab) => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".autumn__tab").forEach((t) => {
+      const on = t === tab;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      const panel = document.getElementById(t.getAttribute("aria-controls"));
+      if (panel) panel.hidden = !on;
+    });
+  });
+});

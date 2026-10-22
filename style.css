@@ -1254,3 +1254,59 @@ a { color: inherit; }
   font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset);
 }
 .site-notice__body { margin: 0; font-size: var(--fs-note); line-height: 2; color: var(--ink-soft); }
+
+/* ============ 秋の特設：商品の切り替え ============ */
+.autumn__tabs {
+  display: flex; justify-content: center; flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 clamp(32px, 5vw, 48px);
+}
+.autumn__tab {
+  appearance: none; cursor: pointer;
+  padding: 11px 24px; min-height: 44px;
+  border: 1px solid var(--border-strong); border-radius: 999px;
+  background: none;
+  font-family: var(--font-sans); font-weight: 700;
+  font-size: var(--fs-note); letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+}
+.autumn__tab:hover { color: var(--ink); }
+.autumn__tab[aria-selected="true"] { background: var(--dark); border-color: var(--dark); color: var(--dark-text); }
+.autumn__tab:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+/* パネル冒頭の説明文（見出し直下にあった section__note の役割をパネル側へ移した） */
+.autumn__intro {
+  max-width: 880px;
+  margin: 0 auto clamp(32px, 5vw, 48px);
+  font-size: var(--fs-note); line-height: 2; color: var(--ink-soft);
+}
+
+/* 巨峰ティート：1商品なので、カードを並べずに写真と文章の編集的な段組みで見せる */
+.kyoho {
+  display: flex; align-items: center;
+  gap: clamp(28px, 6vw, 72px);
+  max-width: 880px; margin: 0 auto;
+}
+.kyoho__media { flex: 0 0 clamp(220px, 44%, 400px); margin: 0; }
+.kyoho__media img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.kyoho__body { flex: 1; min-width: 0; }
+.kyoho__text { margin: 0 0 22px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
+.autumn__cta--inline { display: inline-block; margin-top: 0; padding-inline: 28px; }
+
+/* つくり手ブロックに写真を添える形（巨峰：茶葉の寄り。白背景なので丸く切って紙になじませる） */
+.autumn__maker--media { display: flex; align-items: center; gap: clamp(24px, 5vw, 48px); }
+.autumn__maker-media { flex: 0 0 clamp(110px, 20%, 160px); margin: 0; }
+.autumn__maker-media img {
+  display: block; width: 100%; height: auto;
+  border-radius: 999px;
+  mix-blend-mode: multiply;
+}
+
+@media (max-width: 640px) {
+  .kyoho { flex-direction: column; }
+  .kyoho__media { flex: none; width: 100%; max-width: 420px; }
+  .kyoho__body { width: 100%; }
+  .autumn__maker--media { flex-direction: column; align-items: flex-start; }
+  .autumn__maker-media { width: min(150px, 46%); }
+}
