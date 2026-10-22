@@ -1137,8 +1137,8 @@ a { color: inherit; }
 .footer__op a:hover { color: var(--dark-text); }
 
 /* ============ 秋の特設（現在はティート 信州巨峰） ============
-   白い箱のカードにはせず、写真・明朝の品名・罫線で区切る編集的な並べ方にする。
-   商品写真そのものが色面を持つので、写真は角丸で切り出すだけにとどめる。 */
+   STORY と同じ紙色が続いて境目が消えていたので、季節ものは深緑の一枚のカードに収める。
+   深緑はヒーローや MEGURI と同じ「強調の面」。限定品の特別さをここで引き受ける。 */
 .autumn { background: var(--paper); }
 .autumn__name {
   margin: 0 0 6px;
@@ -1253,3 +1253,29 @@ a { color: inherit; }
   .autumn__maker--media { flex-direction: column; align-items: flex-start; }
   .autumn__maker-media { width: min(150px, 46%); }
 }
+
+/* 秋の特設カード本体。暗面なので、文字色は暗面用のトークンに差し替える */
+.autumn__card {
+  max-width: 1040px;
+  margin: 0 auto;
+  background: var(--dark);
+  border-radius: 22px;
+  padding: clamp(28px, 5vw, 64px);
+  color: var(--dark-text);
+}
+.autumn__card .section__head { margin-bottom: clamp(36px, 5vw, 52px); }
+.autumn__card .section__eyebrow { color: var(--apricot); }
+.autumn__card .section__title { color: var(--dark-text); }
+.autumn__card .section__note { color: var(--dark-muted); }
+.autumn__card .autumn__name,
+.autumn__card .autumn__price,
+.autumn__card .autumn__maker-name { color: var(--dark-text); }
+.autumn__card .autumn__name span { color: var(--dark-muted); }
+.autumn__card .kyoho__text { color: color-mix(in srgb, var(--dark-text) 82%, transparent); }
+.autumn__card .autumn__maker { border-top-color: color-mix(in srgb, var(--dark-text) 18%, transparent); }
+.autumn__card .autumn__maker-label { color: var(--apricot); }
+.autumn__card .autumn__maker-text { color: var(--dark-muted); }
+.autumn__card .autumn__fine { color: color-mix(in srgb, var(--dark-muted) 85%, transparent); }
+/* 茶葉の寄りは白背景ごと丸く見せる。深緑の上に、皿にのせたように浮かぶ */
+.autumn__card .autumn__maker-media img { mix-blend-mode: normal; }
+.autumn__card .autumn__cta:focus-visible { outline-color: var(--dark-text); }
