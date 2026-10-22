@@ -524,22 +524,52 @@ a { color: inherit; }
   grid-template-columns: 1fr 1fr;
   gap: clamp(20px, 3.5vw, 48px);
 }
+/* カード。地の .menu を --paper-2 に沈め、その上に白いカードを立てる。
+   border は付けない。参照7サイトでカードに border を付けた例は0件で、分離は
+   「背景色の差」「影1層」「疑似要素のオーバーレイ」の3つだけだった。 */
 .sig-card {
+  position: relative;
   display: flex; flex-direction: column; gap: clamp(14px, 1.8vw, 20px);
   text-align: left;
-  background: none; border: 0; padding: 0; margin: 0;
+  background: #fff; border: 0; border-radius: 6px;
+  padding: clamp(12px, 2vw, 20px); margin: 0;
   font: inherit; color: inherit; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+/* 影と枠は要素本体ではなく ::after に載せる。理由は2つ。
+   (1) 枠を疑似要素のオーバーレイにすると、レイアウトが1pxも動かず、border-radius: inherit で
+       カードの角丸に自動で追従する。
+   (2) .sig-card は .reveal も持ち、.reveal の transition（後ろで宣言される）が同じ詳細度で勝つ。
+       本体に box-shadow の transition を書くと上書きされ、ホバーで影が補間なしに切り替わる。
+       疑似要素なら .reveal と干渉しない。
+   影は平常時も薄く置く（none から生やすと補間されず、反応が遅れて見える）。 */
+.sig-card::after {
+  content: ""; position: absolute; inset: 0;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  box-shadow: var(--shadow-rest);
+  pointer-events: none;
+}
 .sig-card__photo {
   display: block; overflow: hidden;
-  border-radius: 18px;
+  border-radius: 6px;
   aspect-ratio: 1 / 1; /* matches the source photos so object-fit: cover crops nothing */
   background: var(--paper);
 }
-.sig-card__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-.sig-card:hover .sig-card__photo img,
-.sig-card:focus-visible .sig-card__photo img { transform: scale(1.045); }
+.sig-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+.sig-card:focus-visible .sig-card__photo img { transform: scale(1.05); }
+/* ホバーは「持ち上げる」方向に統一する：影を alpha 0.10 → 0.18 に濃くし、枠を alpha 0.4 まで出す。
+   写真は枠（overflow: hidden）を固定して中身だけ拡大するので、レイアウトは動かない。
+   transition 宣言もゲートの中に置く（タッチ端末ではホバー状態が張り付かない） */
+@media (hover: hover) {
+  .sig-card::after { transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .sig-card__photo img { transition: transform var(--dur) var(--ease); }
+  .sig-card:hover::after {
+    box-shadow: var(--shadow-hover);
+    border-color: color-mix(in srgb, var(--flavor, var(--sunset)) 40%, transparent);
+  }
+  .sig-card:hover .sig-card__photo img { transform: scale(1.05); }
+}
 .sig-card:focus-visible { outline: none; }
 .sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor, var(--sunset)); outline-offset: 3px; }
 .sig-card__body { display: flex; flex-direction: column; gap: 6px; }
@@ -635,10 +665,13 @@ a { color: inherit; }
 }
 .focus-card__photo {
   display: block; aspect-ratio: 1 / 1; margin-bottom: 8px;
-  border-radius: 14px; overflow: hidden; background: var(--paper-2);
+  border-radius: 6px; overflow: hidden; background: var(--paper-2);
 }
-.focus-card__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-.focus-card:hover .focus-card__photo img { transform: scale(1.04); }
+.focus-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+@media (hover: hover) {
+  .focus-card__photo img { transition: transform var(--dur) var(--ease); }
+  .focus-card:hover .focus-card__photo img { transform: scale(1.05); }
+}
 .focus-card:focus-visible .focus-card__photo { outline: 2px solid var(--accent); outline-offset: 3px; }
 .focus-card__name { font-family: var(--font-sans); font-weight: 500; font-size: var(--fs-body); line-height: var(--lh-heading); color: var(--ink); }
 .focus-card__note { font-size: var(--fs-note); color: var(--ink-soft); }
@@ -784,12 +817,17 @@ a { color: inherit; }
   filter: sepia(0.18) saturate(1.2) contrast(1.05) brightness(1.03);
   /* Soft, uneven feathered edge — several overlapping soft-edged blobs unioned
      together read as a bleeding/watercolor border rather than a hard crop. */
+  /* mask-image が読むのは alpha だけ。下の不透明な色の RGB は描画に一切効かない。
+     それでも純黒（#000）にしないのは、「mask は例外」という覚えておくべき例外を作らないため
+     （verify-css の検査4は mask の中も数える）。alpha の並び（不透明 → transparent）と各ストップの位置は
+     #000 のときと同一なので、見た目は変わらない。luminance モードに切り替えても、白なら見えたまま。
+     ★ #000 に戻さないこと。見た目は同じでも検査4が落ちる。 */
   --m:
-    radial-gradient(58% 62% at 30% 26%, #000 60%, transparent 78%),
-    radial-gradient(55% 58% at 76% 22%, #000 58%, transparent 76%),
-    radial-gradient(60% 55% at 80% 78%, #000 60%, transparent 78%),
-    radial-gradient(56% 60% at 22% 80%, #000 58%, transparent 76%),
-    radial-gradient(70% 70% at 50% 50%, #000 65%, transparent 84%);
+    radial-gradient(58% 62% at 30% 26%, #fff 60%, transparent 78%),
+    radial-gradient(55% 58% at 76% 22%, #fff 58%, transparent 76%),
+    radial-gradient(60% 55% at 80% 78%, #fff 60%, transparent 78%),
+    radial-gradient(56% 60% at 22% 80%, #fff 58%, transparent 76%),
+    radial-gradient(70% 70% at 50% 50%, #fff 65%, transparent 84%);
   -webkit-mask-image: var(--m);
   mask-image: var(--m);
 }
@@ -950,7 +988,7 @@ a { color: inherit; }
     padding: 24px var(--pad-x) 32px;
     background: rgba(15, 36, 31, 0.98);
     backdrop-filter: blur(10px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 12px 24px rgba(43, 43, 38, 0.28);   /* 影はインク色（--ink #2b2b26）。純黒は使わない */
   }
   .header.nav-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
   .header.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
@@ -1005,7 +1043,7 @@ a { color: inherit; }
   display: flex;
   background: var(--paper);
   border-radius: 18px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 30px 80px rgba(43, 43, 38, 0.3);   /* 影はインク色（--ink #2b2b26）。純黒は使わない */
   transform: translateY(16px) scale(0.98);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1059,7 +1097,7 @@ a { color: inherit; }
 }
 .drink-modal--sheet .drink-modal__media {
   flex: 0 0 auto; aspect-ratio: 4 / 3; margin: 10px 18px 0;
-  border-radius: 14px; overflow: hidden;
+  border-radius: 6px; overflow: hidden;
 }
 .drink-modal--sheet .drink-modal__media img { aspect-ratio: auto; height: 100%; }
 .drink-modal--sheet .drink-modal__content { overflow: visible; padding: 16px 20px 28px; }
@@ -1322,17 +1360,17 @@ a { color: inherit; }
   max-width: 880px; margin: 0 auto;
 }
 .kyoho__media { flex: 0 0 clamp(220px, 44%, 400px); margin: 0; }
-.kyoho__media img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.kyoho__media img { display: block; width: 100%; height: auto; border-radius: 6px; }
 .kyoho__body { flex: 1; min-width: 0; }
 .kyoho__text { margin: 0 0 22px; font-size: var(--fs-body); line-height: 1.95; color: var(--ink-soft); }
 .autumn__cta--inline { display: inline-block; margin-top: 0; padding-inline: 28px; }
 
-/* つくり手ブロックに写真を添える形（巨峰：茶葉の寄り。白背景なので丸く切って紙になじませる） */
+/* つくり手ブロックに写真を添える形（巨峰：茶葉の寄り。白背景の写真なので、丸く切らず矩形の枠のまま置く） */
 .autumn__maker--media { display: flex; align-items: center; gap: clamp(24px, 5vw, 48px); }
 .autumn__maker-media { flex: 0 0 clamp(110px, 20%, 160px); margin: 0; }
 .autumn__maker-media img {
   display: block; width: 100%; height: auto;
-  border-radius: 999px;
+  border-radius: 6px;
   mix-blend-mode: multiply;
 }
 
@@ -1366,6 +1404,6 @@ a { color: inherit; }
 .autumn__card .autumn__maker-label { color: var(--apricot); }
 .autumn__card .autumn__maker-text { color: var(--dark-muted); }
 .autumn__card .autumn__fine { color: var(--dark-muted); }
-/* 茶葉の寄りは白背景ごと丸く見せる。深緑の上に、皿にのせたように浮かぶ */
+/* 茶葉の寄りは白背景ごと見せる。深緑の上に、白い写真が矩形の枠のまま1枚置かれる */
 .autumn__card .autumn__maker-media img { mix-blend-mode: normal; }
 .autumn__card .autumn__cta:focus-visible { outline-color: var(--dark-text); }
