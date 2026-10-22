@@ -1621,4 +1621,6 @@ a { color: inherit; }
   }
   /* position: fixed は全ページに繰り返し出て、本文に重なる。最初の1枚の上端に1度だけ出す */
   .header { position: absolute; }
+  /* ハンバーガーは操作部品で、紙の上では何もできない（印刷幅は約 717px で 760px 以下のレイアウトになるため出てしまう） */
+  .nav-toggle { display: none; }
 }
