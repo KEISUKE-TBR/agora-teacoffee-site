@@ -100,6 +100,7 @@ const DRINKS = {
 };
 
 const FLAVOR_VAR = { sunset: "var(--sunset)", herbal: "var(--herbal)", "tea-brown": "var(--tea-brown)", lemon: "var(--lemon)", amber: "var(--amber)", rose: "var(--rose)" };
+const FLAVOR_INK_VAR = { sunset: "var(--sunset-ink)", herbal: "var(--herbal-ink)", "tea-brown": "var(--tea-brown-ink)", lemon: "var(--lemon-ink)", amber: "var(--amber-ink)", rose: "var(--rose-ink)" };
 
 const modal = document.getElementById("drinkModal");
 if (modal) {
@@ -127,7 +128,9 @@ if (modal) {
     lastFocused = document.activeElement;
 
     // Accent flows through CSS so light/dark handling stays in the stylesheet.
+    // 面・線は --accent、文字は --accent-ink。二つは必ず対で流す（片方だけだと文字が面の色を読む）
     modal.style.setProperty("--accent", FLAVOR_VAR[d.flavor] || "var(--sunset)");
+    modal.style.setProperty("--accent-ink", FLAVOR_INK_VAR[d.flavor] || "var(--sunset-ink)");
 
     const media = $("dmMedia");
     if (media) {

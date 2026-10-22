@@ -81,7 +81,6 @@
 
   /* タイプスケール：2px刻みの偶数px。比率（×1.25等）は使わない。
      和文は字面が正方形なのでキリのいい偶数のほうが揃う */
-  --fs-hero:    clamp(1.75rem, 1.2rem + 2.3vw, 2.25rem);   /* 28 → 36px */
   --fs-section: clamp(1.5rem,  1.1rem + 1.7vw, 2rem);      /* 24 → 32px */
   --fs-sub:     clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem); /* 18 → 20px。※下の Step で実際に当てる */
   --fs-body-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);   /* 16 → 18px。リード文・大きめのボタン */
@@ -449,7 +448,7 @@ a { color: inherit; }
 }
 
 .story-origin { max-width: 760px; margin: 0 auto clamp(64px, 8vw, 100px); }
-.story-origin__body { display: flex; flex-direction: column; gap: 1.4em; margin-top: clamp(20px, 3vw, 28px); text-align: left; }
+.story-origin__body { display: flex; flex-direction: column; gap: 1.4em; margin-top: clamp(20px, 3vw, 28px); }
 .story-origin__body p { margin: 0; font-size: var(--fs-body); line-height: 1.9; color: var(--ink-soft); }
 
 .letters { list-style: none; margin: 0; padding: 0; max-width: 860px; margin-inline: auto; }
@@ -867,6 +866,7 @@ a { color: inherit; }
   padding: 16px 40px;
   border-radius: 999px;
   background: var(--sunset-ink);
+  border: 1px solid var(--apricot);   /* 深緑の上。塗りは文字用に暗くしたので、面との境目は枠が受け持つ（--apricot は --dark に 6.93） */
   color: var(--paper);
   font-weight: 700;
   font-size: var(--fs-body-lg);
@@ -1253,6 +1253,7 @@ a { color: inherit; }
   display: block; text-align: center; text-decoration: none;
   padding: 14px 16px; min-height: 48px; border-radius: 999px;
   background: var(--sunset-ink); color: #fff;
+  border: 1px solid var(--apricot);   /* 深緑カードの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: 0.9rem; letter-spacing: 0.06em;
   transition: opacity 0.2s;
@@ -1289,6 +1290,7 @@ a { color: inherit; }
   display: inline-flex; align-items: center;
   min-height: 44px; padding: 12px 26px; border-radius: 999px;
   background: var(--sunset-ink); color: #fff; text-decoration: none;
+  border: 1px solid var(--apricot);   /* 深緑のヒーローの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.06em;
   transition: opacity 0.2s;
