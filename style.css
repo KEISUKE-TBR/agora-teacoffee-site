@@ -87,6 +87,9 @@
   --fs-body-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);   /* 16 → 18px。リード文・大きめのボタン */
   --fs-body:    1rem;                                       /* 16px 固定 */
   --fs-note:    clamp(0.75rem, 0.72rem + 0.14vw, 0.875rem);/* 12 → 14px */
+  /* ラテンのヒーロー見出し専用。和文のスケールとは別系統。
+     "A place to gather." はブランドのタグラインで、装飾ラベルではない */
+  --fs-hero-en: clamp(2.5rem, 1.4rem + 4.4vw, 4.5rem);   /* 40 → 72px */
   --fs-eyebrow: 0.75rem;                                    /* 12px。.hero__eyebrow 等、和文を含む小ラベル用。装飾の英字 .section__eyebrow は見出しの半分（下の .section__eyebrow） */
 
   /* 見出しの行送り。大きい文字ほど詰め、小さい文字ほど緩める（2段）。
@@ -256,11 +259,14 @@ a { color: inherit; }
 }
 
 .hero__title { margin: 0; }
+/* ヒーローはラテンが主役のまま。.section__eyebrow に当てた反転（和文が主、英字は opacity .2 の装飾）はここには当てない。
+   反転が成り立つのは、英字が隣の和文の言い換えにすぎないとき（事業内容 / Services）だけ。
+   "A place to gather." と「一杯を交わす、現代のアゴラ。」は別々の文で、ラベルと訳の関係ではないので、どちらも装飾ではない。 */
 .hero__title-en {
   display: block;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: var(--fs-hero);
+  font-size: var(--fs-hero-en);
   line-height: 1.05;
   letter-spacing: 0.01em;
 }
