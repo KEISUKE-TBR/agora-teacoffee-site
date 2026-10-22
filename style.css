@@ -170,7 +170,7 @@ a { color: inherit; }
   justify-content: space-between;
   gap: 24px;
   padding: clamp(16px, 2vw, 26px) var(--pad-x);
-  transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+  transition: background-color var(--dur-color) var(--ease), padding var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .header.is-scrolled,
 .header--solid {
@@ -195,9 +195,15 @@ a { color: inherit; }
   color: var(--dark-text);
   text-decoration: none;
   opacity: 0.85;
-  transition: opacity 0.25s ease;
 }
-.nav a:hover { opacity: 1; }
+/* ホバーは hover:hover でゲートする。any-hover は「どれか1つでもホバーできる入力がある」で真になるので、
+   タッチ対応ノートPCやスタイラス付きAndroidでも発火して誤り。
+   transition もゲートの中に置く：タッチ端末では transition プロパティ自体が存在しないので、
+   タップ後にホバー状態が張り付いてゆっくり戻る事故が構造的に起きない。（以下、全ホバー共通） */
+@media (hover: hover) {
+  .nav a { transition: opacity var(--dur) var(--ease); }
+  .nav a:hover { opacity: 1; }
+}
 /* Marks the page you're already on, so the nav doubles as a "you are here" */
 .nav a[aria-current="page"] {
   opacity: 1;
@@ -219,7 +225,7 @@ a { color: inherit; }
   width: 24px;
   height: 2px;
   background: var(--dark-text);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 
 /* ============ Hero ============ */
@@ -399,9 +405,12 @@ a { color: inherit; }
   font-weight: 600;
   font-size: var(--fs-note);
   text-decoration: none;
-  transition: background 0.25s ease, color 0.25s ease;
 }
-.story__cta:hover { background: var(--ink); color: var(--paper); }
+/* 色だけの変化は倍速（--dur-color）。位置が動かない変化は目が追えるので、同じ速さだとモッサリする */
+@media (hover: hover) {
+  .story__cta { transition: background-color var(--dur-color) var(--ease), color var(--dur-color) var(--ease); }
+  .story__cta:hover { background: var(--ink); color: var(--paper); }
+}
 
 /* ============ Menu ============ */
 .menu { background: var(--paper-2); }
@@ -563,15 +572,19 @@ a { color: inherit; }
 .sig-card:focus-visible .sig-card__photo img { transform: scale(1.05); }
 /* ホバーは「持ち上げる」方向に統一する：影を alpha 0.10 → 0.18 に濃くし、枠を alpha 0.4 まで出す。
    写真は枠（overflow: hidden）を固定して中身だけ拡大するので、レイアウトは動かない。
-   transition 宣言もゲートの中に置く（タッチ端末ではホバー状態が張り付かない） */
+   transition 宣言もゲートの中に置く（タッチ端末ではホバー状態が張り付かない）。
+   「詳しく」の文字は opacity で薄めず色を変える：opacity .7 だと白の上で 2.9〜3.0 まで落ちて 4.5 を割る
+   （フッターの color-mix(…, transparent) と同じ失敗）。--ink（白の上で 14.23）に切り替える */
 @media (hover: hover) {
-  .sig-card::after { transition: box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .sig-card::after { transition: box-shadow var(--dur) var(--ease), border-color var(--dur-color) var(--ease); }
   .sig-card__photo img { transition: transform var(--dur) var(--ease); }
+  .sig-card__more { transition: color var(--dur-color) var(--ease); }
   .sig-card:hover::after {
     box-shadow: var(--shadow-hover);
     border-color: color-mix(in srgb, var(--flavor, var(--sunset)) 40%, transparent);
   }
   .sig-card:hover .sig-card__photo img { transform: scale(1.05); }
+  .sig-card:hover .sig-card__more { color: var(--ink); }
 }
 .sig-card:focus-visible { outline: none; }
 .sig-card:focus-visible .sig-card__photo { outline: 2px solid var(--flavor, var(--sunset)); outline-offset: 3px; }
@@ -581,8 +594,7 @@ a { color: inherit; }
 .sig-card__sub { font-size: var(--fs-note); color: var(--ink-soft); }
 .sig-card__meta { display: flex; align-items: baseline; justify-content: space-between; margin-top: 8px; gap: 12px; }
 .sig-card__price { font-family: var(--font-num); font-weight: 600; font-size: 1.35rem; line-height: 1; color: var(--ink); }
-.sig-card__more { font-size: var(--fs-note); color: var(--flavor-ink, var(--sunset-ink)); white-space: nowrap; transition: opacity 0.2s ease; }
-.sig-card:hover .sig-card__more { opacity: 0.7; }
+.sig-card__more { font-size: var(--fs-note); color: var(--flavor-ink, var(--sunset-ink)); white-space: nowrap; }
 
 .menu__more { margin-top: clamp(32px, 4vw, 52px); text-align: center; }
 .menu__more-link {
@@ -590,9 +602,12 @@ a { color: inherit; }
   padding: 14px 36px; border-radius: 999px;
   border: 1px solid var(--ink);
   color: var(--ink); font-weight: 600; font-size: var(--fs-body);
-  text-decoration: none; transition: background 0.25s ease, color 0.25s ease;
+  text-decoration: none;
 }
-.menu__more-link:hover { background: var(--ink); color: var(--paper); }
+@media (hover: hover) {
+  .menu__more-link { transition: background-color var(--dur-color) var(--ease), color var(--dur-color) var(--ease); }
+  .menu__more-link:hover { background: var(--ink); color: var(--paper); }
+}
 
 /* ============ Full menu page (/menu) ============
    Built to be read standing in front of the kitchen car: a menu-board title,
@@ -711,7 +726,10 @@ a { color: inherit; }
 
 .menu-back { margin-top: clamp(36px, 5vw, 56px); text-align: center; }
 .menu-back a { color: var(--ink-soft); font-size: var(--fs-body); text-decoration: none; border-bottom: 1px solid var(--border-strong); padding-bottom: 2px; }
-.menu-back a:hover { color: var(--ink); }
+@media (hover: hover) {
+  .menu-back a { transition: color var(--dur-color) var(--ease); }
+  .menu-back a:hover { color: var(--ink); }
+}
 
 /* ============ Schedule ============ */
 .schedule { background: var(--paper); }
@@ -760,12 +778,17 @@ a { color: inherit; }
   color: var(--sunset-ink);
   text-decoration: none;
   border-bottom: 1px solid color-mix(in srgb, var(--sunset) 40%, transparent);
-  transition: opacity 0.2s ease;
 }
-.schedule__link:hover { opacity: 0.7; }
 .schedule__link--site {
   color: var(--ink-soft);
   border-bottom-color: var(--border-strong);
+}
+/* ホバーは opacity で薄めず --ink に切り替える。opacity .7 だと紙の上で 2.8〜2.9 まで落ちて 4.5 を割る
+   （色のトークンが基準を満たしていても、透過で壊れる。フッターの color-mix(…, transparent) と同じ失敗）。
+   --ink は紙の上で 13.51。--site（--ink-soft）も同じ規則で --ink に寄る */
+@media (hover: hover) {
+  .schedule__link { transition: color var(--dur-color) var(--ease); }
+  .schedule__link:hover { color: var(--ink); }
 }
 .schedule__tag {
   flex: 0 0 auto;
@@ -913,10 +936,8 @@ a { color: inherit; }
   font-size: var(--fs-body-lg);
   letter-spacing: 0.04em;
   text-decoration: none;
-  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 0 10px 30px rgba(197, 90, 59, 0.28);
 }
-.meguri-cta__button:hover { background: #a9482f; transform: translateY(-2px); box-shadow: 0 14px 36px rgba(197, 90, 59, 0.36); }
 /* After the sale closes the link still leads to MEGURI, but as an explanation
    rather than a purchase — so it stops shouting. */
 .meguri-cta__button--quiet {
@@ -924,7 +945,13 @@ a { color: inherit; }
   border: 1px solid color-mix(in srgb, var(--dark-text) 45%, transparent);
   color: var(--dark-text);
 }
-.meguri-cta__button--quiet:hover { background: color-mix(in srgb, var(--dark-text) 12%, transparent); box-shadow: none; }
+/* 動くもの（transform / box-shadow）は --dur、色だけ --dur-color。
+   :hover の並び（通常 → --quiet）は変えない：--quiet:hover が background / box-shadow を上書きする */
+@media (hover: hover) {
+  .meguri-cta__button { transition: transform var(--dur) var(--ease), background-color var(--dur-color) var(--ease), box-shadow var(--dur) var(--ease); }
+  .meguri-cta__button:hover { background: #a9482f; transform: translateY(-2px); box-shadow: 0 14px 36px rgba(197, 90, 59, 0.36); }
+  .meguri-cta__button--quiet:hover { background: color-mix(in srgb, var(--dark-text) 12%, transparent); box-shadow: none; }
+}
 /* hidden属性は、display 指定を持つ要素でも必ず勝たせる。
    （.support__grid の display:grid が hidden を上書きし、販売終了後もカードが見え続けた事故の再発防止） */
 [hidden] { display: none !important; }
@@ -970,9 +997,12 @@ a { color: inherit; }
   flex-direction: column;
   gap: 4px;
   text-decoration: none;
-  transition: opacity 0.25s ease;
 }
-.footer__social a:hover { opacity: 0.7; }
+/* 暗面の上なので opacity .7 でも文字は 5.58（--dark-accent のラベル）/ 7.30（--dark-text のハンドル）で 4.5 を割らない */
+@media (hover: hover) {
+  .footer__social a { transition: opacity var(--dur) var(--ease); }
+  .footer__social a:hover { opacity: 0.7; }
+}
 .footer__social-label { font-family: var(--font-sans); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--dark-accent); }
 .footer__social-handle { font-family: var(--font-num); font-size: 0.9rem; color: var(--dark-text); }
 .footer__copy { margin: clamp(12px, 2vw, 24px) 0 0; font-family: var(--font-num); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--dark-muted); }
@@ -1015,14 +1045,24 @@ a { color: inherit; }
 /* ============ Scroll reveal ============ */
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(var(--rise));
+  /* 登場だけは --dur（0.3s）ではなく専用の長さ。opacity と transform で duration をずらし、
+     不透明度を先に完走させることで、動きが「完全に見えている要素」の上で起きる */
+  transition: opacity 0.7s var(--ease), transform 0.8s var(--ease);
   transition-delay: calc(var(--delay, 0) * 90ms);
 }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
+@media (max-width: 640px) {
+  /* SPのほうを大きくする。1画面の要素数が少なく縦スクロール量が大きいので、
+     20pxでは登場に気づかれない。小さい画面では動きを控えるという定石とは逆 */
+  :root { --rise: 30px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  /* 動きのトークンを 0 にして、--dur / --dur-color を使う全ての遷移（ホバー・モーダル・ヘッダー）を一括で止める */
+  :root { --dur: 0s; --dur-color: 0s; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .hero__scroll-cue span { animation: none; }
   .sig-card__photo img { transition: none; }
@@ -1034,7 +1074,7 @@ a { color: inherit; }
   display: flex; align-items: center; justify-content: center;
   padding: clamp(16px, 4vw, 40px);
   visibility: hidden; opacity: 0;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity var(--dur) var(--ease), visibility var(--dur) var(--ease);
 }
 .drink-modal.is-open { visibility: visible; opacity: 1; }
 .drink-modal__overlay { position: absolute; inset: 0; background: rgba(15, 36, 31, 0.55); backdrop-filter: blur(3px); }
@@ -1048,7 +1088,7 @@ a { color: inherit; }
   border-radius: 18px;
   box-shadow: 0 30px 80px rgba(43, 43, 38, 0.3);   /* 影はインク色（--ink #2b2b26）。純黒は使わない */
   transform: translateY(16px) scale(0.98);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur) var(--ease);
 }
 .drink-modal.is-open .drink-modal__dialog { transform: none; }
 .drink-modal__close {
@@ -1058,9 +1098,11 @@ a { color: inherit; }
   background: rgba(251, 249, 243, 0.85);
   color: var(--ink); font-size: 1.5rem; line-height: 1;
   display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s ease;
 }
-.drink-modal__close:hover { background: var(--paper); }
+@media (hover: hover) {
+  .drink-modal__close { transition: background-color var(--dur-color) var(--ease); }
+  .drink-modal__close:hover { background: var(--paper); }
+}
 .drink-modal__media { flex: 0 0 42%; background: var(--paper-2); }
 .drink-modal__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .drink-modal__content {
@@ -1090,7 +1132,7 @@ a { color: inherit; }
   max-height: 88svh;
   border-radius: 20px 20px 0 0;
   transform: translateY(100%);
-  transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform var(--dur) var(--ease);
   overflow-y: auto;
 }
 .drink-modal--sheet.is-open .drink-modal__dialog { transform: none; }
@@ -1182,9 +1224,12 @@ a { color: inherit; }
   font-size: var(--fs-note); letter-spacing: 0.04em;
   color: var(--sunset-ink);
   text-decoration: none;
-  transition: opacity 0.2s;
 }
-.shop-note__link:hover { opacity: 0.7; }
+/* opacity .7 は紙の上で 2.91。色を --ink（13.51）に切り替える */
+@media (hover: hover) {
+  .shop-note__link { transition: color var(--dur-color) var(--ease); }
+  .shop-note__link:hover { color: var(--ink); }
+}
 @media (max-width: 560px) {
   .shop-note { flex-direction: column; }
   .shop-note__media { flex: none; width: min(190px, 58%); }
@@ -1231,9 +1276,12 @@ a { color: inherit; }
   font-size: var(--fs-note); letter-spacing: 0.04em;
   color: var(--sunset-ink);
   text-decoration: none;
-  transition: opacity 0.2s;
 }
-.store__link:hover { opacity: 0.7; }
+/* opacity .7 は薄面 --paper-2 の上で 2.75。色を --ink（12.29）に切り替える */
+@media (hover: hover) {
+  .store__link { transition: color var(--dur-color) var(--ease); }
+  .store__link:hover { color: var(--ink); }
+}
 .store__coming {
   max-width: 820px;
   margin: clamp(40px, 6vw, 64px) auto 0;
@@ -1260,9 +1308,11 @@ a { color: inherit; }
 .footer__op a {
   color: var(--dark-muted);
   text-decoration: none;
-  transition: color 0.25s ease;
 }
-.footer__op a:hover { color: var(--dark-text); }
+@media (hover: hover) {
+  .footer__op a { transition: color var(--dur-color) var(--ease); }
+  .footer__op a:hover { color: var(--dark-text); }
+}
 
 /* ============ 秋の特設（現在はティート 信州巨峰） ============
    STORY と同じ紙色が続いて境目が消えていたので、季節ものは深緑の一枚のカードに収める。
@@ -1297,9 +1347,12 @@ a { color: inherit; }
   border: 1px solid var(--apricot);   /* 深緑カードの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: 0.9rem; letter-spacing: 0.06em;
-  transition: opacity 0.2s;
 }
-.autumn__cta:hover { opacity: 0.88; }
+/* 暗面の上で opacity .88 にしても、ボタン内の文字（白 on --sunset-ink）は 4.76 で 4.5 を割らない */
+@media (hover: hover) {
+  .autumn__cta { transition: opacity var(--dur) var(--ease); }
+  .autumn__cta:hover { opacity: 0.88; }
+}
 .autumn__cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 /* つくり手の紹介。ティートは TEAtriCO のものなので、名前と取り組みをはっきり置く */
 .autumn__maker {
@@ -1334,9 +1387,11 @@ a { color: inherit; }
   border: 1px solid var(--apricot);   /* 深緑のヒーローの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.06em;
-  transition: opacity 0.2s;
 }
-.hero__cta:hover { opacity: 0.88; }
+@media (hover: hover) {
+  .hero__cta { transition: opacity var(--dur) var(--ease); }
+  .hero__cta:hover { opacity: 0.88; }
+}
 .hero__cta:focus-visible { outline: 2px solid var(--dark-text); outline-offset: 3px; }
 
 /* 発送遅延など、期間限定の運営からのお知らせ。「次回の出店」欄と同じ佇まいにそろえる */
