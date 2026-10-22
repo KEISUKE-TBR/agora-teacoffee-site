@@ -460,7 +460,8 @@ fonts.adobe.com 側の操作。読み込みが軽くなるが必須ではない�
 > 後ろの2つは装飾のラテン文字ではなく、業態と所在地・企画名を伝える日本語。
 > `opacity: .2` に落として `aria-hidden` を付けると、**店の説明が見えなくなり読み上げからも消える**。
 > DOM順も動かさない。これらに必要なのはコントラストの修正だけで、
-> 両方とも `--dark` の面に乗っているので `--dark-accent #C9CF9E`（8.66）にする。
+> 両方とも `--dark` の面に乗っている。ただし `.meguri-cta__eyebrow` は既に `--dark-muted` で **5.33** あり基準を満たしているので**触らない**。
+> 直すのは `.hero__eyebrow`（3.29）だけで、`--dark-accent #C9CF9E`（8.66）にする。
 >
 > イロコトの型が成立するのは、`.ja` と `.en` が**同じ意味を重複して持っている**とき
 > （事業内容 / Services）に限る。英字を消しても情報が失われないから装飾にできる。
@@ -565,9 +566,11 @@ sed -i -E 's/([;{[:space:]])color: var\(--sunset\)/\1color: var(--sunset-ink)/g;
            s/([;{[:space:]])color: var\(--lemon\)/\1color: var(--lemon-ink)/g' style.css
 ```
 
-**深緑パネルの上のルールは除外すること。** `.hero__eyebrow` と `.footer__social-label` は
-`--dark` の面に乗っており、`-ink` にすると 3.29 → 2.70 と**悪化する**。
-この2つは `--dark-accent`（8.66）に変える。
+**深緑パネルの上のルールは除外すること。** `.hero__eyebrow` と `.footer__social-label` は `--dark` の面に乗っており、
+`-ink` にすると 3.29 → 2.70 と**悪化する**。この2つは `--dark-accent`（8.66）に変える。
+
+`.meguri-cta__eyebrow` も深緑の上だが、既に `--dark-muted` で 5.33 あるので**変更しない**。
+通っているものを変えるのは「配色は変えない」制約に反する。
 
 **間接参照の経路も直す。** `color: var(--accent)` / `color: var(--flavor, var(--sunset))` が7箇所あり
 （`style.css:399, 467, 472, 537, 543, 585, 948`）、カテゴリ側が面の色を流し込んでいる：

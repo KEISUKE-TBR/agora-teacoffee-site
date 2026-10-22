@@ -90,7 +90,8 @@ agora には実際のコントラスト不足がある。`--sunset` は33回中2
 > **深緑パネルの上では `-ink` を使わない。** 深緑の上では `-ink` のほうが元の色より悪化する
 > （`--sunset` 3.29 → `--sunset-ink` 2.70）。深緑の上は
 > `--dark-accent #C9CF9E`（8.66）／`--dark-text #EDEBE2`（11.80）／`--apricot #E8A87C`（6.93）を使う。
-> `.hero__eyebrow` と `.footer__social-label` がこれに該当する。
+> `.hero__eyebrow`（3.29）と `.footer__social-label`（3.29）がこれに該当する。
+> `.meguri-cta__eyebrow` も深緑の上だが既に `--dark-muted` で 5.33 あり、**変更しない**。
 >
 > **間接参照の経路も対象。** `color: var(--accent)` / `color: var(--flavor, var(--sunset))` が7箇所あり、
 > `#soda` が `--accent: var(--rose)`、`#lemon` が `var(--lemon)` を入れている。
