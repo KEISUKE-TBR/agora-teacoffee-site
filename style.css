@@ -184,12 +184,16 @@ a { color: inherit; }
   gap: clamp(20px, 2.6vw, 40px);
 }
 .nav a {
+  position: relative;
   font-size: 0.8125rem;
   letter-spacing: 0.14em;
   color: var(--dark-text);
   text-decoration: none;
   opacity: 0.85;
 }
+/* タップ領域は見た目を動かさず、疑似要素で縦 48px 前後まで広げる（ハンバーガーを開いた縦並びで効く。
+   リンク自体は約 26〜32px の高さしかなく、間の 22px の隙間は押しても反応しない） */
+.nav a::after { content: ""; position: absolute; inset: -11px -4px; }
 /* ホバーは hover:hover でゲートする。any-hover は「どれか1つでもホバーできる入力がある」で真になるので、
    タッチ対応ノートPCやスタイラス付きAndroidでも発火して誤り。
    transition もゲートの中に置く：タッチ端末では transition プロパティ自体が存在しないので、
@@ -213,7 +217,11 @@ a { color: inherit; }
   border: 0;
   cursor: pointer;
   padding: 6px;
+  position: relative;
 }
+/* タップ領域。ボタン本体（36×28）もヘッダーの高さも動かさず、疑似要素で 48×48 に広げる。
+   ヘッダーの高さは .catnav の top の既定値（52px）と対になっているので、本体を大きくすると /menu で食い違う */
+.nav-toggle::after { content: ""; position: absolute; inset: -10px -6px; }
 .nav-toggle span {
   display: block;
   width: 24px;
@@ -1476,4 +1484,38 @@ a { color: inherit; }
   .drink-modal__dialog { flex-direction: column; width: min(420px, 100%); }
   .drink-modal__media { flex: 0 0 auto; }
   .drink-modal__media img { aspect-ratio: 4 / 3; height: auto; }
+
+  /* ---- 小さい部品は縮小ではなく拡大する ----
+     参照サイトの実測は、アイコン 10→14 / 12→18 / 16→22px（1.4〜1.5倍）、ボタン 80→100 / 180→220px（約1.25倍）。
+     スマホで消してよいのは装飾と英語サブラベルだけで、残す部品は大きく描き直す。
+     --pad-y と --pad-x は触らない（縦の余白はスマホのほうが広い参照値が多く、左右 20px の下限は守る）。 */
+
+  /* 文字の下限は 12px（--fs-eyebrow）。引き上げるのは 0.6〜0.72rem（9.6〜11.5px）の固定値だけ。
+     --fs-note が 12px 始まりなので、これ以上に上げると注釈より見出しのラベルのほうが大きくなる */
+  .catnav a, .mbadge, .sig-card__tag, .drink-modal__tag, .mnote__title, .schedule__dow, .schedule__tag,
+  .schedule__next-title, .site-notice__title, .footer__social-label, .footer__copy, .autumn__fine,
+  .drink-modal__ingredients, .drink-modal__note, .fact, .taste__label { font-size: var(--fs-eyebrow); }
+
+  /* チップ・バッジ・点は 1.25〜1.45 倍 */
+  .mbadge { margin-left: 9px; padding: 2px 10px; }                     /* 7px / 1px 8px */
+  .fact { padding: 8px 16px; }                                         /* 6px 12px */
+  .schedule__tag { padding: 8px 14px; }                                /* 6px 14px。横は据え置く：増やすと右の info 列がさらに潰れる */
+  .catnav a { gap: 8px; padding: 11px 18px; }                          /* 41px → 48px。8px 14px */
+  .catnav a::before { width: 10px; height: 10px; }                     /* 7px */
+  .mcat { scroll-margin-top: calc(var(--header-h, 52px) + 60px); }    /* カテゴリ帯が 62→69px になったぶん */
+  .taste__dots { gap: 7px; }                                           /* 5px */
+  .taste__dot { width: 13px; height: 13px; }                           /* 9px */
+  .drink-modal__grabber { width: 44px; height: 5px; }                  /* 36×4px */
+  .drink-modal__close { width: 48px; height: 48px; font-size: 1.75rem; }   /* 40px / 1.5rem */
+  .header.nav-open .nav a { font-size: 1rem; }                         /* 13px。開いたドロワーの縦並び */
+
+  /* タップ領域 48px。文字だけのリンクは min-height で本体ごと広げる。
+     下線を border-bottom で引いているリンク（.schedule__link / .menu-back a）は、本体を広げると
+     下線が文字から離れるので、疑似要素で当たり判定だけ広げる */
+  .store__link, .shop-note__link, .footer__op a { display: inline-flex; align-items: center; min-height: 48px; }
+  .header__logo, .schedule__link, .menu-back a { position: relative; }
+  .header__logo::after { content: ""; position: absolute; inset: -14px -8px; }       /* 91×20px → 107×48px */
+  .schedule__link::after { content: ""; position: absolute; inset: -12px -6px; }       /* 25px → 49px */
+  .menu-back a::after { content: ""; position: absolute; inset: -14px -6px; }        /* 本体はインラインで約 22px → 50px */
+  .schedule__links { row-gap: 24px; }                                  /* 当たり判定が上下で重ならないように 6px から */
 }
