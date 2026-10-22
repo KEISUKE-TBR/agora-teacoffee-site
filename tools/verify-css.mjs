@@ -41,14 +41,15 @@ for (const t of TEXT_TOKENS) {
 
 console.log('\n=== 2. 面用の色を文字に使っていないか ===');
 for (const t of ['sunset', 'taupe', 'amber', 'tea-brown']) {
-  const used = new RegExp(`color:\\s*var\\(--${t}\\)`, 'g');
+  // 直前が - や英数字だと background-color: / border-color: などの末尾に当たってしまうので除く
+  const used = new RegExp(`(?<![-A-Za-z0-9_])color:\\s*var\\(--${t}\\)`, 'g');
   const n = (css.match(used) || []).length;
   check(`color: var(--${t}) を使っていない`, n === 0, `${n}箇所で文字色に使用（--${t}-ink を使うこと）`);
 }
 
 console.log('\n=== 3. lemon / rose は深緑パネル専用 ===');
 for (const t of ['lemon', 'rose']) {
-  const n = (css.match(new RegExp(`color:\\s*var\\(--${t}\\)`, 'g')) || []).length;
+  const n = (css.match(new RegExp(`(?<![-A-Za-z0-9_])color:\\s*var\\(--${t}\\)`, 'g')) || []).length;
   // 深緑の上でのみ使う。--dark 系の子孫セレクタ内に限る運用なので、
   // ここでは「素の color 指定が無いこと」ではなく「紙面のセクションで使われていないこと」を見る。
   // 自動判定が難しいため件数だけ報告し、0でなければ目視確認の対象とする。
@@ -71,12 +72,26 @@ check('ブレークポイントが 640 / 760 のみ', JSON.stringify(bps) === JS
 console.log('\n=== 7. ホバーは hover:hover でゲート ===');
 const anyHover = (css.match(/any-hover/g) || []).length;
 const gated = (css.match(/@media\s*\(\s*hover:\s*hover\s*\)/g) || []).length;
+// セレクタ列を、括弧の外のカンマで分ける（:where(a, button) の中のカンマでは切らない）
+const splitTop = (s) => {
+  const out = [];
+  let depth = 0;
+  let cur = '';
+  for (const ch of s) {
+    if (ch === '(') depth++;
+    if (ch === ')') depth--;
+    if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; } else cur += ch;
+  }
+  out.push(cur.trim());
+  return out.filter(Boolean);
+};
 // すべての :hover ルールが @media (hover: hover) ブロックの内側にあるかを、波括弧の深さを追って数える。
 // stack の各要素は「そのブロックがゲートの内側か」。親がゲート内なら子もゲート内。
 const countUngatedHover = (src) => {
   const s = src.replace(/\/\*[\s\S]*?\*\//g, ''); // コメント内の { } や :hover を除く
   const stack = [];
   const hits = [];
+  const excluded = []; // ::-webkit-scrollbar 系。タッチ端末にスクロールバーのつまみは無いのでゲート不要
   let head = '';
   for (const ch of s) {
     if (ch === '{') {
@@ -85,7 +100,11 @@ const countUngatedHover = (src) => {
       if (h.startsWith('@')) {
         stack.push(inGate || /^@media\b[^{]*\(\s*hover:\s*hover\s*\)/.test(h));
       } else {
-        if (/:hover\b/.test(h) && !inGate) hits.push(h);
+        const hoverParts = splitTop(h).filter((p) => /:hover\b/.test(p));
+        if (hoverParts.length > 0 && !inGate) {
+          // :hover を持つセレクタがすべて ::-webkit-scrollbar 系のときだけ除外する
+          (hoverParts.every((p) => p.includes('::-webkit-scrollbar')) ? excluded : hits).push(h);
+        }
         stack.push(inGate);
       }
       head = '';
@@ -98,16 +117,85 @@ const countUngatedHover = (src) => {
       head += ch;
     }
   }
-  return hits;
+  return { hits, excluded };
 };
-const ungatedHover = CSS.flatMap((f) => countUngatedHover(readFileSync(f, 'utf8')).map((h) => `${f}: ${h}`));
+const hoverScan = CSS.map((f) => ({ f, ...countUngatedHover(readFileSync(f, 'utf8')) }));
+const ungatedHover = hoverScan.flatMap(({ f, hits }) => hits.map((h) => `${f}: ${h}`));
+const excludedHover = hoverScan.flatMap(({ f, excluded }) => excluded.map((h) => `${f}: ${h}`));
 check('すべての :hover が @media (hover: hover) の内側にある', ungatedHover.length === 0,
   `${ungatedHover.length}件のルールがゲート外（例: ${ungatedHover.slice(0, 2).join(' | ')}）`);
+console.log(`  INFO ::-webkit-scrollbar 系の :hover は数えていない（タッチ端末に無いため）: ${excludedHover.length}件`);
 check('any-hover を使っていない', anyHover === 0, `${anyHover}箇所`);
 check('hover:hover のゲートがある', gated > 0, 'ゲートが1つも無い');
 
 console.log('\n=== 8. アクセシビリティの穴埋め ===');
-check(':focus-visible がある', /:focus-visible/.test(css), '未定義');
+// 個別部品（.sig-card / .mrow / .hero__cta …）の :focus-visible は既に9件ある。足りないのは、
+// そこから漏れる素の a / button / フォーム部品を覆うグローバルな受け皿。
+// なので「:focus-visible が存在するか」ではなく「a と button を一括で覆う規則があるか」を見る。
+// 認める形は3つ（どれも結合子なし・クラス修飾なし・本体に実際のリングがあること）:
+//   a:focus-visible / :where(a, button, …):focus-visible（:is も可） / :focus-visible 単独（* 付きも可）
+// .foo a:focus-visible や a.foo:focus-visible のように、祖先やクラスで絞ったものは「全般」と見なさない。
+const styleRules = (src) => {
+  const s = src.replace(/\/\*[\s\S]*?\*\//g, '');
+  const rules = [];
+  const stack = [];
+  let last = 0;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch === '{') {
+      const head = s.slice(last, i).trim().replace(/\s+/g, ' ');
+      stack.push({ head, isAt: head.startsWith('@'), start: i + 1 });
+      last = i + 1;
+    } else if (ch === '}') {
+      const top = stack.pop();
+      if (top && !top.isAt) rules.push({ head: top.head, body: s.slice(top.start, i) });
+      last = i + 1;
+    } else if (ch === ';') {
+      last = i + 1;
+    }
+  }
+  return rules;
+};
+// outline: none / 0 だけの規則はリングを「消す」ものなので数えない
+const hasRing = (body) =>
+  [...body.matchAll(/(?:^|[;\s])(?:outline|box-shadow)\s*:\s*([^;]+)/g)].some((m) => !/^(none|0)$/i.test(m[1].trim()));
+const focusCoverage = (selector) => {
+  const covered = new Set();
+  for (const part of splitTop(selector)) {
+    if (!part.includes(':focus-visible')) continue;
+    // 括弧の中身を潰して、外側に結合子（空白 > + ~）があれば単一の複合セレクタではない
+    let depth = 0;
+    const flat = [...part].map((c) => {
+      if (c === '(') { depth++; return c; }
+      if (c === ')') { depth--; return c; }
+      return depth > 0 ? '_' : c;
+    }).join('');
+    if (/[\s>+~]/.test(flat)) continue;
+    let m;
+    if (part === ':focus-visible' || part === '*:focus-visible') covered.add('*');
+    else if ((m = part.match(/^:(?:where|is)\((.*)\):focus-visible$/))) {
+      for (const item of splitTop(m[1])) if (/^[a-z][a-z0-9]*$/.test(item)) covered.add(item);
+    } else if ((m = part.match(/^([a-z][a-z0-9]*):focus-visible$/))) covered.add(m[1]);
+  }
+  return covered;
+};
+const focusScan = CSS.map((f) => {
+  const types = new Set();
+  let componentRules = 0;
+  for (const { head, body } of styleRules(readFileSync(f, 'utf8'))) {
+    if (!head.includes(':focus-visible')) continue;
+    componentRules++;
+    if (hasRing(body)) for (const t of focusCoverage(head)) types.add(t);
+  }
+  return { f, types, componentRules };
+});
+const focusTypes = new Set(focusScan.flatMap(({ types }) => [...types]));
+const focusGlobal = focusTypes.has('*') || (focusTypes.has('a') && focusTypes.has('button'));
+check('a / button 全般を覆うグローバルな :focus-visible 規則がある', focusGlobal,
+  '無い（部品別の規則だけ。例: :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible { outline: … }）');
+for (const { f, types, componentRules } of focusScan) {
+  console.log(`  INFO ${f}: :focus-visible の規則 ${componentRules}件 / 全般を覆う要素: ${types.size ? [...types].join(', ') : 'なし'}`);
+}
 check('@media print で登場前を打ち消している', /@media\s+print/.test(css), '未定義（スクロール前に印刷すると白紙になる）');
 check('prefers-reduced-motion がある', /prefers-reduced-motion/.test(css), '未定義');
 
