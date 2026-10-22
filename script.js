@@ -182,6 +182,10 @@ if (modal) {
         : "";
     }
 
+    // スクロールするのはシートでは dialog 自身、中央のダイアログでは content。前のドリンクで下げた位置が残ると、
+    // 次のドリンクが写真（と閉じるボタンの定位置）の見切れた状態で開く。開くたびに先頭へ戻す
+    modal.querySelectorAll(".drink-modal__dialog, .drink-modal__content").forEach((el) => { el.scrollTop = 0; });
+
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     // Background is left scrollable on purpose — locking it caused a layout

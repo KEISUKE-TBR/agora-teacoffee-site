@@ -326,17 +326,20 @@ button { letter-spacing: inherit; }
 }
 /* States the concrete situation (kitchen car now, cafe later) under the
    brand-voice lead, so a first-time visitor isn't left guessing. */
+/* 説明の一行であって、操作できる部品ではない。以前は 1px の罫線 + 角丸 999px + padding 8px 16px の「ピル」で、
+   これは参照サイト（イロコト）のボタンの型そのもの（白地・1px の罫線・border-radius 200px）。すぐ下の橙のピル CTA と並ぶと
+   ボタンが2つに見え、上のほうを押しても何も起きなかった。箱は外して字だけにする。
+   リードとの区別は箱ではなく、字の大きさ（12〜14px 対 16px）・色相（--dark-accent の緑みと --dark-text のクリーム）・間の広さで付ける。
+   左の縦罫や引用符は足さない（参照サイトは補足の文を平らな面と横の余白で分け、棒や引用符を使わない）。
+   箱が無くなると折り返しの位置が丸見えになる。375px では文節の途中（キッ|チンカー）で切れるので、
+   2つの文節を inline-block にして、折れるのは文節の間だけにする（span の間に空白を入れないこと。入れると字間に半角の空きが出る）。 */
 .hero__note {
-  display: inline-flex;
-  align-items: center;
-  margin: clamp(18px, 2.4vw, 24px) 0 0;
-  padding: 8px 16px;
-  border: 1px solid color-mix(in srgb, var(--dark-accent) 40%, transparent);
-  border-radius: 999px;
+  margin: clamp(24px, 3.2vw, 36px) 0 0;
   font-size: var(--fs-note);
   letter-spacing: 0.02em;
   color: var(--dark-accent);
 }
+.hero__note span { display: inline-block; }
 
 .hero__scroll-cue {
   position: absolute;
@@ -1161,17 +1164,40 @@ button { letter-spacing: inherit; }
   transition: transform var(--dur) var(--ease);
 }
 .drink-modal.is-open .drink-modal__dialog { transform: none; }
+/* 閉じるボタン。シートはつかんで下げる操作を持たない（つかみ棒は外した）ので、画面に見える閉じ方はこのボタンだけ。
+   写真の上にも紙の上にも載る。半透明の紙色（旧 rgba(251,249,243,.85)）は、明るい写真の上では溶け、紙の上では消えた。
+   「塗り + 縁」の二重にして、背景が何色でも輪郭が残るようにする。
+     塗り --dark、縁 --paper 2px：塗りと縁の境は 13.4:1。どんな写真の上でも、この内側の境は常に最大のコントラストで残る。
+     縁の外側は写真の色しだいだが、暗い写真なら縁（紙色）が、明るい写真なら塗り（深緑）が輪郭になる。どちらにも寄らない中間の明るさでは両方が効く。
+     文字・×は --paper で、--dark の上 13.4:1。
+   ×だけにせず「閉じる」を添える：つかみ棒を外したいま、画面に見える閉じ方はここだけで、×は「取り消し」「削除」とも読める。
+   ラベルを足すと当たり判定も横に広がり（実測 375px で 111×48px、デスクトップで 103×40px）、親指の届く右上で外しにくくなる。aria-label は据え置き（見えるラベルと同じ語）。 */
+.drink-modal { --close-h: 40px; }
 .drink-modal__close {
   position: absolute; top: 12px; right: 12px; z-index: 2;
-  width: 40px; height: 40px; border-radius: 999px;
-  border: 0; cursor: pointer;
-  background: rgba(251, 249, 243, 0.85);
-  color: var(--ink); font-size: 1.5rem; line-height: 1;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; gap: 10px;
+  height: var(--close-h); padding: 0 14px 0 16px;
+  border: 2px solid var(--paper); border-radius: 999px;
+  background: var(--dark); color: var(--paper);
+  box-shadow: 0 2px 10px rgba(15, 36, 31, 0.35);   /* 明るい写真の上で縁が溶けるぶんを影で受ける。影の色は --dark-deep（インクは暗い面で弱い） */
+  font-family: var(--font-sans); font-size: 0.875rem; font-weight: 700; line-height: 1; letter-spacing: 0.08em;
+  cursor: pointer;
 }
+/* × は字ではなく線 2 本で描く。字形だとフォントごとに上下の位置がずれ、ピルの中央に来ない */
+.drink-modal__close-x { position: relative; flex: none; width: 14px; height: 14px; }
+.drink-modal__close-x::before, .drink-modal__close-x::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 16px; height: 2px; border-radius: 1px; background: currentColor;
+}
+.drink-modal__close-x::before { transform: translate(-50%, -50%) rotate(45deg); }
+.drink-modal__close-x::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+/* フォーカスも二重にする（既定の --sunset-ink のリングは暗い写真の上で見えない）。
+   内側から：塗り / 紙の縁 2px / 深緑 3px / 紙 2px。深緑の帯は明るい背景で、紙の線は暗い写真で見える。
+   outline は forced-colors でも残る */
+.drink-modal__close:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; box-shadow: 0 0 0 3px var(--dark); }
 @media (hover: hover) {
   .drink-modal__close { transition: background-color var(--dur-color) var(--ease); }
-  .drink-modal__close:hover { background: var(--paper); }
+  .drink-modal__close:hover { background: var(--dark-deep); }
 }
 .drink-modal__media { flex: 0 0 42%; background: var(--paper-2); }
 .drink-modal__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -1200,14 +1226,23 @@ button { letter-spacing: inherit; }
   overflow-y: auto;
 }
 .drink-modal--sheet.is-open .drink-modal__dialog { transform: none; }
-.drink-modal__grabber {
-  width: 36px; height: 4px; border-radius: 999px;
-  background: var(--border-strong); margin: 12px auto 2px; flex: 0 0 auto;
+/* シートは dialog 自体がスクロールする（max-height 88svh）ので、position: absolute のままだと閉じるボタンも一緒に流れて消える
+   （375×812 でサンセットを開いて 190px 下げると y=-81 まで上がった）。sticky にして、スクロールしても上端 12px に残す。
+   margin の下側を負にして高さ 0 の箱にし、ボタンは写真の上に重ねる（in-flow のままだと写真が下に押される）。
+   置き場所：写真があるときは写真の角から 8px 内側（写真は左右 18px・上 18px の余白なので 26px）、
+   写真が無いとき（ドリンク 11 品のうち 9 品）は紙の角から 12px。--close-top / --close-right がその差分。 */
+.drink-modal--sheet .drink-modal__close {
+  position: sticky; top: 12px; align-self: flex-end; flex: none;
+  margin: var(--close-top, 12px) var(--close-right, 12px) calc(-1 * (var(--close-top, 12px) + var(--close-h))) 0;
 }
+.drink-modal--sheet:has(.drink-modal__media:not(:empty)) { --close-top: 26px; --close-right: 26px; }
 .drink-modal--sheet .drink-modal__media {
-  flex: 0 0 auto; aspect-ratio: 4 / 3; margin: 10px 18px 0;
+  flex: 0 0 auto; aspect-ratio: 4 / 3; margin: 18px 18px 0;
   border-radius: 6px; overflow: hidden;
 }
+/* 写真が無いと、ボタンが題名の右端に重なる（「プレミアム瀬戸内レモンスカッシュ」は 375px で右端まで届く）。
+   写真の無いシートは、ボタンの下（上端 12px + 高さ + 8px）から内容を始める */
+.drink-modal--sheet .drink-modal__media:empty + .drink-modal__content { padding-top: calc(12px + var(--close-h) + 8px); }
 .drink-modal--sheet .drink-modal__media img { aspect-ratio: auto; height: 100%; }
 .drink-modal--sheet .drink-modal__content { overflow: visible; padding: 16px 20px 28px; }
 .drink-modal--sheet .drink-modal__price { margin-top: 6px; font-size: 1.05rem; }
@@ -1576,8 +1611,8 @@ button { letter-spacing: inherit; }
   .mcat { scroll-margin-top: calc(var(--header-h) + 60px); }    /* カテゴリ帯が 62→69px になったぶん */
   .taste__dots { gap: 7px; }                                           /* 5px */
   .taste__dot { width: 13px; height: 13px; }                           /* 9px */
-  .drink-modal__grabber { width: 44px; height: 5px; }                  /* 36×4px */
-  .drink-modal__close { width: 48px; height: 48px; font-size: 1.75rem; }   /* 40px / 1.5rem */
+  .drink-modal { --close-h: 48px; }                                     /* 40px。閉じるボタンの高さ。シートの余白の計算も読む */
+  .drink-modal__close { padding: 0 18px 0 20px; }                       /* 0 14px 0 16px */
   .header.nav-open .nav a { font-size: 1rem; }                         /* 13px。開いたドロワーの縦並び */
 
   /* タップ領域 48px。文字だけのリンクは min-height で本体ごと広げる。
