@@ -1085,6 +1085,10 @@ a { color: inherit; }
   transition-delay: calc(var(--delay, 0) * 90ms);
 }
 .js .reveal.is-visible { opacity: 1; transform: translateY(0); }
+/* キーボードでフォーカスが入った要素は、IntersectionObserver を待たずに見せる。
+   Tab でスクロールされた要素は画面の下端にぴったり寄る。script.js の観測枠は下端 8% を削っている（rootMargin）ので、
+   そこに入った要素は交差と見なされず opacity: 0 のまま残り、フォーカスリングだけが透明な要素の上に出ていた。 */
+.js .reveal:focus-within { opacity: 1; transform: translateY(0); }
 
 /* 動きを止める仕組みは2層。
    (1) トークン：--dur / --dur-color を 0s にして、それを使う全ての遷移（ホバー・フォーカス・モーダル・ヘッダー）を一括で止める。
@@ -1573,6 +1577,15 @@ a { color: inherit; }
 .header, .hero, .story-hero, .board-title, .story-vision, .meguri-cta, .autumn__card, .footer {
   --focus-ring: var(--paper);
 }
+
+/* フォーカスが固定ヘッダーの下に潜らないようにする。
+   Shift+Tab で戻ると、ブラウザは要素を画面の上端ぴったりまで寄せる。上端には固定ヘッダー（52〜65px）があり、
+   /menu ではその下に sticky のカテゴリ帯（約 64px）が続くので、リンクや行が丸ごと隠れてリングが見えなかった。
+   scroll-margin-top は「スクロールで寄せるとき、要素の上に空けておく量」で、静止時の見た目は動かない。
+   ヘッダーとカテゴリ帯の中身は固定・sticky で動かないので、ここでは寄せ量を足さない。 */
+:where(a, button, input, select, textarea, summary, [tabindex]) { scroll-margin-top: 5rem; }          /* ヘッダー 65px + 余白 */
+.menu-page :where(a, button, [tabindex]) { scroll-margin-top: 9rem; }                                /* + カテゴリ帯 */
+.header :where(a, button), .catnav :where(a) { scroll-margin-top: 0; }
 
 /* 印刷。.js .reveal は既定で opacity: 0 なので、スクロール前に印刷すると本文が白紙で出る。
    !important は、詳細度 0,3,0 の .js .reveal.is-visible や将来の規則に関係なく、印刷では必ず見せるため。 */
