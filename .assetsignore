@@ -1,0 +1,11 @@
+# wrangler.jsonc sets assets.directory to "./", so everything in the repo root is published.
+# Keep non-site files out of the upload. (_headers is read as serving config; do not exclude it.)
+.superpowers/
+.claude/
+.git/
+.wrangler/
+docs/
+tools/
+wrangler*.jsonc
+.gitignore
+.assetsignore
