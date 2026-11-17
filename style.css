@@ -387,7 +387,7 @@ button { letter-spacing: inherit; }
   line-height: 1;
   letter-spacing: 0.08em;         /* 欧文も字間は正 */
   opacity: 0.2;
-  color: var(--ink);              /* 薄くするので色は乗せない */
+  color: var(--holiday-ink);      /* HOLIDAY期間の衣替え。装飾だが「面の色を文字に使わない」検査を特例化しないため -ink 側を使う。終わったら var(--ink) へ戻す */
 }
 
 .section__head { margin-bottom: clamp(36px, 5vw, 60px); }
@@ -438,7 +438,7 @@ button { letter-spacing: inherit; }
   font-size: 1.5rem;
   line-height: var(--lh-heading);   /* 手書き署名。継承の 2.2 だと上下に余る */
   letter-spacing: 0.02em;
-  color: var(--sunset-ink);
+  color: var(--holiday-ink);   /* HOLIDAY期間。終わったら sunset へ */
 }
 .story__cta {
   align-self: flex-start;
@@ -777,7 +777,7 @@ button { letter-spacing: inherit; }
 .mrow__note { display: block; margin-top: 2px; font-weight: 400; font-size: var(--fs-note); color: var(--ink-soft); }
 .mrow__leader { flex: 1; min-width: 16px; border-bottom: 1px dotted var(--border-strong); transform: translateY(-4px); }
 .mrow__price { flex: 0 0 auto; font-family: var(--font-num); font-weight: 600; font-size: var(--fs-body); color: var(--ink-soft); white-space: nowrap; }
-.mrow__price--off { color: var(--sunset-ink); font-weight: 700; }
+.mrow__price--off { color: var(--holiday-ink); font-weight: 700; }   /* HOLIDAY期間。終わったら sunset へ */
 
 .mbadge {
   display: inline-block; margin-left: 7px; padding: 1px 8px; border-radius: 999px;
@@ -818,7 +818,7 @@ button { letter-spacing: inherit; }
   align-items: center;
   min-width: 64px;
 }
-.schedule__month { font-family: var(--font-num); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.18em; color: var(--sunset-ink); }
+.schedule__month { font-family: var(--font-num); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.18em; color: var(--holiday-ink); }   /* HOLIDAY期間。終わったら sunset へ */
 .schedule__day { font-family: var(--font-num); font-weight: 600; font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1; color: var(--ink); }
 .schedule__dow { font-family: var(--font-num); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.16em; color: var(--taupe-ink); margin-top: 2px; }
 /* flex: 1 だけだと basis が 0 になり、info 列は「縮められるだけ縮む」ので折り返しが一度も発生しない
@@ -848,9 +848,9 @@ button { letter-spacing: inherit; }
   font-family: var(--font-sans);
   font-weight: 600;
   font-size: var(--fs-note);
-  color: var(--sunset-ink);
+  color: var(--holiday-ink);   /* HOLIDAY期間。終わったら sunset へ */
   text-decoration: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--sunset) 40%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--holiday) 40%, transparent);   /* HOLIDAY期間。終わったら sunset へ */
 }
 .schedule__link--site {
   color: var(--ink-soft);
@@ -872,7 +872,7 @@ button { letter-spacing: inherit; }
   border-radius: 999px;
   padding: 6px 14px;
 }
-.schedule__tag--soon { color: var(--sunset-ink); border-color: color-mix(in srgb, var(--sunset) 45%, transparent); }
+.schedule__tag--soon { color: var(--holiday-ink); border-color: color-mix(in srgb, var(--holiday) 45%, transparent); }   /* HOLIDAY期間。終わったら sunset へ */
 
 /* ============ MEGURI（恩送りチケット）emotional CTA ============ */
 .meguri-cta {
@@ -1038,7 +1038,7 @@ button { letter-spacing: inherit; }
 .schedule__next-title {
   margin: 0 0 10px;
   font-family: var(--font-sans); font-weight: 700;
-  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--sunset-ink);
+  font-size: 0.72rem; letter-spacing: 0.18em; color: var(--holiday-ink);   /* HOLIDAY期間。終わったら sunset へ */
 }
 .schedule__next-body { margin: 0; font-size: var(--fs-body); line-height: 1.8; color: var(--ink-soft); }
 .meguri-cta__sub {
@@ -1322,7 +1322,7 @@ button { letter-spacing: inherit; }
 .shop-note__title {
   margin: 0 0 12px;
   font-size: var(--fs-eyebrow);
-  letter-spacing: 0.22em; color: var(--sunset-ink);
+  letter-spacing: 0.22em; color: var(--holiday-ink);   /* HOLIDAY期間。終わったら sunset へ */
 }
 .shop-note__body {
   margin: 0 0 16px;
@@ -1331,7 +1331,7 @@ button { letter-spacing: inherit; }
 .shop-note__link {
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
-  color: var(--sunset-ink);
+  color: var(--holiday-ink);   /* HOLIDAY期間。終わったら sunset へ */
   text-decoration: none;
 }
 /* opacity .7 は紙の上で 2.91。色を --ink（13.51）に切り替える */
@@ -1361,7 +1361,7 @@ button { letter-spacing: inherit; }
   margin: 0 0 14px;
   font-size: var(--fs-eyebrow);
   letter-spacing: 0.22em;
-  color: var(--sunset-ink);
+  color: var(--holiday-ink);   /* HOLIDAY期間。終わったら sunset へ */
 }
 .store__name {
   margin: 0 0 4px;
@@ -1378,7 +1378,7 @@ button { letter-spacing: inherit; }
 .store__link {
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.04em;
-  color: var(--sunset-ink);
+  color: var(--holiday-ink);   /* HOLIDAY期間。終わったら sunset へ */
   text-decoration: none;
 }
 /* opacity .7 は薄面 --paper-2 の上で 2.75。色を --ink（12.29）に切り替える */

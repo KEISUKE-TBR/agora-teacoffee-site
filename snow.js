@@ -54,7 +54,7 @@
   }
 
   function targetCount() {
-    return Math.min(Math.round(W / (W < 640 ? 16 : 12)), 110);
+    return Math.min(Math.round(W / (W < 640 ? 13 : 10)), 140);
   }
 
   // 置く：周囲5列にゆるく分けて足す。丸みは毎フレームの settle() が作る
@@ -111,7 +111,7 @@
 
   function step(dt) {
     var i, f;
-    if (flakes.length < targetCount() && Math.random() < 0.4) flakes.push(makeFlake(false));
+    if (flakes.length < targetCount() && Math.random() < 0.8) flakes.push(makeFlake(false));
     for (i = flakes.length - 1; i >= 0; i--) {
       f = flakes[i];
       f.phase += f.sway * dt;
@@ -121,7 +121,7 @@
       var col = Math.min(cols - 1, Math.max(0, Math.round(f.x / COL)));
       var ground = H - pile[col];
       if (f.y + f.r >= ground) {
-        if (pile[col] < MAX_PILE) deposit(col, f.r * 1.4);  // 上限の列ではそのまま消える＝それ以上積もらない
+        if (pile[col] < MAX_PILE) deposit(col, f.r * 3.2);  // 上限の列ではそのまま消える＝それ以上積もらない
         flakes.splice(i, 1);
       }
     }
@@ -188,7 +188,15 @@
   addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(resize, 150); });
 
   resize();
-  // 初期状態から少しだけ降らせておく（真っさらな画面で始まらないように）
+  // 最初から薄く敷いておく：開いた瞬間に「積もっている」と分かり、降る→積もるの因果も伝わる
+  (function preseed() {
+    var base = W < 640 ? 5 : 8;
+    for (var i = 0; i < cols; i++) {
+      pile[i] = base + Math.sin(i * 0.045) * 2.5 + Math.random() * 2;
+    }
+    for (var k = 0; k < 6; k++) settle();
+  })();
+  // 空中にも最初から降らせておく
   for (var i = 0; i < targetCount() / 2; i++) flakes.push(makeFlake(true));
   raf = requestAnimationFrame(loop);
 })();
