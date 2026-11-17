@@ -247,25 +247,18 @@
     <div class="section__head">
       <h2 class="section__title reveal">キッチンカーの、一杯。</h2>
       <p class="section__eyebrow" aria-hidden="true">SIGNATURE</p>
-      <p class="section__note reveal" data-delay="1">ソルベがゆっくり溶けていく、2つのティーソーダ。出店の看板メニューです。</p>
+      <p class="section__note reveal" data-delay="1">瀬戸内レモンを、あたたかく。この冬の看板メニューです。</p>
     </div>
-    <div class="signature">
-      <button type="button" class="sig-card reveal" data-flavor="sunset" data-drink="sunset">
-        <span class="sig-card__photo"><img src="assets/img/drink-sunset.png" alt="サンセットティーソーダ" loading="lazy"></span>
+    <!-- HOLIDAY期間は冬の一杯を1枚看板で。夏のティーソーダ2枚はメニューページに残っている。
+         戻すときは git log でこのセクションの差し替え前を参照 -->
+    <div class="signature signature--solo">
+      <button type="button" class="sig-card reveal" data-flavor="holiday" data-drink="hot-lemonade">
+        <span class="sig-card__photo"><img src="assets/img/drink-hot-lemonade.jpg" alt="ガラスのカップに入ったホットレモネード。奥にホリデーライトのあかり" loading="lazy" width="1408" height="1408"></span>
         <span class="sig-card__body">
-          <span class="sig-card__tag">SIGNATURE</span>
-          <span class="sig-card__name">サンセットティーソーダ</span>
-          <span class="sig-card__sub">with アップルマンゴーソルベ</span>
-          <span class="sig-card__meta"><span class="sig-card__price">¥800</span><span class="sig-card__more">詳細を見る →</span></span>
-        </span>
-      </button>
-      <button type="button" class="sig-card reveal" data-delay="1" data-flavor="herbal" data-drink="herbal">
-        <span class="sig-card__photo"><img src="assets/img/drink-herbal.png" alt="ハーバルティーソーダ" loading="lazy"></span>
-        <span class="sig-card__body">
-          <span class="sig-card__tag">SIGNATURE</span>
-          <span class="sig-card__name">ハーバルティーソーダ</span>
-          <span class="sig-card__sub">with ハニーレモンソルベ</span>
-          <span class="sig-card__meta"><span class="sig-card__price">¥800</span><span class="sig-card__more">詳細を見る →</span></span>
+          <span class="sig-card__tag">WINTER SIGNATURE</span>
+          <span class="sig-card__name">ホットひと息瀬戸内レモネード</span>
+          <span class="sig-card__sub">HOT ・ ノンカフェイン</span>
+          <span class="sig-card__meta"><span class="sig-card__price">¥700</span><span class="sig-card__more">詳細を見る →</span></span>
         </span>
       </button>
     </div>

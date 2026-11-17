@@ -594,6 +594,8 @@ button { letter-spacing: inherit; }
   grid-template-columns: 1fr 1fr;
   gap: 0 clamp(20px, 3.5vw, 48px);
 }
+/* HOLIDAY期間の1枚看板。2列のまま1枚置くと左に寄るので、中央の1列に切り替える */
+.signature--solo { grid-template-columns: min(480px, 100%); justify-content: center; }
 /* カード。地の .menu を --paper-2 に沈め、その上に白いカードを立てる。
    border は付けない。参照7サイトでカードに border を付けた例は0件で、分離は
    「背景色の差」「影1層」「疑似要素のオーバーレイ」の3つだけだった。 */
