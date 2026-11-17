@@ -1688,3 +1688,32 @@ button { letter-spacing: inherit; }
    prefers-reduced-motion の人には snow.js 側で何も出さない */
 .snow-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; }   /* canvasは置換要素なので inset だけでは伸びない。寸法を明示する */
 @media print { .snow-canvas { display: none } }
+
+/* ============ ヒーローの電飾（HOLIDAY期間） ============
+   クリスマスの三色のうち足りなかった「金」を、ここの電球が受け持つ。
+   明滅は往復運動なので ease-in-out（無限ループの家則：平行移動は linear、往復は ease-in-out）。
+   位相は nth-child でなく --i の明示（スタッガーは自動化より明示、の家則）。 */
+.hero__lights {
+  position: absolute; top: 0; left: 0; right: 0;
+  width: 100%; height: clamp(64px, 8vw, 90px);
+  pointer-events: none;
+}
+.hero__light--a { fill: var(--apricot); }
+.hero__light--b { fill: var(--holiday); }
+.hero__light--c { fill: var(--dark-text); }
+@keyframes lightTwinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.hero__light {
+  animation: lightTwinkle 2.8s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.35s);   /* 負のdelay：表示の瞬間から全部が別の位相（家則） */
+}
+circle.hero__light[opacity] { animation-name: lightTwinkleGlow; }
+@keyframes lightTwinkleGlow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.12; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__light { animation: none; }
+}
