@@ -71,7 +71,7 @@ document.addEventListener("keydown", (e) => {
 // 出典: A.G.O.R.A. Promotion / Staff Training Guide（2026 Edition）の商品ページより。
 // taste は 3 段階（1〜3）。銘柄が日替わりで固定できないものは taste を持たない。
 const DRINKS = {
-  "hot-lemonade": { cat: "SEASONAL ／ 期間限定", flavor: "holiday", name: "ホットひと息瀬戸内レモネード", sub: "HOT ・ ノンカフェイン", price: "¥700", img: "",
+  "hot-lemonade": { cat: "SEASONAL ／ 期間限定", flavor: "holiday", name: "ホットひと息瀬戸内レモネード", sub: "HOT ・ ノンカフェイン", price: "¥700", img: "drink-hot-lemonade.jpg",
     desc: "湯気と一緒に、レモンの香りが立ちのぼる冬の一杯。瀬戸内レモンのやさしい甘みを、お湯でゆっくりのばしました。かじかんだ手にカップのぬくもりが伝わって、ひと口ごとに体の内側からほどけていきます。寒空の出店で、ひと息つくための一杯です。",
     caffeine: false, taste: { sweet: 2, refresh: 1, aroma: 2 },
     ingredients: ["瀬戸内レモン", "お湯"] },
