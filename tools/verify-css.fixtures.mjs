@@ -10,7 +10,7 @@ const SCRIPT = fileURLToPath(new URL('./verify-css.mjs', import.meta.url));
 const BASE_CSS = `:root {
   --paper: #FBF9F3; --paper-2: #F3EEE3; --ink: #2b2b26; --ink-soft: #676d6c; --dark-muted: #9aa19b;
   --sunset-ink: #af5035; --rose-ink: #975c63; --lemon-ink: #66722b; --amber-ink: #8e6336;
-  --tea-brown-ink: #83674f; --herbal-ink: #5a734f; --taupe-ink: #706c5b;
+  --tea-brown-ink: #83674f; --herbal-ink: #5a734f; --taupe-ink: #706c5b; --holiday: #c0453a; --holiday-ink: #a8332f;
   --dark: #16302a; --dark-accent: #C9CF9E; --dark-text: #EDEBE2; --apricot: #E8A87C;
   --sunset: #C55A3B;
 }

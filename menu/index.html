@@ -6,7 +6,7 @@
 <!-- JS が動く環境でだけ登場演出をかける（style.css の .js .reveal）。同期実行：最初の描画より前に .js を立てないと、一瞬見えてから消える -->
 <script>document.documentElement.classList.add('js')</script>
 <title>ドリンクメニュー｜A.G.O.R.A. TEA&COFFEE（千葉のキッチンカー）</title>
-<meta name="description" content="千葉のキッチンカー A.G.O.R.A. TEA&COFFEE のドリンクメニューと価格。サンセット／ハーバルティーソーダ、アールグレイソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。原材料・カフェインの有無も掲載。">
+<meta name="description" content="千葉のキッチンカー A.G.O.R.A. TEA&COFFEE のドリンクメニューと価格。ホットひと息瀬戸内レモネード、サンセット／ハーバルティーソーダ、アールグレイソーダ、房総ウイスキーのハイボールなど。原材料・カフェインの有無も掲載。">
 <link rel="canonical" href="https://agora-teacoffee.com/menu/">
 <meta name="theme-color" content="#16302a">
 
@@ -18,7 +18,7 @@
 <!-- Open Graph -->
 <meta property="og:site_name" content="A.G.O.R.A. TEA&COFFEE">
 <meta property="og:title" content="MENU ── A.G.O.R.A. TEA&COFFEE">
-<meta property="og:description" content="サンセット・ハーバルティーソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。">
+<meta property="og:description" content="ホットひと息瀬戸内レモネード、サンセット・ハーバルティーソーダ、房総ウイスキーのハイボールなど。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://agora-teacoffee.com/menu/">
 <meta property="og:image" content="https://agora-teacoffee.com/assets/img/og-brand.png">
@@ -30,7 +30,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@agora_teacoffee">
 <meta name="twitter:title" content="MENU ── A.G.O.R.A. TEA&COFFEE">
-<meta name="twitter:description" content="サンセット・ハーバルティーソーダ、瀬戸内レモネード、房総ウイスキーのハイボールなど。">
+<meta name="twitter:description" content="ホットひと息瀬戸内レモネード、サンセット・ハーバルティーソーダ、房総ウイスキーのハイボールなど。">
 <meta name="twitter:image" content="https://agora-teacoffee.com/assets/img/og-brand.png">
 
 <!-- Adobe Fonts (Typekit) -->
@@ -60,6 +60,7 @@
       "@type": "MenuSection",
       "name": "期間限定ドリンク（SEASONAL）",
       "hasMenuItem": [
+        { "@type": "MenuItem", "name": "ホットひと息瀬戸内レモネード", "description": "瀬戸内レモンのホットレモネード。ノンカフェイン。", "offers": { "@type": "Offer", "price": "700", "priceCurrency": "JPY" } },
         { "@type": "MenuItem", "name": "サンセットティーソーダ", "description": "アールグレイとオレンジのベースに完熟アップルマンゴーのソルベを浮かべたフロート。", "image": "https://agora-teacoffee.com/assets/img/drink-sunset.png", "offers": { "@type": "Offer", "price": "800", "priceCurrency": "JPY" } },
         { "@type": "MenuItem", "name": "ハーバルティーソーダ", "description": "瀬戸内レモンのスカッシュに福岡県産はちみつレモンのソルベを浮かべた、ノンカフェインの一杯。", "image": "https://agora-teacoffee.com/assets/img/drink-herbal.png", "offers": { "@type": "Offer", "price": "800", "priceCurrency": "JPY" } }
       ]
@@ -141,6 +142,12 @@
     <p class="mcat__sub">SEASONAL ／ 今シーズンのイチオシ</p>
     <div class="mcat__rule"></div>
     <div class="focus-grid">
+      <button type="button" class="focus-card" data-drink="hot-lemonade">
+        <span class="focus-card__photo focus-card__photo--hot"><span aria-hidden="true">HOT</span></span>
+        <span class="focus-card__name">ホットひと息瀬戸内レモネード</span>
+        <span class="focus-card__note">瀬戸内レモンを、あたたかく。</span>
+        <span class="focus-card__price">¥700</span>
+      </button>
       <button type="button" class="focus-card" data-drink="sunset">
         <span class="focus-card__photo"><img src="../assets/img/drink-sunset.png" alt="サンセットティーソーダ" loading="lazy"></span>
         <span class="focus-card__name">サンセットティーソーダ</span>

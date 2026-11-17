@@ -117,7 +117,7 @@ const tokens = Object.fromEntries(
 console.log('\n=== 1. 文字色のコントラスト（紙 --paper と薄面 --paper-2 の両方で4.5以上） ===');
 // 文字に使ってよい色は -ink 系と ink / ink-soft のみ。面用の素の色を文字に使っていないか。
 // 紙だけで測ると薄面（.menu .store .schedule__next .fact が乗る）で全部基準割れするので、両方の上で測る。
-const INK_TOKENS = ['sunset-ink', 'rose-ink', 'lemon-ink', 'amber-ink', 'tea-brown-ink', 'herbal-ink', 'taupe-ink'];
+const INK_TOKENS = ['sunset-ink', 'rose-ink', 'lemon-ink', 'amber-ink', 'tea-brown-ink', 'herbal-ink', 'taupe-ink', 'holiday-ink'];
 const checkContrast = (t) => {
   if (!tokens[t]) { check(`--${t} が定義されている`, false, '未定義'); return; }
   const rs = [['紙', 'paper'], ['薄面', 'paper-2']].map(([label, bg]) => [label, ratio(tokens[t], tokens[bg])]);
@@ -167,7 +167,7 @@ info(`-ink を文字色に使っている箇所: ${inkUses.length}件（深緑�
 for (const u of inkUses) console.log(`       ${u}`);
 
 console.log('\n=== 2. 面用の色を文字に使っていないか ===');
-const SURFACE = ['sunset', 'taupe', 'amber', 'tea-brown', 'herbal'];
+const SURFACE = ['sunset', 'taupe', 'amber', 'tea-brown', 'herbal', 'holiday'];
 for (const t of SURFACE) {
   // 直前が - や英数字だと background-color: / border-color: などの末尾に当たってしまうので除く
   const used = new RegExp(String.raw`(?<![-A-Za-z0-9_])color:\s*var\(--${t}\)`, 'g');

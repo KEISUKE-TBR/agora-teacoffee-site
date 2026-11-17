@@ -23,6 +23,12 @@
   --amber: #9A6B3A;
   --rose: #C97B84;
 
+  /* --- 季節色（HOLIDAY） ---
+     深緑 --dark と組ませてホリデーの赤。sunset（朱・橙寄り）とは別系統の深紅にして混ざらないようにする。
+     ほかの色と同じく面用と文字用のペア。季節が終わったら、この2行と使用箇所（grep --holiday）を戻す */
+  --holiday:     #c0453a;  /* 面・線用。紙 4.80 / 薄面 4.37。文字には使わない */
+  --holiday-ink: #a8332f;  /* 紙 6.27 / 薄面 5.71 / 白文字 6.60。ボタンの塗りにも使う */
+
   /* --- 文字用の派生値 ---
      1色で面も文字も賄わない。面・線用（上の値）と文字用（ここ）を分ける。
      紙 #FBF9F3 と薄面 #F3EEE3 の両方で 4.5 を満たす最小限の暗さに落としてある。
@@ -469,6 +475,7 @@ button { letter-spacing: inherit; }
 /* Flavour accent mapping (A.G.O.R.A. signature palette)
    面・線・outline は --flavor、文字は --flavor-ink を読む。二つを必ず対で持つ */
 [data-flavor="sunset"]    { --flavor: var(--sunset);    --flavor-ink: var(--sunset-ink); }
+[data-flavor="holiday"]   { --flavor: var(--holiday);   --flavor-ink: var(--holiday-ink); }
 [data-flavor="herbal"]    { --flavor: var(--herbal);    --flavor-ink: var(--herbal-ink); }
 [data-flavor="tea-brown"] { --flavor: var(--tea-brown); --flavor-ink: var(--tea-brown-ink); }
 [data-flavor="lemon"]     { --flavor: var(--lemon);     --flavor-ink: var(--lemon-ink); }
@@ -701,7 +708,7 @@ button { letter-spacing: inherit; }
   color: var(--ink-soft); text-decoration: none; white-space: nowrap;
 }
 .catnav a::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: var(--dot, var(--sunset)); }
-.catnav a[href="#focus"]    { --dot: var(--sunset); }
+.catnav a[href="#focus"]    { --dot: var(--holiday); }   /* HOLIDAY期間。終わったら --sunset へ */
 .catnav a[href="#soda"]     { --dot: var(--rose); }
 .catnav a[href="#straight"] { --dot: var(--tea-brown); }
 .catnav a[href="#lemon"]    { --dot: var(--lemon); }
@@ -714,7 +721,7 @@ button { letter-spacing: inherit; }
 
 .mcat { padding-top: clamp(30px, 5vw, 42px); scroll-margin-top: calc(var(--header-h) + 52px); }
 /* 面・線・outline は --accent、文字は --accent-ink。二つを必ず対で持つ */
-#focus    { --accent: var(--sunset);    --accent-ink: var(--sunset-ink); }
+#focus    { --accent: var(--holiday);   --accent-ink: var(--holiday-ink); }   /* HOLIDAY期間。終わったら sunset ペアへ */
 #soda     { --accent: var(--rose);      --accent-ink: var(--rose-ink); }
 #straight { --accent: var(--tea-brown); --accent-ink: var(--tea-brown-ink); }
 #lemon    { --accent: var(--lemon);     --accent-ink: var(--lemon-ink); }
@@ -748,6 +755,17 @@ button { letter-spacing: inherit; }
   border-radius: 6px; overflow: hidden; background: var(--paper-2);
 }
 .focus-card__photo img { width: 100%; height: 100%; object-fit: cover; }
+/* 期間限定のホットドリンク。商品写真がまだ無いので、偽の写真を置かず季節色の面に文字で立てる */
+.focus-card__photo--hot {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--holiday-ink);
+}
+.focus-card__photo--hot span {
+  font-family: var(--font-num); font-weight: 600;
+  font-size: clamp(1.5rem, 5.4vw, 2.1rem);
+  letter-spacing: 0.3em; text-indent: 0.3em;   /* 字間ぶん右に寄るのを戻して光学的中央に */
+  color: #fff;
+}
 @media (hover: hover) {
   .focus-card__photo img { transition: transform var(--dur) var(--ease); }
   .focus-card:hover .focus-card__photo img { transform: scale(1.05); }
@@ -1435,7 +1453,7 @@ button { letter-spacing: inherit; }
   margin-top: auto;
   display: block; text-align: center; text-decoration: none;
   padding: 14px 16px; min-height: 48px; border-radius: 999px;
-  background: var(--sunset-ink); color: #fff;
+  background: var(--holiday-ink); color: #fff;   /* HOLIDAY期間の深紅。終わったら --sunset-ink へ戻す */
   border: 1px solid var(--apricot);   /* 深緑カードの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: 0.9rem; letter-spacing: 0.06em;
@@ -1475,7 +1493,7 @@ button { letter-spacing: inherit; }
 .hero__cta {
   display: inline-flex; align-items: center;
   min-height: 44px; padding: 12px 26px; border-radius: 999px;
-  background: var(--sunset-ink); color: #fff; text-decoration: none;
+  background: var(--holiday-ink); color: #fff; text-decoration: none;   /* HOLIDAY期間の深紅。終わったら --sunset-ink へ戻す */
   border: 1px solid var(--apricot);   /* 深緑のヒーローの上。境目は枠が受け持つ（6.93） */
   font-family: var(--font-sans); font-weight: 700;
   font-size: var(--fs-note); letter-spacing: 0.06em;
@@ -1673,3 +1691,9 @@ button { letter-spacing: inherit; }
   /* ハンバーガーは操作部品で、紙の上では何もできない（印刷幅は約 717px で 760px 以下のレイアウトになるため出てしまう） */
   .nav-toggle { display: none; }
 }
+
+/* ============ 雪（HOLIDAYシーズンの演出。snow.js が canvas を生成する） ============
+   ヘッダー(z:50)の下、本文の上。pointer-events を切ってあるので操作を一切さえぎらない。
+   prefers-reduced-motion の人には snow.js 側で何も出さない */
+.snow-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 40; pointer-events: none; }   /* canvasは置換要素なので inset だけでは伸びない。寸法を明示する */
+@media print { .snow-canvas { display: none } }
